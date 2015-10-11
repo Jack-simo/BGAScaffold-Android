@@ -9,7 +9,7 @@
     app:bga_sil_springDistance="@dimen/size_level4"
     app:bga_sil_swipeDirection="left">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_item_plan_delete"
         style="@style/WrapMatch"
         android:background="@drawable/selector_red"
@@ -27,19 +27,27 @@
         android:background="@drawable/selector_white_gray"
         android:padding="@dimen/size_level2">
 
-        <TextView
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_item_plan_status"
+            style="@style/WrapWrap"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_level2" />
+
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_item_plan_content"
             style="@style/MatchWrap"
+            android:layout_toRightOf="@id/switch_item_plan_status"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="测试内容测试内容测试内容测试内容"
             android:textColor="@color/black_dark"
             android:textSize="@dimen/textSize_16" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_item_plan_time"
             style="@style/MatchWrap"
             android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/switch_item_plan_status"
             android:text="10:09"
             android:textColor="@color/black_middle"
             android:textSize="@dimen/textSize_14" />
