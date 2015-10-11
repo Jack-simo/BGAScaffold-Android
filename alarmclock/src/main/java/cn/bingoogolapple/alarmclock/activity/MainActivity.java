@@ -1,5 +1,6 @@
 package cn.bingoogolapple.alarmclock.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,6 @@ import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
-import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.basenote.widget.Divider;
 import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
 import cn.bingoogolapple.titlebar.BGATitlebar;
@@ -36,7 +36,7 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
         mTitlebar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
             @Override
             public void onClickRightCtv() {
-                ToastUtil.show("点击了添加按钮");
+                forward(DetailActivity.class);
             }
         });
 
@@ -81,8 +81,16 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
             mPlanAdapter.closeOpenedSwipeItemLayoutWithAnim();
             mPlanAdapter.removeItem(position);
         } else if (childView.getId() == R.id.rl_item_plan_container) {
-            ToastUtil.show("点击了" + position);
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(DetailActivity.EXTRA_OPERATE_TYPE, DetailActivity.OPERATE_TYPE_VIEW);
+            intent.putExtra(DetailActivity.EXTRA_PLAN, mPlanAdapter.getItem(position));
+            forward(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        mApp.exitWithDoubleClick();
     }
 
     private final class PlanAdapter extends BGARecyclerViewAdapter<Plan> {

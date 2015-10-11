@@ -7,7 +7,7 @@
     <cn.bingoogolapple.titlebar.BGATitlebar
         android:id="@+id/titlebar"
         style="@style/TitleBar"
-        app:bgatitlebar_rightText="添加"
+        app:bgatitlebar_rightText="@string/add"
         app:bgatitlebar_titleText="@string/app_name" />
 
     <android.support.v7.widget.RecyclerView
