@@ -26,7 +26,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         StringBuilder sql = new StringBuilder();
         sql.append("CREATE TABLE " + T_PLAN + " ( ");
         sql.append(PlanTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, ");
-        sql.append(PlanTable.TIME + " TEXT, ");
+        sql.append(PlanTable.TIME + " INTEGER, ");
         sql.append(PlanTable.CONTENT + " TEXT, ");
         sql.append(PlanTable.STATUS + " INTEGER ");
         sql.append(");");
