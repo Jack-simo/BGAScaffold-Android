@@ -17,6 +17,7 @@ import java.util.Calendar;
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.model.Plan;
+import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
@@ -101,7 +102,7 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
         DatePickerDialog dpd = DatePickerDialog.newInstance(this, mTempCalendar.get(Calendar.YEAR), mTempCalendar.get(Calendar.MONTH), mTempCalendar.get(Calendar.DAY_OF_MONTH));
         dpd.setAccentColor(getResources().getColor(R.color.orange_pressed));
         int thisYear = mTempCalendar.get(Calendar.YEAR);
-        dpd.setYearRange(thisYear - 5, thisYear + 5);
+        dpd.setYearRange(thisYear, thisYear + 5);
         dpd.show(getFragmentManager(), "DatePickerDialog");
     }
 
@@ -112,7 +113,7 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
     }
 
     private void showTimePickerDialog() {
-        TimePickerDialog tpd = TimePickerDialog.newInstance(this, mTempCalendar.get(Calendar.HOUR), mTempCalendar.get(Calendar.MINUTE), true);
+        TimePickerDialog tpd = TimePickerDialog.newInstance(this, mTempCalendar.get(Calendar.HOUR_OF_DAY), mTempCalendar.get(Calendar.MINUTE), false);
         tpd.setAccentColor(getResources().getColor(R.color.orange_pressed));
         tpd.show(getFragmentManager(), "TimePickerDialog");
     }
@@ -185,6 +186,7 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
                 protected void onPostExecute(Boolean result) {
                     dismissLoadingDialog();
                     if (result) {
+                        AlarmUtil.addAlarm(mPlan);
                         backwardSuccess();
                     } else {
                         ToastUtil.show(R.string.toast_add_plan_failure);
@@ -223,10 +225,11 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
                 protected void onPostExecute(Boolean result) {
                     dismissLoadingDialog();
                     if (result) {
+                        AlarmUtil.cancelAlarm(mPlan);
                         mPlan.time = mUltimateCalendar.getTimeInMillis();
                         mPlan.content = content;
                         mPlan.status = Plan.STATUS_NOT_HANDLE;
-
+                        AlarmUtil.addAlarm(mPlan);
                         backwardSuccess();
                     } else {
                         ToastUtil.show(R.string.toast_update_plan_failure);

@@ -24,8 +24,10 @@
         <activity android:name=".ui.activity.DetailActivity" />
 
         <provider
-            android:authorities="cn.bingoogolapple.alarmclock.provider.PlanProvider"
-            android:name=".provider.PlanProvider"/>
+            android:name=".provider.PlanProvider"
+            android:authorities="cn.bingoogolapple.alarmclock.provider.PlanProvider" />
+
+        <receiver android:name=".receiver.AlarmReceiver" />
     </application>
 
 </manifest>

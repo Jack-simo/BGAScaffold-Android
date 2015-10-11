@@ -15,6 +15,7 @@ import java.util.List;
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.model.Plan;
+import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListener;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
@@ -175,6 +176,11 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
                 dismissLoadingDialog();
                 if (result) {
                     plan.status = newStatus;
+                    if (newStatus == Plan.STATUS_NOT_HANDLE && plan.time > CalendarUtil.getCalendar().getTimeInMillis()) {
+                        AlarmUtil.addAlarm(plan);
+                    } else {
+                        AlarmUtil.cancelAlarm(plan);
+                    }
                     mPlanAdapter.notifyItemChanged(position);
                 } else {
                     ToastUtil.show(R.string.toast_update_plan_failure);
@@ -184,6 +190,7 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
     }
 
     private void deletePlan(final int position) {
+        final Plan plan = mPlanAdapter.getItem(position);
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
@@ -193,7 +200,7 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
             @Override
             protected Boolean doInBackground(Void... params) {
                 long beginTime = System.currentTimeMillis();
-                boolean result = PlanDao.deletePlan(mPlanAdapter.getItem(position).id);
+                boolean result = PlanDao.deletePlan(plan.id);
                 long time = System.currentTimeMillis() - beginTime;
                 if (time < DELAY_TIME) {
                     try {
@@ -209,6 +216,7 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
             protected void onPostExecute(Boolean result) {
                 dismissLoadingDialog();
                 if (result) {
+                    AlarmUtil.cancelAlarm(plan);
                     mPlanAdapter.closeOpenedSwipeItemLayoutWithAnim();
                     mPlanAdapter.removeItem(position);
                 } else {
@@ -260,7 +268,7 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
             helper.setText(R.id.tv_item_plan_time, CalendarUtil.formatDisplayTime(model.time));
 
             mIsIgnoreChange = true;
-            helper.setChecked(R.id.switch_item_plan_status, model.status == Plan.STATUS_ALREADY_HANDLE);
+            helper.setChecked(R.id.switch_item_plan_status, model.status == Plan.STATUS_NOT_HANDLE);
             mIsIgnoreChange = false;
         }
 
