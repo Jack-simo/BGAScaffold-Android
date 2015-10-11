@@ -3,6 +3,8 @@ package cn.bingoogolapple.alarmclock.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import cn.bingoogolapple.basenote.util.CalendarUtil;
+
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/29 上午1:33
@@ -15,6 +17,16 @@ public class Plan implements Parcelable {
     public long time;
     public String content;
     public int status;
+
+    @Override
+    public String toString() {
+        return "Plan{" +
+                "id=" + id +
+                ", time=" + CalendarUtil.formatDisplayTime(time) +
+                ", content='" + content + '\'' +
+                ", status=" + (status == STATUS_NOT_HANDLE ? "未处理" : "已处理") +
+                '}';
+    }
 
     @Override
     public int describeContents() {

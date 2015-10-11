@@ -11,4 +11,6 @@
     <string name="toast_plan_time_invalid_empty">请选择计划时间</string>
     <string name="toast_plan_time_invalid">计划时间必须大于当前时间</string>
     <string name="toast_plan_content_invalid_empty">计划内容不能为空</string>
+    <string name="toast_add_plan_failure">添加计划失败</string>
+    <string name="toast_update_plan_failure">修改计划失败</string>
 </resources>

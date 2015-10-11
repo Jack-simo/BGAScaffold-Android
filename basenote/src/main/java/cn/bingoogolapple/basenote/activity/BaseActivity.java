@@ -19,6 +19,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * 描述:
  */
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final int DELAY_TIME = 1500;
     protected String TAG;
     protected App mApp;
     protected BGATitlebar mTitlebar;
@@ -102,13 +103,24 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         executeForwardAnim();
     }
 
+    public void forward(Class<?> cls, int requestCode) {
+        forward(new Intent(this, cls), requestCode);
+    }
+
     public void forwardAndFinish(Intent intent) {
         forward(intent);
         finish();
     }
 
     public void forward(Intent intent) {
+        KeyboardUtil.closeKeyboard(this);
         startActivity(intent);
+        executeForwardAnim();
+    }
+
+    public void forward(Intent intent, int requestCode) {
+        KeyboardUtil.closeKeyboard(this);
+        startActivityForResult(intent, requestCode);
         executeForwardAnim();
     }
 
@@ -153,17 +165,13 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param resId
      */
     public void showLoadingDialog(@StringRes int resId) {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-            mLoadingDialog.setCancelable(false);
-        }
-        mLoadingDialog.setTitle(resId);
-        mLoadingDialog.show();
+        showLoadingDialog(getString(resId));
     }
 
     public void showLoadingDialog(String msg) {
         if (mLoadingDialog == null) {
             mLoadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            mLoadingDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.orange_pressed));
             mLoadingDialog.setCancelable(false);
         }
         mLoadingDialog.setTitleText(msg);

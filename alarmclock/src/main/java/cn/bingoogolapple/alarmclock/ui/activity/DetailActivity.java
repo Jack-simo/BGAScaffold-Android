@@ -1,5 +1,7 @@
-package cn.bingoogolapple.alarmclock.activity;
+package cn.bingoogolapple.alarmclock.ui.activity;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -13,9 +15,11 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 
 import cn.bingoogolapple.alarmclock.R;
+import cn.bingoogolapple.alarmclock.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.model.Plan;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
+import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.titlebar.BGATitlebar;
 
@@ -78,16 +82,16 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
     protected void processLogic(Bundle savedInstanceState) {
         mOperateType = getIntent().getIntExtra(EXTRA_OPERATE_TYPE, OPERATE_TYPE_ADD);
 
+        mUltimateCalendar = CalendarUtil.getZeroSecondCalendar();
         if (mOperateType == OPERATE_TYPE_VIEW) {
             changeToView();
-        } else {
-            mUltimateCalendar = CalendarUtil.getZeroSecondCalendar();
         }
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.tv_detail_time) {
+            KeyboardUtil.closeKeyboard(this);
             showDatePickerDialog();
         }
     }
@@ -95,7 +99,9 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
     private void showDatePickerDialog() {
         mTempCalendar = CalendarUtil.getZeroSecondCalendar();
         DatePickerDialog dpd = DatePickerDialog.newInstance(this, mTempCalendar.get(Calendar.YEAR), mTempCalendar.get(Calendar.MONTH), mTempCalendar.get(Calendar.DAY_OF_MONTH));
-        dpd.setAccentColor(getResources().getColor(R.color.orange_normal));
+        dpd.setAccentColor(getResources().getColor(R.color.orange_pressed));
+        int thisYear = mTempCalendar.get(Calendar.YEAR);
+        dpd.setYearRange(thisYear - 5, thisYear + 5);
         dpd.show(getFragmentManager(), "DatePickerDialog");
     }
 
@@ -107,7 +113,7 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
 
     private void showTimePickerDialog() {
         TimePickerDialog tpd = TimePickerDialog.newInstance(this, mTempCalendar.get(Calendar.HOUR), mTempCalendar.get(Calendar.MINUTE), true);
-        tpd.setAccentColor(getResources().getColor(R.color.orange_normal));
+        tpd.setAccentColor(getResources().getColor(R.color.orange_pressed));
         tpd.show(getFragmentManager(), "TimePickerDialog");
     }
 
@@ -137,24 +143,104 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
     }
 
     private void changeToEdit() {
+        mOperateType = OPERATE_TYPE_EDIT;
         mTitlebar.setTitleText(R.string.edit_plan);
         mTitlebar.setRightText(R.string.finish);
         mTimeTv.setEnabled(true);
         mContentEt.setEnabled(true);
+        mContentEt.setSelection(mContentEt.getText().toString().length());
     }
 
     private void addPlan() {
-        String content = mContentEt.getText().toString().trim();
+        final String content = mContentEt.getText().toString().trim();
         if (validationPlain(content)) {
+            KeyboardUtil.closeKeyboard(this);
+            mPlan = new Plan();
+            mPlan.content = content;
+            mPlan.time = mUltimateCalendar.getTimeInMillis();
+            mPlan.status = Plan.STATUS_NOT_HANDLE;
 
+            new AsyncTask<Void, Void, Boolean>() {
+                @Override
+                protected void onPreExecute() {
+                    showLoadingDialog(R.string.loading);
+                }
+
+                @Override
+                protected Boolean doInBackground(Void... params) {
+                    long beginTime = System.currentTimeMillis();
+                    boolean result = PlanDao.insertPlan(mPlan);
+                    long time = System.currentTimeMillis() - beginTime;
+                    if (time < DELAY_TIME) {
+                        try {
+                            Thread.sleep(DELAY_TIME - time);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return result;
+                }
+
+                @Override
+                protected void onPostExecute(Boolean result) {
+                    dismissLoadingDialog();
+                    if (result) {
+                        backwardSuccess();
+                    } else {
+                        ToastUtil.show(R.string.toast_add_plan_failure);
+                    }
+                }
+            }.execute();
         }
     }
 
     private void editPlan() {
-        String content = mContentEt.getText().toString().trim();
+        final String content = mContentEt.getText().toString().trim();
         if (validationPlain(content)) {
+            KeyboardUtil.closeKeyboard(this);
+            new AsyncTask<Void, Void, Boolean>() {
+                @Override
+                protected void onPreExecute() {
+                    showLoadingDialog(R.string.loading);
+                }
 
+                @Override
+                protected Boolean doInBackground(Void... params) {
+                    long beginTime = System.currentTimeMillis();
+                    boolean result = PlanDao.updatePlan(mPlan.id, mUltimateCalendar.getTimeInMillis(), content, Plan.STATUS_NOT_HANDLE);
+                    long time = System.currentTimeMillis() - beginTime;
+                    if (time < DELAY_TIME) {
+                        try {
+                            Thread.sleep(DELAY_TIME - time);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return result;
+                }
+
+                @Override
+                protected void onPostExecute(Boolean result) {
+                    dismissLoadingDialog();
+                    if (result) {
+                        mPlan.time = mUltimateCalendar.getTimeInMillis();
+                        mPlan.content = content;
+                        mPlan.status = Plan.STATUS_NOT_HANDLE;
+
+                        backwardSuccess();
+                    } else {
+                        ToastUtil.show(R.string.toast_update_plan_failure);
+                    }
+                }
+            }.execute();
         }
+    }
+
+    private void backwardSuccess() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_PLAN, mPlan);
+        setResult(RESULT_OK, intent);
+        backward();
     }
 
     private boolean validationPlain(String content) {

@@ -41,12 +41,12 @@ public class CalendarUtil {
         Calendar tomorrow = getCalendar();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
 
-        if (ultimateCalendar.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR)) {
+        if (ultimateCalendar.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) && ultimateCalendar.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR)) {
             return "昨天 " + formatHourMinute(ultimateCalendar.getTime());
-        } else if (ultimateCalendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
-            return "今天 " + sHourMinuteSdf.format(ultimateCalendar.getTime());
-        } else if (ultimateCalendar.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
-            return "明天 " + sHourMinuteSdf.format(ultimateCalendar.getTime());
+        } else if (ultimateCalendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) && ultimateCalendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+            return "今天 " + formatHourMinute(ultimateCalendar.getTime());
+        } else if (ultimateCalendar.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) && ultimateCalendar.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
+            return "明天 " + formatHourMinute(ultimateCalendar.getTime());
         } else {
             return formatYearMonthDayHourMinute(ultimateCalendar.getTime());
         }
