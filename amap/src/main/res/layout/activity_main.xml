@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch.Vertical">
+
+    <TextView
+        android:id="@+id/tv_main_result"
+        style="@style/MatchWrap"
+        android:layout_marginTop="@dimen/size_level10"
+        android:gravity="center_horizontal"
+        android:text="高德地图"
+        android:textColor="@color/black_dark"
+        android:textSize="@dimen/textSize_18" />
+</LinearLayout>
