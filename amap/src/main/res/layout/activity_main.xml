@@ -2,12 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchMatch.Vertical">
 
-    <TextView
-        android:id="@+id/tv_main_result"
+    <Button
+        android:id="@+id/btn_main_net_location"
         style="@style/MatchWrap"
-        android:layout_marginTop="@dimen/size_level10"
+        android:layout_margin="@dimen/size_level3"
         android:gravity="center_horizontal"
-        android:text="高德地图"
+        android:text="网络定位"
+        android:textColor="@color/black_dark"
+        android:textSize="@dimen/textSize_18" />
+
+    <Button
+        android:id="@+id/btn_main_multy_location"
+        style="@style/MatchWrap"
+        android:layout_margin="@dimen/size_level3"
+        android:gravity="center_horizontal"
+        android:text="混合定位"
         android:textColor="@color/black_dark"
         android:textSize="@dimen/textSize_18" />
 </LinearLayout>

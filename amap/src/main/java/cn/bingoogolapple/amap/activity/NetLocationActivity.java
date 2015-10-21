@@ -1,4 +1,4 @@
-package cn.bingoogolapple.amap;
+package cn.bingoogolapple.amap.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -19,11 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.bingoogolapple.amap.R;
 import cn.bingoogolapple.amap.util.SimpleAMapLocationListener;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 
-public class MainActivity extends BaseActivity {
+public class NetLocationActivity extends BaseActivity {
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 82;
     private TextView mResultTv;
     private LocationManagerProxy mLocationManagerProxy;
@@ -39,8 +40,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_main);
-        mResultTv = getViewById(R.id.tv_main_result);
+        setContentView(R.layout.activity_net_location);
+        mResultTv = getViewById(R.id.tv_net_location_result);
     }
 
     @Override
@@ -81,12 +82,12 @@ public class MainActivity extends BaseActivity {
                 showMessageOKCancel(message, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(MainActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                        ActivityCompat.requestPermissions(NetLocationActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
                     }
                 });
                 return;
             }
-            ActivityCompat.requestPermissions(MainActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            ActivityCompat.requestPermissions(NetLocationActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
             return;
         }
         requestLocationData();
@@ -127,7 +128,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(NetLocationActivity.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
