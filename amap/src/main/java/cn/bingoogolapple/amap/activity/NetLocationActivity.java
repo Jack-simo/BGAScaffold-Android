@@ -142,6 +142,7 @@ public class NetLocationActivity extends BaseActivity {
         //注意设置合适的定位时间的间隔，并且在合适时间调用removeUpdates()方法来取消定位请求
         //在定位结束后，在合适的生命周期调用destroy()方法
         //其中如果间隔时间为-1，则定位只定一次
+        //移动多少距离触发回调，只针对GPS定位有效
         mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, 60 * 1000, 15, mAMapLocationListener);
         mLocationManagerProxy.setGpsEnable(false);
     }

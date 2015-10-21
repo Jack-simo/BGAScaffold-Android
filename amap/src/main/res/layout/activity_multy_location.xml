@@ -6,26 +6,4 @@
         android:id="@+id/mapView"
         style="@style/MatchMatch" />
 
-    <RadioGroup
-        android:id="@+id/gps_radio_group"
-        style="@style/MatchWrap.Horizontal"
-        android:layout_margin="@dimen/size_level2">
-
-        <RadioButton
-            android:id="@+id/gps_locate_button"
-            style="@style/WrapWrap"
-            android:checked="true"
-            android:text="定位" />
-
-        <RadioButton
-            android:id="@+id/gps_follow_button"
-            style="@style/WrapWrap"
-            android:text="追随" />
-
-        <RadioButton
-            android:id="@+id/gps_rotate_button"
-            style="@style/WrapWrap"
-            android:text="旋转" />
-    </RadioGroup>
-
 </FrameLayout>

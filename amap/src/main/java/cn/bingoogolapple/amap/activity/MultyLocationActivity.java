@@ -8,14 +8,25 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.RadioGroup;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.LocationSource;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeAddress;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeAddress;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,18 +38,26 @@ import cn.bingoogolapple.amap.util.SimpleAMapLocationListener;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 
-public class MultyLocationActivity extends BaseActivity implements LocationSource, RadioGroup.OnCheckedChangeListener {
+public class MultyLocationActivity extends BaseActivity implements AMap.OnMapClickListener, GeocodeSearch.OnGeocodeSearchListener {
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 82;
     private LocationManagerProxy mLocationManagerProxy;
     private AMap mAMap;
     private MapView mMapView;
-    private OnLocationChangedListener mOnLocationChangedListener;
+    private boolean mIsAddedMarker;
+    private Marker mMarker;
+    private GeocodeSearch mGeocoderSearch;
+
+    private double mLatitude;
+    private double mLongitude;
 
     private SimpleAMapLocationListener mAMapLocationListener = new SimpleAMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
             if (aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
-                mOnLocationChangedListener.onLocationChanged(aMapLocation);
+                mLatitude = aMapLocation.getLatitude();
+                mLongitude = aMapLocation.getLongitude();
+
+                refreshMap();
             }
         }
     };
@@ -51,28 +70,55 @@ public class MultyLocationActivity extends BaseActivity implements LocationSourc
 
     @Override
     protected void setListener() {
-        ((RadioGroup) findViewById(R.id.gps_radio_group)).setOnCheckedChangeListener(this);
     }
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
         mMapView.onCreate(savedInstanceState);
-
-        if (mAMap == null) {
-            mAMap = mMapView.getMap();
-            setUpMap();
-        }
+        setUpMap();
     }
 
     private void setUpMap() {
-        // 设置定位监听
-        mAMap.setLocationSource(this);
-        // 设置默认定位按钮是否显示
-        mAMap.getUiSettings().setMyLocationButtonEnabled(true);
-        // 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
-        mAMap.setMyLocationEnabled(true);
-        // 设置定位的类型为定位模式 ，可以由定位、跟随或地图根据面向方向旋转几种
-        mAMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
+        if (mAMap != null) {
+            return;
+        }
+
+        mAMap = mMapView.getMap();
+        mAMap.setOnMapClickListener(this);
+        mAMap.setOnMarkerDragListener(new AMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                marker.hideInfoWindow();
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                mLatitude = marker.getPosition().latitude;
+                mLongitude = marker.getPosition().longitude;
+
+                searchAddress();
+            }
+        });
+        mAMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChangeFinish(CameraPosition cameraPosition) {
+                mLatitude = cameraPosition.target.latitude;
+                mLongitude = cameraPosition.target.longitude;
+
+                searchAddress();
+            }
+
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+            }
+        });
+
+        mGeocoderSearch = new GeocodeSearch(this);
+        mGeocoderSearch.setOnGeocodeSearchListener(this);
     }
 
     @Override
@@ -83,6 +129,13 @@ public class MultyLocationActivity extends BaseActivity implements LocationSourc
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
+
+        if (mLatitude == 0 && mLongitude == 0) {
+            requestLocationDataWrapper();
+        } else {
+            refreshMap();
+        }
+
     }
 
     private void requestLocationDataWrapper() {
@@ -165,14 +218,15 @@ public class MultyLocationActivity extends BaseActivity implements LocationSourc
         //注意设置合适的定位时间的间隔，并且在合适时间调用removeUpdates()方法来取消定位请求
         //在定位结束后，在合适的生命周期调用destroy()方法
         //其中如果间隔时间为-1，则定位只定一次
-        mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, 60 * 1000, 15, mAMapLocationListener);
+        mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, -1, 15, mAMapLocationListener);
         mLocationManagerProxy.setGpsEnable(false);
     }
 
     @Override
     protected void onPause() {
-        mMapView.onPause();
         super.onPause();
+        mMapView.onPause();
+        stopLocation();
     }
 
     private void stopLocation() {
@@ -194,34 +248,64 @@ public class MultyLocationActivity extends BaseActivity implements LocationSourc
      */
     @Override
     protected void onDestroy() {
-        mMapView.onDestroy();
         super.onDestroy();
+        mMapView.onDestroy();
     }
 
     @Override
-    public void activate(OnLocationChangedListener onLocationChangedListener) {
-        mOnLocationChangedListener = onLocationChangedListener;
-        requestLocationDataWrapper();
+    public void onMapClick(LatLng latLng) {
+        mLatitude = latLng.latitude;
+        mLongitude = latLng.longitude;
+
+        refreshMap();
+    }
+
+    private void refreshMap() {
+//        mAMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(new LatLng(mLatitude, mLongitude), 18));
+
+        mAMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(mLatitude, mLongitude), 18, 0, 0)), 700, null);
+    }
+
+    private void searchAddress() {
+        mGeocoderSearch.getFromLocationAsyn(new RegeocodeQuery(new LatLonPoint(mLatitude, mLongitude), 50, GeocodeSearch.AMAP));
     }
 
     @Override
-    public void deactivate() {
-        stopLocation();
-        mOnLocationChangedListener = null;
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int code) {
+        if (code == 0 && regeocodeResult != null && regeocodeResult.getRegeocodeAddress() != null) {
+            RegeocodeAddress regeocodeAddress = regeocodeResult.getRegeocodeAddress();
+            refreshMarker(regeocodeAddress.getFormatAddress());
+        }
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
-            case R.id.gps_locate_button:
-                mAMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
-                break;
-            case R.id.gps_follow_button:
-                mAMap.setMyLocationType(AMap.LOCATION_TYPE_MAP_FOLLOW);
-                break;
-            case R.id.gps_rotate_button:
-                mAMap.setMyLocationType(AMap.LOCATION_TYPE_MAP_ROTATE);
-                break;
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int code) {
+        if (code == 0 && geocodeResult != null && geocodeResult.getGeocodeAddressList() != null && geocodeResult.getGeocodeAddressList().size() > 0) {
+            List<GeocodeAddress> addressList = geocodeResult.getGeocodeAddressList();
+            GeocodeAddress geocodeAddress = addressList.get(0);
+            refreshMarker(geocodeAddress.getFormatAddress());
+        }
+    }
+
+    private void refreshMarker(String address) {
+        initMarker();
+        mMarker.setTitle(address);
+        mMarker.setPosition(new LatLng(mLatitude, mLongitude));
+        if (mMarker.isInfoWindowShown()) {
+            mMarker.hideInfoWindow();
+        }
+        mMarker.showInfoWindow();
+    }
+
+    private void initMarker() {
+        if (!mIsAddedMarker) {
+            mIsAddedMarker = true;
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(new LatLng(mLatitude, mLatitude));
+            markerOptions.draggable(true);
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+//            markerOptions.icon(BitmapDescriptorFactory.defaultMarker());
+            mMarker = mAMap.addMarker(markerOptions);
         }
     }
 }
