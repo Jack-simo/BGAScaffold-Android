@@ -11,8 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.location.AMapLocationListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,19 +19,21 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bingoogolapple.amap.R;
-import cn.bingoogolapple.amap.util.SimpleAMapLocationListener;
+import cn.bingoogolapple.amap.util.SimpleLocationManager;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
+import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 
 public class NetLocationActivity extends BaseActivity {
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 82;
     private TextView mResultTv;
-    private LocationManagerProxy mLocationManagerProxy;
+    private SimpleLocationManager mSimpleLocationManager;
 
-    private SimpleAMapLocationListener mAMapLocationListener = new SimpleAMapLocationListener() {
+    private AMapLocationListener mAMapLocationListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
-            if (aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+                Logger.i(TAG, "定位成功");
                 mResultTv.setText(aMapLocation.getAddress());
             }
         }
@@ -50,6 +51,7 @@ public class NetLocationActivity extends BaseActivity {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
+        mSimpleLocationManager = new SimpleLocationManager(this);
     }
 
     @Override
@@ -137,27 +139,19 @@ public class NetLocationActivity extends BaseActivity {
     }
 
     private void requestLocationData() {
-        mLocationManagerProxy = LocationManagerProxy.getInstance(this);
-        //此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-        //注意设置合适的定位时间的间隔，并且在合适时间调用removeUpdates()方法来取消定位请求
-        //在定位结束后，在合适的生命周期调用destroy()方法
-        //其中如果间隔时间为-1，则定位只定一次
-        //移动多少距离触发回调，只针对GPS定位有效
-        mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, 60 * 1000, 15, mAMapLocationListener);
-        mLocationManagerProxy.setGpsEnable(false);
+        mSimpleLocationManager.requestLocation(false, mAMapLocationListener);
     }
 
     @Override
     protected void onPause() {
-        stopLocation();
+        mSimpleLocationManager.stopLocation();
         super.onPause();
     }
 
-    private void stopLocation() {
-        if (mLocationManagerProxy != null) {
-            mLocationManagerProxy.removeUpdates(mAMapLocationListener);
-            mLocationManagerProxy.destroy();
-        }
-        mLocationManagerProxy = null;
+    @Override
+    protected void onDestroy() {
+        mSimpleLocationManager.onDestroy();
+        super.onDestroy();
     }
+
 }

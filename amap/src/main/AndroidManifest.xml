@@ -39,6 +39,8 @@
             android:name=".activity.MultyLocationActivity"
             android:screenOrientation="portrait" />
 
+        <service android:name="com.amap.api.location.APSService" />
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="12776c3f4fd20cfff9e2d2c46bde4e96" />

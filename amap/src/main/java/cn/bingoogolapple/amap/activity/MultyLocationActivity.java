@@ -10,8 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.amap.api.location.AMapLocation;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
@@ -34,13 +33,14 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bingoogolapple.amap.R;
-import cn.bingoogolapple.amap.util.SimpleAMapLocationListener;
+import cn.bingoogolapple.amap.util.SimpleLocationManager;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
+import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 
 public class MultyLocationActivity extends BaseActivity implements AMap.OnMapClickListener, GeocodeSearch.OnGeocodeSearchListener {
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 82;
-    private LocationManagerProxy mLocationManagerProxy;
+    private SimpleLocationManager mSimpleLocationManager;
     private AMap mAMap;
     private MapView mMapView;
     private boolean mIsAddedMarker;
@@ -50,10 +50,12 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
     private double mLatitude;
     private double mLongitude;
 
-    private SimpleAMapLocationListener mAMapLocationListener = new SimpleAMapLocationListener() {
+    private AMapLocationListener mAMapLocationListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
-            if (aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+                Logger.i(TAG, "定位成功");
+
                 mLatitude = aMapLocation.getLatitude();
                 mLongitude = aMapLocation.getLongitude();
 
@@ -75,6 +77,7 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
     @Override
     protected void processLogic(Bundle savedInstanceState) {
         mMapView.onCreate(savedInstanceState);
+        mSimpleLocationManager = new SimpleLocationManager(this);
         setUpMap();
     }
 
@@ -213,28 +216,14 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
     }
 
     private void requestLocationData() {
-        mLocationManagerProxy = LocationManagerProxy.getInstance(this);
-        //此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-        //注意设置合适的定位时间的间隔，并且在合适时间调用removeUpdates()方法来取消定位请求
-        //在定位结束后，在合适的生命周期调用destroy()方法
-        //其中如果间隔时间为-1，则定位只定一次
-        mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, -1, 15, mAMapLocationListener);
-        mLocationManagerProxy.setGpsEnable(false);
+        mSimpleLocationManager.requestLocation(false, mAMapLocationListener);
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         mMapView.onPause();
-        stopLocation();
-    }
-
-    private void stopLocation() {
-        if (mLocationManagerProxy != null) {
-            mLocationManagerProxy.removeUpdates(mAMapLocationListener);
-            mLocationManagerProxy.destroy();
-        }
-        mLocationManagerProxy = null;
+        mSimpleLocationManager.stopLocation();
+        super.onPause();
     }
 
     @Override
@@ -248,8 +237,9 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
      */
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mMapView.onDestroy();
+        mSimpleLocationManager.onDestroy();
+        super.onDestroy();
     }
 
     @Override
