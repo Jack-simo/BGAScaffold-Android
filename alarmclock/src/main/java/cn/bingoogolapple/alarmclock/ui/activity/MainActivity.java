@@ -20,14 +20,13 @@ import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListen
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
-import cn.bingoogolapple.basenote.activity.BaseActivity;
+import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.basenote.widget.Divider;
 import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
-import cn.bingoogolapple.titlebar.BGATitlebar;
 
-public class MainActivity extends BaseActivity implements BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
+public class MainActivity extends TitlebarActivity implements BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
     private static final int REQUEST_CODE_ADD = 1;
     private static final int REQUEST_CODE_VIEW = 2;
     private RecyclerView mDataRv;
@@ -37,19 +36,11 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
     @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
-        mTitlebar = getViewById(R.id.titlebar);
         mDataRv = getViewById(R.id.rv_main_data);
     }
 
     @Override
     protected void setListener() {
-        mTitlebar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
-            @Override
-            public void onClickRightCtv() {
-                forward(DetailActivity.class, REQUEST_CODE_ADD);
-            }
-        });
-
         mPlanAdapter = new PlanAdapter(mDataRv);
         mPlanAdapter.setOnItemChildClickListener(this);
         mPlanAdapter.setOnItemChildCheckedChangeListener(this);
@@ -66,11 +57,20 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
+        hiddenLeftCtv();
+        setTitle(R.string.app_name);
+        setRightDrawable(R.mipmap.add_normal);
+
         mDataRv.setLayoutManager(new LinearLayoutManager(this));
         mDataRv.addItemDecoration(new Divider(this));
         mDataRv.setAdapter(mPlanAdapter);
 
         loadPlan();
+    }
+
+    @Override
+    protected void onClickRight() {
+        forward(EditActivity.newIntent(this, null), REQUEST_CODE_ADD);
     }
 
     @Override
@@ -83,10 +83,7 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
             deletePlan(position);
         } else if (childView.getId() == R.id.rl_item_plan_container) {
             mCurrentViewPosition = position;
-            Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(DetailActivity.EXTRA_OPERATE_TYPE, DetailActivity.OPERATE_TYPE_VIEW);
-            intent.putExtra(DetailActivity.EXTRA_PLAN, mPlanAdapter.getItem(position));
-            forward(intent, REQUEST_CODE_VIEW);
+            forward(EditActivity.newIntent(this, mPlanAdapter.getItem(mCurrentViewPosition)), REQUEST_CODE_VIEW);
         }
     }
 
@@ -107,12 +104,14 @@ public class MainActivity extends BaseActivity implements BGAOnItemChildClickLis
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_ADD) {
-                Plan plan = data.getParcelableExtra(DetailActivity.EXTRA_PLAN);
-                mPlanAdapter.addFirstItem(plan);
+                mPlanAdapter.addFirstItem(EditActivity.getPlan(data));
                 mDataRv.smoothScrollToPosition(0);
             } else if (requestCode == REQUEST_CODE_VIEW) {
-                Plan plan = data.getParcelableExtra(DetailActivity.EXTRA_PLAN);
-                mPlanAdapter.setItem(mCurrentViewPosition, plan);
+                if (data == null) {
+                    mPlanAdapter.removeItem(mCurrentViewPosition);
+                } else {
+                    mPlanAdapter.setItem(mCurrentViewPosition, EditActivity.getPlan(data));
+                }
             }
         }
     }

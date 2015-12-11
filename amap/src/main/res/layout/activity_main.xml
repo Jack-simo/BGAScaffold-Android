@@ -3,20 +3,12 @@
     style="@style/MatchMatch.Vertical">
 
     <Button
-        android:id="@+id/btn_main_net_location"
+        android:id="@+id/btn_main_choose_location1"
         style="@style/MatchWrap"
         android:layout_margin="@dimen/size_level3"
-        android:gravity="center_horizontal"
-        android:text="网络定位"
-        android:textColor="@color/black_dark"
-        android:textSize="@dimen/textSize_18" />
-
-    <Button
-        android:id="@+id/btn_main_multy_location"
-        style="@style/MatchWrap"
-        android:layout_margin="@dimen/size_level3"
-        android:gravity="center_horizontal"
-        android:text="混合定位"
-        android:textColor="@color/black_dark"
+        android:background="@drawable/selector_roundrect_primary"
+        android:text="选择地址1"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
         android:textSize="@dimen/textSize_18" />
 </LinearLayout>

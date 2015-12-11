@@ -7,10 +7,10 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
-import cn.bingoogolapple.titlebar.BGATitlebar;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
@@ -22,8 +22,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     public static final int DELAY_TIME = 1000;
     protected String TAG;
     protected App mApp;
-    protected BGATitlebar mTitlebar;
     protected SweetAlertDialog mLoadingDialog;
+    protected BGAAlertController mMoreMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +171,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     public void showLoadingDialog(String msg) {
         if (mLoadingDialog == null) {
             mLoadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-            mLoadingDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.orange_pressed));
+            mLoadingDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimary));
             mLoadingDialog.setCancelable(false);
         }
         mLoadingDialog.setTitleText(msg);
@@ -187,4 +187,9 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    /**
+     * 显示底部的更多菜单
+     */
+    protected void showMoreMenu() {
+    }
 }

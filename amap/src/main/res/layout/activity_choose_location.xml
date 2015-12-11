@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.amap.api.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mv_choose_location_map"
+    style="@style/MatchMatch" />

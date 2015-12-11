@@ -7,7 +7,7 @@ import android.content.Intent;
 
 import cn.bingoogolapple.alarmclock.model.Plan;
 import cn.bingoogolapple.alarmclock.receiver.AlarmReceiver;
-import cn.bingoogolapple.alarmclock.ui.activity.DetailActivity;
+import cn.bingoogolapple.alarmclock.ui.activity.EditActivity;
 import cn.bingoogolapple.basenote.App;
 
 /**
@@ -34,7 +34,7 @@ public class AlarmUtil {
 
     public static void addAlarm(Plan plan) {
         Intent intent = new Intent(App.getInstance(), AlarmReceiver.class);
-        intent.putExtra(DetailActivity.EXTRA_PLAN, plan);
+        intent.putExtra(EditActivity.EXTRA_PLAN, plan);
         getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, plan.time, 5 * 60 * 1000, PendingIntent.getBroadcast(App.getInstance(), (int) plan.id, intent, 0));
     }
 

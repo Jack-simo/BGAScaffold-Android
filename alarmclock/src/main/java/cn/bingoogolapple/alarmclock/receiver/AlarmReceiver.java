@@ -10,7 +10,7 @@ import android.support.v7.app.NotificationCompat;
 
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.model.Plan;
-import cn.bingoogolapple.alarmclock.ui.activity.DetailActivity;
+import cn.bingoogolapple.alarmclock.ui.activity.EditActivity;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.basenote.App;
 
@@ -22,12 +22,10 @@ import cn.bingoogolapple.basenote.App;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Plan plan = intent.getParcelableExtra(DetailActivity.EXTRA_PLAN);
+        Plan plan = intent.getParcelableExtra(EditActivity.EXTRA_PLAN);
         AlarmUtil.cancelAlarm(plan);
 
-        Intent activityIntent = new Intent(context, DetailActivity.class);
-        activityIntent.putExtra(DetailActivity.EXTRA_OPERATE_TYPE, DetailActivity.OPERATE_TYPE_VIEW);
-        activityIntent.putExtra(DetailActivity.EXTRA_PLAN, plan);
+        Intent activityIntent = EditActivity.newIntent(context, plan);
         activityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

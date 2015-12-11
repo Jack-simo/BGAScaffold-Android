@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MatchMatch.Vertical">
-
-    <cn.bingoogolapple.titlebar.BGATitlebar
-        android:id="@+id/titlebar"
-        style="@style/TitleBar"
-        app:bgatitlebar_rightText="@string/add"
-        app:bgatitlebar_titleText="@string/app_name" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_main_data"
-        style="@style/MatchMatch"
-        android:scrollbars="none"
-        tools:listitem="@layout/item_plan" />
-</LinearLayout>
+    android:id="@+id/rv_main_data"
+    style="@style/MatchMatch"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    tools:listitem="@layout/item_plan" />

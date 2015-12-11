@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchMatch.Vertical">
-
-    <cn.bingoogolapple.titlebar.BGATitlebar
-        android:id="@+id/titlebar"
-        style="@style/TitleBar.Back"
-        app:bgatitlebar_rightText="@string/finish"
-        app:bgatitlebar_titleText="@string/add_plan" />
 
     <LinearLayout
         style="@style/MatchWrap.Horizontal"

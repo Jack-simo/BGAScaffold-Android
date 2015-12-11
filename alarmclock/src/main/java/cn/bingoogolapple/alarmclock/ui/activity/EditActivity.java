@@ -1,5 +1,6 @@
 package cn.bingoogolapple.alarmclock.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,19 +19,19 @@ import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.model.Plan;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
-import cn.bingoogolapple.basenote.activity.BaseActivity;
+import cn.bingoogolapple.alertcontroller.BGAAlertAction;
+import cn.bingoogolapple.alertcontroller.BGAAlertController;
+import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
-import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/10/11 上午11:57
- * 描述:
+ * 描述:查看/添加/编辑
  */
-public class DetailActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-    public static final String EXTRA_OPERATE_TYPE = "EXTRA_OPERATE_TYPE";
+public class EditActivity extends TitlebarActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     public static final String EXTRA_PLAN = "EXTRA_PLAN";
     public static final int OPERATE_TYPE_ADD = 0;
     public static final int OPERATE_TYPE_VIEW = 1;
@@ -43,49 +44,54 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
     private Calendar mUltimateCalendar;
     private Calendar mTempCalendar;
 
+    public static Intent newIntent(Context context, Plan plan) {
+        Intent intent = new Intent(context, EditActivity.class);
+        intent.putExtra(EXTRA_PLAN, plan);
+        return intent;
+    }
+
+    public static Plan getPlan(Intent intent) {
+        return intent.getParcelableExtra(EXTRA_PLAN);
+    }
+
     @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_detail);
-        mTitlebar = getViewById(R.id.titlebar);
         mTimeTv = getViewById(R.id.tv_detail_time);
         mContentEt = getViewById(R.id.et_detail_content);
     }
 
     @Override
     protected void setListener() {
-        mTitlebar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
-            @Override
-            public void onClickLeftCtv() {
-                onBackPressed();
-            }
-
-            @Override
-            public void onClickRightCtv() {
-                switch (mOperateType) {
-                    case OPERATE_TYPE_ADD:
-                        addPlan();
-                        break;
-                    case OPERATE_TYPE_VIEW:
-                        changeToEdit();
-                        break;
-                    case OPERATE_TYPE_EDIT:
-                        editPlan();
-                        break;
-                }
-            }
-        });
-
         mTimeTv.setOnClickListener(this);
     }
 
-
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mOperateType = getIntent().getIntExtra(EXTRA_OPERATE_TYPE, OPERATE_TYPE_ADD);
-
         mUltimateCalendar = CalendarUtil.getZeroSecondCalendar();
-        if (mOperateType == OPERATE_TYPE_VIEW) {
+
+        mPlan = getIntent().getParcelableExtra(EXTRA_PLAN);
+        if (mPlan == null) {
+            mOperateType = OPERATE_TYPE_ADD;
+            setTitle(R.string.add_plan);
+            setRightDrawable(R.mipmap.confirm_normal);
+        } else {
             changeToView();
+        }
+    }
+
+    @Override
+    protected void onClickRight() {
+        switch (mOperateType) {
+            case OPERATE_TYPE_ADD:
+                addPlan();
+                break;
+            case OPERATE_TYPE_VIEW:
+                showMoreMenu();
+                break;
+            case OPERATE_TYPE_EDIT:
+                editPlan();
+                break;
         }
     }
 
@@ -100,7 +106,7 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
     private void showDatePickerDialog() {
         mTempCalendar = CalendarUtil.getZeroSecondCalendar();
         DatePickerDialog dpd = DatePickerDialog.newInstance(this, mTempCalendar.get(Calendar.YEAR), mTempCalendar.get(Calendar.MONTH), mTempCalendar.get(Calendar.DAY_OF_MONTH));
-        dpd.setAccentColor(getResources().getColor(R.color.orange_pressed));
+        dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
         int thisYear = mTempCalendar.get(Calendar.YEAR);
         dpd.setYearRange(thisYear, thisYear + 5);
         dpd.show(getFragmentManager(), "DatePickerDialog");
@@ -114,7 +120,7 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
 
     private void showTimePickerDialog() {
         TimePickerDialog tpd = TimePickerDialog.newInstance(this, mTempCalendar.get(Calendar.HOUR_OF_DAY), mTempCalendar.get(Calendar.MINUTE), false);
-        tpd.setAccentColor(getResources().getColor(R.color.orange_pressed));
+        tpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
         tpd.show(getFragmentManager(), "TimePickerDialog");
     }
 
@@ -127,11 +133,11 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
     }
 
     private void changeToView() {
-        mTitlebar.setTitleText(R.string.view_plan);
-        mTitlebar.setRightText(R.string.edit);
+        mOperateType = OPERATE_TYPE_VIEW;
+        setTitle(R.string.view_plan);
+        setRightDrawable(R.mipmap.more_normal);
         mTimeTv.setEnabled(false);
         mContentEt.setEnabled(false);
-        mPlan = getIntent().getParcelableExtra(EXTRA_PLAN);
 
         mUltimateCalendar.setTimeInMillis(mPlan.time);
 
@@ -145,11 +151,68 @@ public class DetailActivity extends BaseActivity implements DatePickerDialog.OnD
 
     private void changeToEdit() {
         mOperateType = OPERATE_TYPE_EDIT;
-        mTitlebar.setTitleText(R.string.edit_plan);
-        mTitlebar.setRightText(R.string.finish);
+        setTitle(R.string.edit_plan);
+        setRightDrawable(R.mipmap.confirm_normal);
         mTimeTv.setEnabled(true);
         mContentEt.setEnabled(true);
         mContentEt.setSelection(mContentEt.getText().toString().length());
+    }
+
+    @Override
+    protected void showMoreMenu() {
+        if (mMoreMenu == null) {
+            mMoreMenu = new BGAAlertController(this, null, null, BGAAlertController.AlertControllerStyle.ActionSheet);
+            mMoreMenu.addAction(new BGAAlertAction(getString(R.string.edit), BGAAlertAction.AlertActionStyle.Default, new BGAAlertAction.Delegate() {
+                @Override
+                public void onClick() {
+                    changeToEdit();
+                }
+            }));
+            mMoreMenu.addAction(new BGAAlertAction(getString(R.string.delete), BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
+                @Override
+                public void onClick() {
+                    deletePlan();
+                }
+            }));
+            mMoreMenu.addAction(new BGAAlertAction(getString(R.string.cancel), BGAAlertAction.AlertActionStyle.Cancel, null));
+        }
+        mMoreMenu.show();
+    }
+
+    private void deletePlan() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected void onPreExecute() {
+                showLoadingDialog(R.string.loading);
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                long beginTime = System.currentTimeMillis();
+                boolean result = PlanDao.deletePlan(mPlan.id);
+                long time = System.currentTimeMillis() - beginTime;
+                if (time < DELAY_TIME) {
+                    try {
+                        Thread.sleep(DELAY_TIME - time);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                dismissLoadingDialog();
+                if (result) {
+                    AlarmUtil.cancelAlarm(mPlan);
+                    setResult(RESULT_OK);
+                    backward();
+                } else {
+                    ToastUtil.show(R.string.toast_delete_plan_failure);
+                }
+            }
+        }.execute();
     }
 
     private void addPlan() {

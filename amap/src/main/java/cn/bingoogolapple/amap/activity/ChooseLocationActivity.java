@@ -33,51 +33,40 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bingoogolapple.amap.R;
-import cn.bingoogolapple.amap.util.SimpleLocationManager;
-import cn.bingoogolapple.basenote.activity.BaseActivity;
+import cn.bingoogolapple.amap.util.LocationUtil;
+import cn.bingoogolapple.amap.util.SimpleOnCameraChangeListener;
+import cn.bingoogolapple.amap.util.SimpleOnMarkerDragListener;
+import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.ToastUtil;
+import cn.bingoogolapple.titlebar.BGATitlebar;
 
-public class MultyLocationActivity extends BaseActivity implements AMap.OnMapClickListener, GeocodeSearch.OnGeocodeSearchListener {
+public class ChooseLocationActivity extends TitlebarActivity implements AMap.OnMapClickListener, GeocodeSearch.OnGeocodeSearchListener, AMapLocationListener {
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 82;
-    private SimpleLocationManager mSimpleLocationManager;
     private AMap mAMap;
-    private MapView mMapView;
-    private boolean mIsAddedMarker;
+    private MapView mMapMv;
     private Marker mMarker;
     private GeocodeSearch mGeocoderSearch;
 
     private double mLatitude;
     private double mLongitude;
 
-    private AMapLocationListener mAMapLocationListener = new AMapLocationListener() {
-        @Override
-        public void onLocationChanged(AMapLocation aMapLocation) {
-            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
-                Logger.i(TAG, "定位成功");
-
-                mLatitude = aMapLocation.getLatitude();
-                mLongitude = aMapLocation.getLongitude();
-
-                refreshMap();
-            }
-        }
-    };
-
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_multy_location);
-        mMapView = getViewById(R.id.mapView);
+        setContentView(R.layout.activity_choose_location);
+        mMapMv = getViewById(R.id.mv_choose_location_map);
     }
 
     @Override
     protected void setListener() {
+        mTitlebar.setDelegate(new BGATitlebar.BGATitlebarDelegate());
     }
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mMapView.onCreate(savedInstanceState);
-        mSimpleLocationManager = new SimpleLocationManager(this);
+        setTitle("选择地理位置");
+
+        mMapMv.onCreate(savedInstanceState);
         setUpMap();
     }
 
@@ -86,16 +75,12 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
             return;
         }
 
-        mAMap = mMapView.getMap();
+        mAMap = mMapMv.getMap();
         mAMap.setOnMapClickListener(this);
-        mAMap.setOnMarkerDragListener(new AMap.OnMarkerDragListener() {
+        mAMap.setOnMarkerDragListener(new SimpleOnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
                 marker.hideInfoWindow();
-            }
-
-            @Override
-            public void onMarkerDrag(Marker marker) {
             }
 
             @Override
@@ -106,17 +91,13 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
                 searchAddress();
             }
         });
-        mAMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
+        mAMap.setOnCameraChangeListener(new SimpleOnCameraChangeListener() {
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
                 mLatitude = cameraPosition.target.latitude;
                 mLongitude = cameraPosition.target.longitude;
 
                 searchAddress();
-            }
-
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
             }
         });
 
@@ -128,10 +109,13 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
     public void onClick(View v) {
     }
 
+    /**
+     * 方法必须重写
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        mMapView.onResume();
+        mMapMv.onResume();
 
         if (mLatitude == 0 && mLongitude == 0) {
             requestLocationDataWrapper();
@@ -151,6 +135,9 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
         if (!addPermission(permissionsList, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             permissionsNeeded.add("ACCESS_COARSE_LOCATION");
         }
+        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            permissionsNeeded.add("WRITE_EXTERNAL_STORAGE");
+        }
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
@@ -161,12 +148,12 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
                 showMessageOKCancel(message, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(MultyLocationActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                        ActivityCompat.requestPermissions(ChooseLocationActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
                     }
                 });
                 return;
             }
-            ActivityCompat.requestPermissions(MultyLocationActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            ActivityCompat.requestPermissions(ChooseLocationActivity.this, permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
             return;
         }
         requestLocationData();
@@ -189,12 +176,13 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
                 Map<String, Integer> perms = new HashMap<>();
                 perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
 
                 for (int i = 0; i < permissions.length; i++) {
                     perms.put(permissions[i], grantResults[i]);
                 }
 
-                if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     requestLocationData();
                 } else {
                     ToastUtil.show("Some Permission is Denied");
@@ -207,7 +195,7 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(MultyLocationActivity.this)
+        new AlertDialog.Builder(ChooseLocationActivity.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
@@ -216,20 +204,23 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
     }
 
     private void requestLocationData() {
-        mSimpleLocationManager.requestLocation(false, mAMapLocationListener);
-    }
-
-    @Override
-    protected void onPause() {
-        mMapView.onPause();
-        mSimpleLocationManager.stopLocation();
-        super.onPause();
+        LocationUtil.requestLocation(true, this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
+        mMapMv.onSaveInstanceState(outState);
+    }
+
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onPause() {
+        mMapMv.onPause();
+        LocationUtil.stopLocation();
+        super.onPause();
     }
 
     /**
@@ -237,8 +228,8 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
      */
     @Override
     protected void onDestroy() {
-        mMapView.onDestroy();
-        mSimpleLocationManager.onDestroy();
+        mMapMv.onDestroy();
+        LocationUtil.onDestroy();
         super.onDestroy();
     }
 
@@ -277,6 +268,18 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
         }
     }
 
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+            Logger.i(TAG, "定位成功");
+
+            mLatitude = aMapLocation.getLatitude();
+            mLongitude = aMapLocation.getLongitude();
+
+            refreshMap();
+        }
+    }
+
     private void refreshMarker(String address) {
         initMarker();
         mMarker.setTitle(address);
@@ -288,12 +291,11 @@ public class MultyLocationActivity extends BaseActivity implements AMap.OnMapCli
     }
 
     private void initMarker() {
-        if (!mIsAddedMarker) {
-            mIsAddedMarker = true;
+        if (mMarker == null) {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(new LatLng(mLatitude, mLatitude));
             markerOptions.draggable(true);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.pin_selected));
 //            markerOptions.icon(BitmapDescriptorFactory.defaultMarker());
             mMarker = mAMap.addMarker(markerOptions);
         }

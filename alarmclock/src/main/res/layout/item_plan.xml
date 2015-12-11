@@ -12,7 +12,7 @@
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_item_plan_delete"
         style="@style/WrapMatch"
-        android:background="@drawable/selector_red"
+        android:background="@drawable/selector_rect_red"
         android:clickable="true"
         android:gravity="center"
         android:paddingLeft="@dimen/size_level5"
