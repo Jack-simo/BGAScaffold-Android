@@ -2,7 +2,6 @@ package cn.bingoogolapple.alarmclock.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -24,6 +23,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
+import cn.bingoogolapple.basenote.util.MinTimeRequestTask;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 
 /**
@@ -146,7 +146,7 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
     }
 
     private void setTimeText() {
-        mTimeTv.setText(CalendarUtil.formatDisplayTime(mUltimateCalendar.getTimeInMillis()));
+        mTimeTv.setText(CalendarUtil.formatDetailDisplayTime(mUltimateCalendar.getTimeInMillis()));
     }
 
     private void changeToEdit() {
@@ -180,25 +180,15 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
     }
 
     private void deletePlan() {
-        new AsyncTask<Void, Void, Boolean>() {
+        new MinTimeRequestTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 showLoadingDialog(R.string.loading);
             }
 
             @Override
-            protected Boolean doInBackground(Void... params) {
-                long beginTime = System.currentTimeMillis();
-                boolean result = PlanDao.deletePlan(mPlan.id);
-                long time = System.currentTimeMillis() - beginTime;
-                if (time < DELAY_TIME) {
-                    try {
-                        Thread.sleep(DELAY_TIME - time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return result;
+            protected Boolean request(Void... params) {
+                return PlanDao.deletePlan(mPlan.id);
             }
 
             @Override
@@ -224,25 +214,15 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
             mPlan.time = mUltimateCalendar.getTimeInMillis();
             mPlan.status = Plan.STATUS_NOT_HANDLE;
 
-            new AsyncTask<Void, Void, Boolean>() {
+            new MinTimeRequestTask<Void, Void, Boolean>() {
                 @Override
                 protected void onPreExecute() {
                     showLoadingDialog(R.string.loading);
                 }
 
                 @Override
-                protected Boolean doInBackground(Void... params) {
-                    long beginTime = System.currentTimeMillis();
-                    boolean result = PlanDao.insertPlan(mPlan);
-                    long time = System.currentTimeMillis() - beginTime;
-                    if (time < DELAY_TIME) {
-                        try {
-                            Thread.sleep(DELAY_TIME - time);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return result;
+                protected Boolean request(Void... params) {
+                    return PlanDao.insertPlan(mPlan);
                 }
 
                 @Override
@@ -263,25 +243,15 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
         final String content = mContentEt.getText().toString().trim();
         if (validationPlain(content)) {
             KeyboardUtil.closeKeyboard(this);
-            new AsyncTask<Void, Void, Boolean>() {
+            new MinTimeRequestTask<Void, Void, Boolean>() {
                 @Override
                 protected void onPreExecute() {
                     showLoadingDialog(R.string.loading);
                 }
 
                 @Override
-                protected Boolean doInBackground(Void... params) {
-                    long beginTime = System.currentTimeMillis();
-                    boolean result = PlanDao.updatePlan(mPlan.id, mUltimateCalendar.getTimeInMillis(), content, Plan.STATUS_NOT_HANDLE);
-                    long time = System.currentTimeMillis() - beginTime;
-                    if (time < DELAY_TIME) {
-                        try {
-                            Thread.sleep(DELAY_TIME - time);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return result;
+                protected Boolean request(Void... params) {
+                    return PlanDao.updatePlan(mPlan.id, mUltimateCalendar.getTimeInMillis(), content, Plan.STATUS_NOT_HANDLE);
                 }
 
                 @Override

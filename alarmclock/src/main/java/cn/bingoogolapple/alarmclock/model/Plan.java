@@ -22,7 +22,7 @@ public class Plan implements Parcelable {
     public String toString() {
         return "Plan{" +
                 "id=" + id +
-                ", time=" + CalendarUtil.formatDisplayTime(time) +
+                ", time=" + CalendarUtil.formatDetailDisplayTime(time) +
                 ", content='" + content + '\'' +
                 ", status=" + (status == STATUS_NOT_HANDLE ? "未处理" : "已处理") +
                 '}';

@@ -23,6 +23,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Plan plan = intent.getParcelableExtra(EditActivity.EXTRA_PLAN);
+        if (plan == null) {
+            return;
+        }
+
         AlarmUtil.cancelAlarm(plan);
 
         Intent activityIntent = EditActivity.newIntent(context, plan);

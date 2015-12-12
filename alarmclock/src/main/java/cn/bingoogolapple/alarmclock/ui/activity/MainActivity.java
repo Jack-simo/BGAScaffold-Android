@@ -1,7 +1,6 @@
 package cn.bingoogolapple.alarmclock.ui.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +21,7 @@ import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
+import cn.bingoogolapple.basenote.util.MinTimeRequestTask;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.basenote.widget.Divider;
 import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
@@ -117,25 +117,15 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
     }
 
     private void loadPlan() {
-        new AsyncTask<Void, Void, List<Plan>>() {
+        new MinTimeRequestTask<Void, Void, List<Plan>>() {
             @Override
             protected void onPreExecute() {
                 showLoadingDialog(R.string.loading);
             }
 
             @Override
-            protected List<Plan> doInBackground(Void... params) {
-                long beginTime = System.currentTimeMillis();
-                List<Plan> plans = PlanDao.queryPlan();
-                long time = System.currentTimeMillis() - beginTime;
-                if (time < DELAY_TIME) {
-                    try {
-                        Thread.sleep(DELAY_TIME - time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return plans;
+            protected List<Plan> request(Void... params) {
+                return PlanDao.queryPlan();
             }
 
             @Override
@@ -149,25 +139,15 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
     private void updatePlanStatus(final int position) {
         final Plan plan = mPlanAdapter.getItem(position);
         final int newStatus = plan.status == Plan.STATUS_ALREADY_HANDLE ? Plan.STATUS_NOT_HANDLE : Plan.STATUS_ALREADY_HANDLE;
-        new AsyncTask<Void, Void, Boolean>() {
+        new MinTimeRequestTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 showLoadingDialog(R.string.loading);
             }
 
             @Override
-            protected Boolean doInBackground(Void... params) {
-                long beginTime = System.currentTimeMillis();
-                boolean result = PlanDao.updatePlan(plan.id, plan.time, plan.content, newStatus);
-                long time = System.currentTimeMillis() - beginTime;
-                if (time < DELAY_TIME) {
-                    try {
-                        Thread.sleep(DELAY_TIME - time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return result;
+            protected Boolean request(Void... params) {
+                return PlanDao.updatePlan(plan.id, plan.time, plan.content, newStatus);
             }
 
             @Override
@@ -190,25 +170,15 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
 
     private void deletePlan(final int position) {
         final Plan plan = mPlanAdapter.getItem(position);
-        new AsyncTask<Void, Void, Boolean>() {
+        new MinTimeRequestTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 showLoadingDialog(R.string.loading);
             }
 
             @Override
-            protected Boolean doInBackground(Void... params) {
-                long beginTime = System.currentTimeMillis();
-                boolean result = PlanDao.deletePlan(plan.id);
-                long time = System.currentTimeMillis() - beginTime;
-                if (time < DELAY_TIME) {
-                    try {
-                        Thread.sleep(DELAY_TIME - time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return result;
+            protected Boolean request(Void... voids) {
+                return PlanDao.deletePlan(plan.id);
             }
 
             @Override
@@ -264,7 +234,7 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
         @Override
         protected void fillData(BGAViewHolderHelper helper, int position, Plan model) {
             helper.setText(R.id.tv_item_plan_content, model.content);
-            helper.setText(R.id.tv_item_plan_time, CalendarUtil.formatDisplayTime(model.time));
+            helper.setText(R.id.tv_item_plan_time, CalendarUtil.formatDetailDisplayTime(model.time));
 
             mIsIgnoreChange = true;
             helper.setChecked(R.id.switch_item_plan_status, model.status == Plan.STATUS_NOT_HANDLE);
