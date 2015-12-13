@@ -11,4 +11,5 @@
     <string name="toast_add_plan_failure">添加计划失败</string>
     <string name="toast_delete_plan_failure">删除计划失败</string>
     <string name="toast_update_plan_failure">修改计划失败</string>
+    <string name="tip_confirm_delete_plan">确定删除该计划吗?</string>
 </resources>

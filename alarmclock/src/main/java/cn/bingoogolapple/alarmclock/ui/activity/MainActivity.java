@@ -15,6 +15,8 @@ import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.model.Plan;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
+import cn.bingoogolapple.alertcontroller.BGAAlertAction;
+import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListener;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
@@ -32,6 +34,8 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
     private RecyclerView mDataRv;
     private PlanAdapter mPlanAdapter;
     private int mCurrentViewPosition;
+
+    private BGAAlertController mDeleteAlert;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -79,10 +83,10 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
 
     @Override
     public void onItemChildClick(ViewGroup parent, View childView, int position) {
+        mCurrentViewPosition = position;
         if (childView.getId() == R.id.tv_item_plan_delete) {
-            deletePlan(position);
+            showDeleteAlert();
         } else if (childView.getId() == R.id.rl_item_plan_container) {
-            mCurrentViewPosition = position;
             forward(EditActivity.newIntent(this, mPlanAdapter.getItem(mCurrentViewPosition)), REQUEST_CODE_VIEW);
         }
     }
@@ -114,6 +118,20 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
                 }
             }
         }
+    }
+
+    private void showDeleteAlert() {
+        if (mDeleteAlert == null) {
+            mDeleteAlert = new BGAAlertController(this, getString(R.string.tip), getString(R.string.tip_confirm_delete_plan), BGAAlertController.AlertControllerStyle.Alert);
+            mDeleteAlert.addAction(new BGAAlertAction(getString(R.string.confirm), BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
+                @Override
+                public void onClick() {
+                    deletePlan();
+                }
+            }));
+            mDeleteAlert.addAction(new BGAAlertAction(getString(R.string.cancel), BGAAlertAction.AlertActionStyle.Cancel, null));
+        }
+        mDeleteAlert.show();
     }
 
     private void loadPlan() {
@@ -160,16 +178,17 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
                     } else {
                         AlarmUtil.cancelAlarm(plan);
                     }
-                    mPlanAdapter.notifyItemChanged(position);
                 } else {
                     ToastUtil.show(R.string.toast_update_plan_failure);
                 }
+                // 不管修改成功还是修改失败都要更新下item来保证开关的状态
+                mPlanAdapter.notifyItemChanged(position);
             }
         }.execute();
     }
 
-    private void deletePlan(final int position) {
-        final Plan plan = mPlanAdapter.getItem(position);
+    private void deletePlan() {
+        final Plan plan = mPlanAdapter.getItem(mCurrentViewPosition);
         new MinTimeRequestTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
@@ -187,7 +206,7 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
                 if (result) {
                     AlarmUtil.cancelAlarm(plan);
                     mPlanAdapter.closeOpenedSwipeItemLayoutWithAnim();
-                    mPlanAdapter.removeItem(position);
+                    mPlanAdapter.removeItem(mCurrentViewPosition);
                 } else {
                     ToastUtil.show(R.string.toast_delete_plan_failure);
                 }

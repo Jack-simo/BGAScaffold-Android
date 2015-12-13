@@ -19,7 +19,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * 描述:
  */
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final int DELAY_TIME = 1000;
     protected String TAG;
     protected App mApp;
     protected SweetAlertDialog mLoadingDialog;

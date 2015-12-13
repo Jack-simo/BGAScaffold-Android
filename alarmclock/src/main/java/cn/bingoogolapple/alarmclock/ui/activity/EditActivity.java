@@ -44,6 +44,8 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
     private Calendar mUltimateCalendar;
     private Calendar mTempCalendar;
 
+    private BGAAlertController mDeleteAlert;
+
     public static Intent newIntent(Context context, Plan plan) {
         Intent intent = new Intent(context, EditActivity.class);
         intent.putExtra(EXTRA_PLAN, plan);
@@ -105,11 +107,13 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
 
     private void showDatePickerDialog() {
         mTempCalendar = CalendarUtil.getZeroSecondCalendar();
-        DatePickerDialog dpd = DatePickerDialog.newInstance(this, mTempCalendar.get(Calendar.YEAR), mTempCalendar.get(Calendar.MONTH), mTempCalendar.get(Calendar.DAY_OF_MONTH));
-        dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
-        int thisYear = mTempCalendar.get(Calendar.YEAR);
-        dpd.setYearRange(thisYear, thisYear + 5);
-        dpd.show(getFragmentManager(), "DatePickerDialog");
+        if (mUltimateCalendar.getTimeInMillis() > mTempCalendar.getTimeInMillis()) {
+            mTempCalendar.setTimeInMillis(mUltimateCalendar.getTimeInMillis());
+        }
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, mTempCalendar.get(Calendar.YEAR), mTempCalendar.get(Calendar.MONTH), mTempCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.setAccentColor(getResources().getColor(R.color.colorPrimary));
+        datePickerDialog.setMinDate(CalendarUtil.getCalendar());
+        datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
     }
 
     @Override
@@ -119,9 +123,9 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
     }
 
     private void showTimePickerDialog() {
-        TimePickerDialog tpd = TimePickerDialog.newInstance(this, mTempCalendar.get(Calendar.HOUR_OF_DAY), mTempCalendar.get(Calendar.MINUTE), false);
-        tpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
-        tpd.show(getFragmentManager(), "TimePickerDialog");
+        TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this, mTempCalendar.get(Calendar.HOUR_OF_DAY), mTempCalendar.get(Calendar.MINUTE), false);
+        timePickerDialog.setAccentColor(getResources().getColor(R.color.colorPrimary));
+        timePickerDialog.show(getFragmentManager(), "TimePickerDialog");
     }
 
     @Override
@@ -171,12 +175,26 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
             mMoreMenu.addAction(new BGAAlertAction(getString(R.string.delete), BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
                 @Override
                 public void onClick() {
-                    deletePlan();
+                    showDeleteAlert();
                 }
             }));
             mMoreMenu.addAction(new BGAAlertAction(getString(R.string.cancel), BGAAlertAction.AlertActionStyle.Cancel, null));
         }
         mMoreMenu.show();
+    }
+
+    private void showDeleteAlert() {
+        if (mDeleteAlert == null) {
+            mDeleteAlert = new BGAAlertController(this, getString(R.string.tip), getString(R.string.tip_confirm_delete_plan), BGAAlertController.AlertControllerStyle.Alert);
+            mDeleteAlert.addAction(new BGAAlertAction(getString(R.string.confirm), BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
+                @Override
+                public void onClick() {
+                    deletePlan();
+                }
+            }));
+            mDeleteAlert.addAction(new BGAAlertAction(getString(R.string.cancel), BGAAlertAction.AlertActionStyle.Cancel, null));
+        }
+        mDeleteAlert.show();
     }
 
     private void deletePlan() {
