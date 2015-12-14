@@ -122,14 +122,14 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
 
     private void showDeleteAlert() {
         if (mDeleteAlert == null) {
-            mDeleteAlert = new BGAAlertController(this, getString(R.string.tip), getString(R.string.tip_confirm_delete_plan), BGAAlertController.AlertControllerStyle.Alert);
-            mDeleteAlert.addAction(new BGAAlertAction(getString(R.string.confirm), BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
+            mDeleteAlert = new BGAAlertController(this, R.string.tip, R.string.tip_confirm_delete_plan, BGAAlertController.AlertControllerStyle.Alert);
+            mDeleteAlert.addAction(new BGAAlertAction(R.string.confirm, BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
                 @Override
                 public void onClick() {
                     deletePlan();
                 }
             }));
-            mDeleteAlert.addAction(new BGAAlertAction(getString(R.string.cancel), BGAAlertAction.AlertActionStyle.Cancel, null));
+            mDeleteAlert.addAction(new BGAAlertAction(R.string.cancel, BGAAlertAction.AlertActionStyle.Cancel, null));
         }
         mDeleteAlert.show();
     }
