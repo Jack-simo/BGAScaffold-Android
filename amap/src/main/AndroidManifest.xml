@@ -33,7 +33,11 @@
         </activity>
 
         <activity
-            android:name=".activity.ChooseLocationActivity"
+            android:name=".activity.ChooseLocationDemo1Activity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.ChooseLocationDemo2Activity"
             android:screenOrientation="portrait" />
 
         <service android:name="com.amap.api.location.APSService" />

@@ -11,6 +11,5 @@ import com.amap.api.maps.model.CameraPosition;
 public abstract class SimpleOnCameraChangeListener implements AMap.OnCameraChangeListener {
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-
     }
 }

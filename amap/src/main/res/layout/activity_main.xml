@@ -3,12 +3,12 @@
     style="@style/MatchMatch.Vertical">
 
     <Button
-        android:id="@+id/btn_main_choose_location1"
-        style="@style/MatchWrap"
-        android:layout_margin="@dimen/size_level3"
-        android:background="@drawable/selector_roundrect_primary"
-        android:text="选择地址1"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/textSize_18" />
+        android:id="@+id/btn_main_choose_location_demo1"
+        style="@style/DemoBtn"
+        android:text="选择地址1" />
+
+    <Button
+        android:id="@+id/btn_main_choose_location_demo2"
+        style="@style/DemoBtn"
+        android:text="选择地址2" />
 </LinearLayout>

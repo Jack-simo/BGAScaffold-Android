@@ -11,6 +11,5 @@ import com.amap.api.maps.model.Marker;
 public abstract class SimpleOnMarkerDragListener implements AMap.OnMarkerDragListener {
     @Override
     public void onMarkerDrag(Marker marker) {
-
     }
 }
