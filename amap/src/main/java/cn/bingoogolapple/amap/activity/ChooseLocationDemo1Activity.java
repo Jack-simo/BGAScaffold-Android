@@ -1,5 +1,6 @@
 package cn.bingoogolapple.amap.activity;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 
@@ -25,9 +26,11 @@ import cn.bingoogolapple.amap.util.SimpleOnGeocodeSearchListener;
 import cn.bingoogolapple.amap.util.SimpleOnMarkerDragListener;
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
+import cn.bingoogolapple.basenote.util.PermissionUtil;
+import cn.bingoogolapple.basenote.util.ToastUtil;
 
 public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMapLocationListener {
-    public static final int REQUEST_CODE_ASK_LOCATION_PERMISSIONS = 1;
+    public static final int REQUEST_CODE_LOCATION = 1;
     private AMap mAMap;
     private MapView mMapMv;
     private Marker mMarker;
@@ -101,6 +104,44 @@ public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMa
     public void onClick(View v) {
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        PermissionUtil.request(this, REQUEST_CODE_LOCATION, new PermissionUtil.Delegate() {
+            @Override
+            public void onPermissionGranted() {
+                LocationUtil.requestLocation(true, ChooseLocationDemo1Activity.this);
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                ToastUtil.show("Some Permission is Denied");
+            }
+        }, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_LOCATION:
+                PermissionUtil.result(permissions, grantResults, new PermissionUtil.Delegate() {
+                    @Override
+                    public void onPermissionGranted() {
+                        LocationUtil.requestLocation(true, ChooseLocationDemo1Activity.this);
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        ToastUtil.show("Some Permission is Denied");
+                    }
+                });
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     /**
      * 该方法必须重写
      */
@@ -108,33 +149,6 @@ public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMa
     protected void onResume() {
         super.onResume();
         mMapMv.onResume();
-
-        if (mLatLng == null) {
-            LocationUtil.requestLocationDataWrapper(this, REQUEST_CODE_ASK_LOCATION_PERMISSIONS, new LocationUtil.LocationPermissionDelegate() {
-                @Override
-                public void onPermissionGranted() {
-                    LocationUtil.requestLocation(true, ChooseLocationDemo1Activity.this);
-                }
-            });
-        } else {
-            refreshMap();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_ASK_LOCATION_PERMISSIONS:
-                LocationUtil.onRequestPermissionsResult(permissions, grantResults, new LocationUtil.LocationPermissionDelegate() {
-                    @Override
-                    public void onPermissionGranted() {
-                        LocationUtil.requestLocation(true, ChooseLocationDemo1Activity.this);
-                    }
-                });
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 
     /**
