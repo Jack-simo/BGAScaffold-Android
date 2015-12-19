@@ -30,7 +30,7 @@ import cn.bingoogolapple.basenote.util.PermissionUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 
 public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMapLocationListener {
-    public static final int REQUEST_CODE_LOCATION = 1;
+    private static final int REQUEST_CODE_LOCATION = 1;
     private AMap mAMap;
     private MapView mMapMv;
     private Marker mMarker;
@@ -156,8 +156,8 @@ public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMa
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         mMapMv.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     /**
