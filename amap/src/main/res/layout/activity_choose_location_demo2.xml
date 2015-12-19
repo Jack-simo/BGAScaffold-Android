@@ -12,5 +12,5 @@
         style="@style/MatchAuto"
         android:overScrollMode="never"
         android:scrollbars="none"
-        tools:listitem="@layout/item_choose_location" />
+        tools:listitem="@layout/item_title_desc" />
 </LinearLayout>
