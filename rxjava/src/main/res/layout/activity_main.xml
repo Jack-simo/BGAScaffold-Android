@@ -12,6 +12,11 @@
             android:layout_height="50dp" />
 
         <Button
+            android:id="@+id/throttleFirst"
+            style="@style/DemoBtn"
+            android:text="防止连续点击" />
+
+        <Button
             style="@style/DemoBtn"
             android:onClick="test1"
             android:text="test1" />

@@ -3,14 +3,17 @@ package cn.bingoogolapple.rxjava.ui.activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
@@ -31,7 +34,6 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends TitlebarActivity {
@@ -44,6 +46,12 @@ public class MainActivity extends TitlebarActivity {
 
     @Override
     protected void setListener() {
+        RxView.clicks(getViewById(R.id.throttleFirst)).throttleFirst(1, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                Logger.i(TAG, "点击了按钮");
+            }
+        });
     }
 
     @Override
@@ -381,13 +389,15 @@ public class MainActivity extends TitlebarActivity {
     }
 
     public void test9(View v) {
-        Observable.zip(mEngine.loadInitDatasRx(), mEngine.loadMoreDataRx(1), new Func2<List<RefreshModel>, List<RefreshModel>, List<RefreshModel>>() {
-            @Override
-            public List<RefreshModel> call(List<RefreshModel> refreshModels, List<RefreshModel> refreshModels2) {
-                refreshModels.addAll(refreshModels2);
-                return refreshModels;
-            }
-        }).subscribeOn(Schedulers.io())
+//        Observable.zip(mEngine.loadInitDatasRx(), mEngine.loadMoreDataRx(1), new Func2<List<RefreshModel>, List<RefreshModel>, List<RefreshModel>>() {
+//            @Override
+//            public List<RefreshModel> call(List<RefreshModel> refreshModels, List<RefreshModel> refreshModels2) {
+//                refreshModels.addAll(refreshModels2);
+//                return refreshModels;
+//            }
+//        })
+
+        Observable.merge(mEngine.loadInitDatasRx(), mEngine.loadMoreDataRx(1)).subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -482,6 +492,36 @@ public class MainActivity extends TitlebarActivity {
 
     private List<RefreshModel> oldMethod(int page) throws IOException {
         return mEngine.loadMoreData(page).execute().body();
+    }
+
+    private void testConcat() {
+        Observable<String> memory = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                String memoryCache = "";
+                if (memoryCache != null) {
+                    subscriber.onNext(memoryCache);
+                } else {
+                    subscriber.onCompleted();
+                }
+            }
+        });
+        Observable<String> disk = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                String cachePref = "";
+                if (!TextUtils.isEmpty(cachePref)) {
+                    subscriber.onNext(cachePref);
+                } else {
+                    subscriber.onCompleted();
+                }
+            }
+        });
+        Observable<String> network = Observable.just("network");
+        Observable.concat(memory, disk, network)
+                .first()
+                .subscribeOn(Schedulers.newThread())
+                .subscribe();
     }
 
 }
