@@ -1,7 +1,10 @@
 package cn.bingoogolapple.rxjava.ui.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -11,17 +14,24 @@ import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
+import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
 import cn.bingoogolapple.rxjava.engine.Engine;
+import cn.bingoogolapple.rxjava.model.Course;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
+import cn.bingoogolapple.rxjava.model.Student;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends TitlebarActivity {
@@ -53,6 +63,7 @@ public class MainActivity extends TitlebarActivity {
         mEngine = new Retrofit.Builder()
                 .baseUrl("http://7xk9dj.com1.z0.glb.clouddn.com/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(client)
                 .build().create(Engine.class);
     }
@@ -119,8 +130,15 @@ public class MainActivity extends TitlebarActivity {
     };
 
     public void test1(View v) {
-        // 当 Observable 被订阅的时候(包括subscribe方法不传任何参数时)，OnSubscribe 的 call() 方法会自动被调用
-
+        /**
+         * 在 RxJava 中， Observable 并不是在创建的时候就立即开始发送事件，而是在它被订阅的时候，
+         * 即当 Observable 被订阅的时候(包括subscribe方法不传任何参数时)，OnSubscribe 的 call() 方法会自动被调用
+         *
+         * subscribe() 这个方法有点怪,它看起来是『observalbe 订阅了 observer / subscriber』
+         * 而不是『observer / subscriber 订阅了 observalbe』，这看起来就像『杂志订阅了读者』一样颠倒了对象关系。
+         * 这让人读起来有点别扭，不过如果把 API 设计成 observer.subscribe(observable) / subscriber.subscribe(observable) ，
+         * 虽然更加符合思维逻辑，但对流式 API 的设计就造成影响了，比较起来明显是得不偿失的
+         */
         Logger.i(TAG, "method ThreadName:" + Thread.currentThread().getName());
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -130,9 +148,18 @@ public class MainActivity extends TitlebarActivity {
                 subscriber.onNext("RxJava");
                 subscriber.onCompleted();
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        }).subscribeOn(Schedulers.io())  // 指定 subscribe() 所发生的线程，即 Observable.OnSubscribe 被激活时所处的线程。或者叫做事件产生的线程。
+                .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 所运行在的线程。或者叫做事件消费的线程。
                 .subscribe(mObserver);
+
+
+        /**
+         * Schedulers.immediate(): 直接在当前线程运行，相当于不指定线程。这是默认的 Scheduler。
+         * Schedulers.newThread(): 总是启用新线程，并在新线程执行操作。
+         * Schedulers.io(): I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。行为模式和 newThread() 差不多，区别在于 io() 的内部实现是是用一个无数量上限的线程池，可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。不要把计算工作放在 io() 中，可以避免创建不必要的线程。
+         * Schedulers.computation(): 计算所使用的 Scheduler。这个计算指的是 CPU 密集型计算，即不会被 I/O 等操作限制性能的操作，例如图形的计算。这个 Scheduler 使用的固定的线程池，大小为 CPU 核数。不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
+         * 另外， Android 还有一个专用的 AndroidSchedulers.mainThread()，它指定的操作将在 Android 主线程运行。
+         */
     }
 
     public void test2(View v) {
@@ -154,7 +181,16 @@ public class MainActivity extends TitlebarActivity {
                 subscriber.onNext("Hello");
                 subscriber.onCompleted();
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1() {
+                    @Override
+                    public void call(Object o) {
+                        Logger.i(TAG, "doOnNext call:" + Thread.currentThread().getName());
+                    }
+                })  // doOnNext中Action1的call方法所在线程受上一个observeOn影响,否则就是第一个subscribeOn指定的线程
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
 
 //        subscribeTest2(observable);
         new Thread() {
@@ -179,17 +215,176 @@ public class MainActivity extends TitlebarActivity {
         Observable.from(words).observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(mSubscriber);
     }
 
+    public void test5(View v) {
+        // 除了 subscribe(Observer) 和 subscribe(Subscriber) ，subscribe() 还支持不完整定义的回调
+        Action1<String> onNextAction = new Action1<String>() {
+            // onNext()
+            @Override
+            public void call(String s) {
+                Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName());
+            }
+        };
+        Action1<Throwable> onErrorAction = new Action1<Throwable>() {
+            // onError()
+            @Override
+            public void call(Throwable throwable) {
+                Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName());
+            }
+        };
+        Action0 onCompletedAction = new Action0() {
+            // onCompleted()
+            @Override
+            public void call() {
+                Logger.i(TAG, "onCompleted ThreadName:" + Thread.currentThread().getName());
+            }
+        };
+        Observable observable = Observable.just("Hello", "RxJava", "RxAndroid").observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread());
+        observable.subscribe(onNextAction);
+        observable.subscribe(onNextAction, onErrorAction);
+        observable.subscribe(onNextAction, onErrorAction, onCompletedAction);
+    }
+
+    public void test6(View v) {
+        Observable.create(new Observable.OnSubscribe<Drawable>() {
+            @Override
+            public void call(Subscriber<? super Drawable> subscriber) {
+                Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+                subscriber.onNext(drawable);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Drawable>() {
+            @Override
+            public void onNext(Drawable drawable) {
+                ((ImageView) findViewById(R.id.iv_main_test)).setImageDrawable(drawable);
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.show("加载图片失败");
+            }
+        });
+    }
+
+    public void test7(View v) {
+
+    }
+
+    /**
+     * 事件对象的直接变换
+     */
+    private void map() {
+        Observable.just("").map(new Func1<String, Bitmap>() {
+            @Override
+            public Bitmap call(String s) {
+                return null;
+            }
+        }).subscribe(new Action1<Bitmap>() {
+            @Override
+            public void call(Bitmap bitmap) {
+
+            }
+        });
+    }
+
+    private void flatMap() {
+        Student[] students = null;
+        Observable.from(students).flatMap(new Func1<Student, Observable<Course>>() {
+            @Override
+            public Observable<Course> call(Student student) {
+                return Observable.from(student.courses);
+            }
+        }).subscribe(new Subscriber<Course>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(Course course) {
+            }
+        });
+
+        /**
+         Observable.just(1, 2, 3, 4) // IO 线程，由 subscribeOn() 指定
+         .subscribeOn(Schedulers.io())
+         .observeOn(Schedulers.newThread())
+         .map(mapOperator) // 新线程，由 observeOn() 指定
+         .observeOn(Schedulers.io())
+         .map(mapOperator2) // IO 线程，由 observeOn() 指定
+         .observeOn(AndroidSchedulers.mainThread)
+         .subscribe(subscriber);  // Android 主线程，由 observeOn() 指定
+
+
+         不同于 observeOn() ， subscribeOn() 的位置放在哪里都可以，但它是只能调用一次的
+         */
+    }
+
+    public void test8(View v) {
+        mEngine.loadMoreDataRx(1)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        showLoadingDialog(R.string.loading);
+                        Logger.i(TAG, "doOnSubscribe call:" + Thread.currentThread().getName());
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())  // 用于指定前面那个doOnSubscribe中Action0的call方法在UI线程执行
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<List<RefreshModel>>() {
+                    @Override
+                    public void call(List<RefreshModel> refreshModels) {
+                        Logger.i(TAG, "doOnNext call:" + Thread.currentThread().getName());
+                    }
+                }) // doOnNext中Action1的call方法所在线程受上一个observeOn影响,否则就是第一个subscribeOn指定的线程
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
+                    @Override
+                    public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
+                        Logger.i(TAG, "flatMap call:" + Thread.currentThread().getName());
+                        return Observable.from(refreshModels);
+                    }
+                }) // flatMap中Func1的call方法所在线程受上一个observeOn影响,否则就是第一个subscribeOn指定的线程
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RefreshModel>() {
+                    @Override
+                    public void onCompleted() {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载失败");
+                    }
+
+                    @Override
+                    public void onNext(RefreshModel refreshModel) {
+                        Logger.i(TAG, refreshModel.title);
+                    }
+                });
+    }
+
     public void test10(View v) {
         showLoadingDialog(R.string.loading);
         mEngine.loadMoreData(1).enqueue(new Callback<List<RefreshModel>>() {
             @Override
             public void onResponse(Response<List<RefreshModel>> response, Retrofit retrofit) {
                 dismissLoadingDialog();
-                Logger.i(TAG, response.body().toString());
+                ToastUtil.show("数据加载成功");
             }
 
             @Override
             public void onFailure(Throwable t) {
+                ToastUtil.show("数据加载失败");
             }
         });
     }

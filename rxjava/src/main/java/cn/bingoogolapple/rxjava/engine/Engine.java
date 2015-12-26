@@ -6,6 +6,7 @@ import cn.bingoogolapple.rxjava.model.RefreshModel;
 import retrofit.Call;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import rx.Observable;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -16,4 +17,7 @@ public interface Engine {
 
     @GET("refreshlayout/api/moredata{pageNumber}.json")
     Call<List<RefreshModel>> loadMoreData(@Path("pageNumber") int pageNumber);
+
+    @GET("refreshlayout/api/moredata{pageNumber}.json")
+    Observable<List<RefreshModel>> loadMoreDataRx(@Path("pageNumber") int pageNumber);
 }
