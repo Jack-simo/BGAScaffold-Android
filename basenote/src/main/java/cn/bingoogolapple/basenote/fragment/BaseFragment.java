@@ -115,4 +115,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     public void onClick(View v) {
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mApp.getRefWatcher().watch(this);
+    }
 }

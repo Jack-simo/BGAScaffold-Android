@@ -11,6 +11,7 @@ android {
         versionName VERSION_NAME
     }
 
+    // 作为library依赖时都变成release去了,这里手动都设置成true
     buildTypes {
         debug {
             buildConfigField "boolean", "IS_DEVELOP_MODE", "true"
@@ -46,4 +47,6 @@ dependencies {
     compile 'cn.pedant.sweetalert:library:1.3'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.wdullaer:materialdatetimepicker:1.5.3'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
 }

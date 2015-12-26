@@ -12,6 +12,11 @@
             android:layout_height="50dp" />
 
         <Button
+            style="@style/DemoBtn"
+            android:onClick="testLeakCanary"
+            android:text="TestLeakCanary" />
+
+        <Button
             android:id="@+id/throttleFirst"
             style="@style/DemoBtn"
             android:text="防止连续点击" />

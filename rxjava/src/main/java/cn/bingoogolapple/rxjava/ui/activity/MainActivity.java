@@ -3,6 +3,7 @@ package cn.bingoogolapple.rxjava.ui.activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -78,6 +79,15 @@ public class MainActivity extends TitlebarActivity {
 
     @Override
     public void onClick(View v) {
+    }
+
+    public void testLeakCanary(View v) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SystemClock.sleep(20000);
+            }
+        }).start();
     }
 
     /**

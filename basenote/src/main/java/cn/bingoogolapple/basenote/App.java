@@ -5,6 +5,9 @@ import android.app.Application;
 import android.app.Notification;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
+
 import java.util.LinkedList;
 
 import cn.bingoogolapple.basenote.util.ToastUtil;
@@ -20,16 +23,22 @@ public class App extends Application {
     private long mLastPressBackKeyTime;
     private LinkedList<Activity> mActivities = new LinkedList<>();
     private NotificationManagerCompat mNotificationManager;
+    private RefWatcher mRefWatcher;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
         mNotificationManager = NotificationManagerCompat.from(this);
+        mRefWatcher = LeakCanary.install(this);
     }
 
     public static App getInstance() {
         return sInstance;
+    }
+
+    public static RefWatcher getRefWatcher() {
+        return getInstance().mRefWatcher;
     }
 
     /**
