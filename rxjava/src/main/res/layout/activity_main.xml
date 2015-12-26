@@ -53,6 +53,11 @@
 
         <Button
             style="@style/DemoBtn"
+            android:onClick="test9"
+            android:text="test9" />
+
+        <Button
+            style="@style/DemoBtn"
             android:onClick="test10"
             android:text="test10" />
     </LinearLayout>

@@ -18,6 +18,10 @@ public interface Engine {
     @GET("refreshlayout/api/moredata{pageNumber}.json")
     Call<List<RefreshModel>> loadMoreData(@Path("pageNumber") int pageNumber);
 
+
+    @GET("refreshlayout/api/defaultdata.json")
+    Observable<List<RefreshModel>> loadInitDatasRx();
+
     @GET("refreshlayout/api/moredata{pageNumber}.json")
     Observable<List<RefreshModel>> loadMoreDataRx(@Path("pageNumber") int pageNumber);
 }

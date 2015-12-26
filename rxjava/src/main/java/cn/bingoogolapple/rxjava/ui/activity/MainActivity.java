@@ -20,9 +20,7 @@ import cn.bingoogolapple.rxjava.engine.Engine;
 import cn.bingoogolapple.rxjava.model.Course;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
 import cn.bingoogolapple.rxjava.model.Student;
-import retrofit.Callback;
 import retrofit.GsonConverterFactory;
-import retrofit.Response;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
@@ -31,7 +29,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends TitlebarActivity {
@@ -352,6 +352,55 @@ public class MainActivity extends TitlebarActivity {
                         return Observable.from(refreshModels);
                     }
                 }) // flatMap中Func1的call方法所在线程受上一个observeOn影响,否则就是第一个subscribeOn指定的线程
+                .filter(new Func1<RefreshModel, Boolean>() {
+                    @Override
+                    public Boolean call(RefreshModel refreshModel) {
+                        return !refreshModel.title.contains("4");
+                    }
+                }) // filter()输出和输入相同的元素，并且会过滤掉那些不满足检查条件的
+                .take(3)  // take()输出最多指定数量的结果。
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RefreshModel>() {
+                    @Override
+                    public void onCompleted() {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载失败");
+                    }
+
+                    @Override
+                    public void onNext(RefreshModel refreshModel) {
+                        Logger.i(TAG, refreshModel.title);
+                    }
+                });
+    }
+
+    public void test9(View v) {
+        Observable.zip(mEngine.loadInitDatasRx(), mEngine.loadMoreDataRx(1), new Func2<List<RefreshModel>, List<RefreshModel>, List<RefreshModel>>() {
+            @Override
+            public List<RefreshModel> call(List<RefreshModel> refreshModels, List<RefreshModel> refreshModels2) {
+                refreshModels.addAll(refreshModels2);
+                return refreshModels;
+            }
+        }).subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        showLoadingDialog(R.string.loading);
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
+                    @Override
+                    public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
+                        return Observable.from(refreshModels);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RefreshModel>() {
                     @Override
@@ -374,19 +423,65 @@ public class MainActivity extends TitlebarActivity {
     }
 
     public void test10(View v) {
-        showLoadingDialog(R.string.loading);
-        mEngine.loadMoreData(1).enqueue(new Callback<List<RefreshModel>>() {
-            @Override
-            public void onResponse(Response<List<RefreshModel>> response, Retrofit retrofit) {
-                dismissLoadingDialog();
-                ToastUtil.show("数据加载成功");
-            }
+        newMethod(1).subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        showLoadingDialog(R.string.loading);
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
+                    @Override
+                    public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
+                        return Observable.from(refreshModels);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RefreshModel>() {
+                    @Override
+                    public void onCompleted() {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载成功");
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载失败");
+                    }
+
+                    @Override
+                    public void onNext(RefreshModel refreshModel) {
+                        Logger.i(TAG, refreshModel.title);
+                    }
+                });
+    }
+
+    /**
+     * Retrofit可以返回Observable对象，但是如果你使用的别的库并不支持这样怎么办？
+     * 或者说一个内部的内码，你想把他们转换成Observable的？有什么简单的办法没？
+     * 绝大多数时候Observable.just() 和 Observable.from() 能够帮助你从遗留代码中创建 Observable 对象
+     * 如果oldMethod()足够快是没有什么问题的，但是如果很慢呢？调用oldMethod()将会阻塞住他所在的线程。
+     * <p/>
+     * 使用defer()来包装缓慢的代码
+     */
+    private Observable<List<RefreshModel>> newMethod(final int param) {
+        return Observable.defer(new Func0<Observable<List<RefreshModel>>>() {
             @Override
-            public void onFailure(Throwable t) {
-                ToastUtil.show("数据加载失败");
+            public Observable<List<RefreshModel>> call() {
+                Logger.i(TAG, "defer call:" + Thread.currentThread().getName());
+                try {
+                    return Observable.just(oldMethod(param));
+                } catch (IOException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         });
+    }
+
+    private List<RefreshModel> oldMethod(int page) throws IOException {
+        return mEngine.loadMoreData(page).execute().body();
     }
 
 }
