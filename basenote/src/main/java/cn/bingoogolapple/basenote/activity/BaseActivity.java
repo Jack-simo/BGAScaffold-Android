@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
@@ -18,7 +19,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class BaseActivity extends RxAppCompatActivity implements View.OnClickListener {
     protected String TAG;
     protected App mApp;
     protected SweetAlertDialog mLoadingDialog;

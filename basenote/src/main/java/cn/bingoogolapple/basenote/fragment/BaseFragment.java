@@ -5,25 +5,24 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.trello.rxlifecycle.components.support.RxFragment;
+
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
-import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseFragment extends Fragment implements View.OnClickListener {
+public abstract class BaseFragment extends RxFragment implements View.OnClickListener {
     protected String TAG;
     protected App mApp;
     protected View mContentView;
-    protected BGATitlebar mTitlebar;
     protected BaseActivity mActivity;
 
     @Override

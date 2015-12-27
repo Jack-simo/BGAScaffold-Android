@@ -145,6 +145,10 @@ public class MainActivity extends TitlebarActivity {
     public void onClick(View v) {
     }
 
+    public void testRxLifecycle(View v) {
+        forward(LifecycleActivity.class);
+    }
+
     public void testLeakCanary(View v) {
         new Thread(new Runnable() {
             @Override

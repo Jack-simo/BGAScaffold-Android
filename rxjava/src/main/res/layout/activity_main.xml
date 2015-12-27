@@ -38,6 +38,11 @@
 
         <Button
             style="@style/DemoBtn"
+            android:onClick="testRxLifecycle"
+            android:text="TestRxLifecycle" />
+
+        <Button
+            style="@style/DemoBtn"
             android:onClick="testLeakCanary"
             android:text="TestLeakCanary" />
 
