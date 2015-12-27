@@ -194,12 +194,12 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
     public void test3(View v) {
-        Observable.just("Hello", "RxJava", "RxAndroid").observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(mObserver);
+        Observable.just("Hello", "RxJava", "RxAndroid").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(mObserver);
     }
 
     public void test4(View v) {
         String[] words = {"Hello", "RxJava", "RxAndroid"};
-        Observable.from(words).observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(mSubscriber);
+        Observable.from(words).observeOn(Schedulers.io()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(mSubscriber);
     }
 
     public void test5(View v) {
@@ -225,10 +225,20 @@ public class HelloworldActivity extends TitlebarActivity {
                 Logger.i(TAG, "onCompleted ThreadName:" + Thread.currentThread().getName());
             }
         };
-        Observable observable = Observable.just("Hello", "RxJava", "RxAndroid").observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread());
+        Observable observable = Observable.just("Hello", "RxJava", "RxAndroid").subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
         observable.subscribe(onNextAction);
         observable.subscribe(onNextAction, onErrorAction);
         observable.subscribe(onNextAction, onErrorAction, onCompletedAction);
+
+
+        observable.subscribe(s -> {
+            Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName());
+        });
+        observable.subscribe(s -> Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName()));
+
+        observable.subscribe(s -> Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName()), throwable -> Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName()));
+
+        observable.subscribe(s -> Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName()), throwable -> Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName()), () -> Logger.i(TAG, "onCompleted ThreadName:" + Thread.currentThread().getName()));
     }
 
     public void test6(View v) {
@@ -453,7 +463,7 @@ public class HelloworldActivity extends TitlebarActivity {
      * 或者说一个内部的内码，你想把他们转换成Observable的？有什么简单的办法没？
      * 绝大多数时候Observable.just() 和 Observable.from() 能够帮助你从遗留代码中创建 Observable 对象
      * 如果oldMethod()足够快是没有什么问题的，但是如果很慢呢？调用oldMethod()将会阻塞住他所在的线程。
-     * <p/>
+     * <p>
      * 使用defer()来包装缓慢的代码
      */
     private Observable<List<RefreshModel>> newMethod(final int param) {
