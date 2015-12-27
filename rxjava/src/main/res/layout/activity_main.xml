@@ -6,35 +6,10 @@
         style="@style/MatchMatch.Vertical"
         android:paddingBottom="@dimen/size_level3">
 
-        <LinearLayout
-            style="@style/MatchWrap.Horizontal"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:id="@+id/iv_main_test"
-                style="@style/AutoWrap"
-                android:layout_height="50dp" />
-
-            <CheckBox
-                android:id="@+id/cb_main_test1"
-                style="@style/AutoWrap"
-                android:text="测试" />
-
-            <CheckBox
-                android:id="@+id/cb_main_fool1"
-                style="@style/AutoWrap"
-                android:text="fool1" />
-
-            <CheckBox
-                android:id="@+id/cb_main_fool2"
-                style="@style/AutoWrap"
-                android:text="fool2" />
-
-            <CheckBox
-                android:id="@+id/cb_main_fool3"
-                style="@style/AutoWrap"
-                android:text="fool3" />
-        </LinearLayout>
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="helloworld"
+            android:text="Helloworld" />
 
         <Button
             style="@style/DemoBtn"
@@ -43,68 +18,18 @@
 
         <Button
             style="@style/DemoBtn"
+            android:onClick="testRxBinding"
+            android:text="TestRxBinding" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="testRxPreferences"
+            android:text="TestRxPreferences" />
+
+        <Button
+            style="@style/DemoBtn"
             android:onClick="testLeakCanary"
             android:text="TestLeakCanary" />
-
-        <Button
-            android:id="@+id/throttleFirst"
-            style="@style/DemoBtn"
-            android:text="防止连续点击" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test1"
-            android:text="test1" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test2"
-            android:text="test2" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test3"
-            android:text="test3" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test4"
-            android:text="test4" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test5"
-            android:text="test5" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test6"
-            android:text="test6" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test7"
-            android:text="test7" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test8"
-            android:text="test8" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test9"
-            android:text="test9" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test10"
-            android:text="test10" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test11"
-            android:text="test11" />
 
     </LinearLayout>
 </ScrollView>

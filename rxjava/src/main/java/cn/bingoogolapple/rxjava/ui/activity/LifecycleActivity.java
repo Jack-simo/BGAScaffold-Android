@@ -11,8 +11,10 @@ import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.rxjava.R;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class LifecycleActivity extends TitlebarActivity {
 
@@ -107,5 +109,33 @@ public class LifecycleActivity extends TitlebarActivity {
     protected void onDestroy() {
         super.onDestroy();
         Logger.i(TAG, "onDestroy()");
+    }
+
+
+    private final Observable.Transformer schedulersTransformer = new Observable.Transformer() {
+        @Override
+        public Object call(Object observable) {
+            return ((Observable) observable).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        }
+    };
+
+    private <T> Observable.Transformer<T, T> applySchedulers() {
+        return (Observable.Transformer<T, T>) schedulersTransformer;
+    }
+
+    private <T> Observable.Transformer<T, T>  getCheckErrorCodeTransformer() {
+        return (Observable.Transformer<T, T>)new Observable.Transformer() {
+            @Override
+            public Object call(Object observable) {
+                return ((Observable) observable).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).doOnNext(new Action1() {
+                            @Override
+                            public void call(Object o) {
+
+                            }
+                        });
+            }
+        };
     }
 }

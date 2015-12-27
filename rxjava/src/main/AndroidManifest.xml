@@ -22,7 +22,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.LifecycleActivity" />
+        <activity
+            android:name=".ui.activity.HelloworldActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.LifecycleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.BindingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.PreferencesActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 
