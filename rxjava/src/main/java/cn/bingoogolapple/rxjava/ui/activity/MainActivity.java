@@ -1,14 +1,20 @@
 package cn.bingoogolapple.rxjava.ui.activity;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 
+import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences.RxSharedPreferences;
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -35,22 +41,53 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends TitlebarActivity {
     private Engine mEngine;
+    private CompositeSubscription mSubscriptions;
+
+    private CheckBox mFool1Cb;
+    private CheckBox mFool2Cb;
+    private CheckBox mFool3Cb;
+    private Preference<Boolean> mFooPreference;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+        mFool1Cb = getViewById(R.id.cb_main_fool1);
+        mFool2Cb = getViewById(R.id.cb_main_fool2);
+        mFool3Cb = getViewById(R.id.cb_main_fool3);
     }
 
     @Override
     protected void setListener() {
-        RxView.clicks(getViewById(R.id.throttleFirst)).throttleFirst(1, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
+        RxView
+                .clicks(getViewById(R.id.throttleFirst))
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        Logger.i(TAG, "点击了按钮");
+                    }
+                });
+
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mApp);
+        RxSharedPreferences rxPreferences = RxSharedPreferences.create(preferences);
+
+        mFooPreference = rxPreferences.getBoolean("foo");
+
+        Preference<Boolean> showWhatsNew = rxPreferences.getBoolean("show-whats-new", true);
+        RxCompoundButton
+                .checkedChanges((CheckBox) getViewById(R.id.cb_main_test1))
+                .subscribe(showWhatsNew.asAction());
+        showWhatsNew.asObservable().subscribe(new Action1<Boolean>() {
             @Override
-            public void call(Void aVoid) {
-                Logger.i(TAG, "点击了按钮");
+            public void call(Boolean aBoolean) {
+                ToastUtil.show(aBoolean ? "选中" : "取消选中");
             }
         });
     }
@@ -75,6 +112,33 @@ public class MainActivity extends TitlebarActivity {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(client)
                 .build().create(Engine.class);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSubscriptions = new CompositeSubscription();
+        bindPreference(mFool1Cb, mFooPreference);
+        bindPreference(mFool2Cb, mFooPreference);
+        bindPreference(mFool3Cb, mFooPreference);
+    }
+
+    private void bindPreference(CheckBox checkBox, Preference<Boolean> preference) {
+        // Bind the preference to the checkbox.
+        mSubscriptions.add(preference.asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(RxCompoundButton.checked(checkBox)));
+
+        // Bind the checkbox to the preference.
+        mSubscriptions.add(RxCompoundButton.checkedChanges(checkBox)
+                .skip(1)
+                .subscribe(preference.asAction()));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSubscriptions.unsubscribe();
     }
 
     @Override
@@ -494,7 +558,7 @@ public class MainActivity extends TitlebarActivity {
                 try {
                     return Observable.just(oldMethod(param));
                 } catch (IOException e) {
-                    throw new RuntimeException(e.getMessage());
+                    return Observable.error(e);
                 }
             }
         });
@@ -532,6 +596,37 @@ public class MainActivity extends TitlebarActivity {
                 .first()
                 .subscribeOn(Schedulers.newThread())
                 .subscribe();
+    }
+
+    public void test11(View v) {
+        Observable
+                .just("1", "2", "3", "3", "5", "6")
+                .map(new Func1<String, Integer>() {
+                    @Override
+                    public Integer call(String s) {
+                        return Integer.parseInt(s);
+                    }
+                })
+                .filter(new Func1<Integer, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer) {
+                        return integer > 1;
+                    }
+                })
+                .distinct()
+                .take(3)
+                .reduce(new Func2<Integer, Integer, Integer>() {
+                    @Override
+                    public Integer call(Integer integer, Integer integer2) {
+                        return integer + integer2;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        Logger.i(TAG, "和为 = " + integer);
+                    }
+                });
     }
 
 }

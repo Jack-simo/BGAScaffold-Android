@@ -6,10 +6,35 @@
         style="@style/MatchMatch.Vertical"
         android:paddingBottom="@dimen/size_level3">
 
-        <ImageView
-            android:id="@+id/iv_main_test"
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
+        <LinearLayout
+            style="@style/MatchWrap.Horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_main_test"
+                style="@style/AutoWrap"
+                android:layout_height="50dp" />
+
+            <CheckBox
+                android:id="@+id/cb_main_test1"
+                style="@style/AutoWrap"
+                android:text="测试" />
+
+            <CheckBox
+                android:id="@+id/cb_main_fool1"
+                style="@style/AutoWrap"
+                android:text="fool1" />
+
+            <CheckBox
+                android:id="@+id/cb_main_fool2"
+                style="@style/AutoWrap"
+                android:text="fool2" />
+
+            <CheckBox
+                android:id="@+id/cb_main_fool3"
+                style="@style/AutoWrap"
+                android:text="fool3" />
+        </LinearLayout>
 
         <Button
             style="@style/DemoBtn"
@@ -70,5 +95,11 @@
             style="@style/DemoBtn"
             android:onClick="test10"
             android:text="test10" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="test11"
+            android:text="test11" />
+
     </LinearLayout>
 </ScrollView>
