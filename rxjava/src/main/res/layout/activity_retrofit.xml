@@ -38,28 +38,18 @@
 
         <Button
             style="@style/DemoBtn"
-            android:onClick="test7"
-            android:text="test7" />
+            android:onClick="createPerson"
+            android:text="createPerson" />
 
         <Button
             style="@style/DemoBtn"
-            android:onClick="test8"
-            android:text="test8" />
+            android:onClick="updateAvatarByPart"
+            android:text="updateAvatarByPart" />
 
         <Button
             style="@style/DemoBtn"
-            android:onClick="test9"
-            android:text="test9" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test10"
-            android:text="test10" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="test11"
-            android:text="test11" />
+            android:onClick="updateAvatarByBody"
+            android:text="updateAvatarByBody" />
 
     </LinearLayout>
 </ScrollView>
