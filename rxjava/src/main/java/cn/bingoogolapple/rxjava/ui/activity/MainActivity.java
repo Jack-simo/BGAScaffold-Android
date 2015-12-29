@@ -44,6 +44,10 @@ public class MainActivity extends TitlebarActivity {
         forward(PreferencesActivity.class);
     }
 
+    public void testRetrofit(View v) {
+        forward(RetrofitActivity.class);
+    }
+
     public void testLeakCanary(View v) {
         new Thread(new Runnable() {
             @Override

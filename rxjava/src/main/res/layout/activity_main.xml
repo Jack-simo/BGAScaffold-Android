@@ -31,5 +31,10 @@
             android:onClick="testLeakCanary"
             android:text="TestLeakCanary" />
 
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="testRetrofit"
+            android:text="TestRetrofit" />
+
     </LinearLayout>
 </ScrollView>

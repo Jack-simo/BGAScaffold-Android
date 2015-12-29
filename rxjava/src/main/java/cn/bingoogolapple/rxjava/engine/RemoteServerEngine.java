@@ -13,7 +13,7 @@ import rx.Observable;
  * 创建时间:15/12/25 下午5:27
  * 描述:
  */
-public interface Engine {
+public interface RemoteServerEngine {
 
     @GET("refreshlayout/api/moredata{pageNumber}.json")
     Call<List<RefreshModel>> loadMoreData(@Path("pageNumber") int pageNumber);

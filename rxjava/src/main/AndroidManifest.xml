@@ -34,6 +34,9 @@
         <activity
             android:name=".ui.activity.PreferencesActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.RetrofitActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

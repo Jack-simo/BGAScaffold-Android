@@ -5,6 +5,9 @@ import android.app.Application;
 import android.app.Notification;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.orhanobut.logger.AndroidLogTool;
+import com.orhanobut.logger.LogLevel;
+import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -31,6 +34,8 @@ public class App extends Application {
         sInstance = this;
         mNotificationManager = NotificationManagerCompat.from(this);
         mRefWatcher = LeakCanary.install(this);
+
+        Logger.init().methodCount(3).hideThreadInfo().logLevel(LogLevel.FULL).methodOffset(2).logTool(new AndroidLogTool());
     }
 
     public static App getInstance() {

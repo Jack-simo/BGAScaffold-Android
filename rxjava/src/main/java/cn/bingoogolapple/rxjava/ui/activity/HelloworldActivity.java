@@ -14,7 +14,7 @@ import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
-import cn.bingoogolapple.rxjava.engine.Engine;
+import cn.bingoogolapple.rxjava.engine.RemoteServerEngine;
 import cn.bingoogolapple.rxjava.model.Course;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
 import cn.bingoogolapple.rxjava.model.Student;
@@ -33,7 +33,7 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class HelloworldActivity extends TitlebarActivity {
-    private Engine mEngine;
+    private RemoteServerEngine mRemoteServerEngine;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -48,11 +48,11 @@ public class HelloworldActivity extends TitlebarActivity {
     protected void processLogic(Bundle savedInstanceState) {
         setTitle("Helloworld");
 
-        mEngine = new Retrofit.Builder()
+        mRemoteServerEngine = new Retrofit.Builder()
                 .baseUrl("http://7xk9dj.com1.z0.glb.clouddn.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build().create(Engine.class);
+                .build().create(RemoteServerEngine.class);
     }
 
     @Override
@@ -324,7 +324,7 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
     public void test8(View v) {
-        mEngine.loadMoreDataRx(1)
+        mRemoteServerEngine.loadMoreDataRx(1)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -387,7 +387,7 @@ public class HelloworldActivity extends TitlebarActivity {
 //        })
 
 //        Observable.merge(mEngine.loadInitDatasRx(), mEngine.loadMoreDataRx(1), mEngine.loadMoreDataRx(1)).subscribeOn(Schedulers.io())
-        Observable.concat(mEngine.loadInitDatasRx(), mEngine.loadMoreDataRx(1), mEngine.loadMoreDataRx(1)).subscribeOn(Schedulers.io())
+        Observable.concat(mRemoteServerEngine.loadInitDatasRx(), mRemoteServerEngine.loadMoreDataRx(1), mRemoteServerEngine.loadMoreDataRx(1)).subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -481,7 +481,7 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
     private List<RefreshModel> oldMethod(int page) throws IOException {
-        return mEngine.loadMoreData(page).execute().body();
+        return mRemoteServerEngine.loadMoreData(page).execute().body();
     }
 
     private void testConcat() {

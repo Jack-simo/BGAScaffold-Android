@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch">
+
+    <LinearLayout
+        style="@style/MatchMatch.Vertical"
+        android:paddingBottom="@dimen/size_level3">
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="loginGet"
+            android:text="loginGet" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="loginPost"
+            android:text="loginPost" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="staticHeaders1"
+            android:text="staticHeaders1" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="staticHeaders2"
+            android:text="staticHeaders2" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="dynamicHeader1"
+            android:text="dynamicHeader1" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="dynamicHeader2"
+            android:text="dynamicHeader2" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="test7"
+            android:text="test7" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="test8"
+            android:text="test8" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="test9"
+            android:text="test9" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="test10"
+            android:text="test10" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="test11"
+            android:text="test11" />
+
+    </LinearLayout>
+</ScrollView>
