@@ -2,8 +2,11 @@ package cn.bingoogolapple.rxjava.engine;
 
 import com.squareup.okhttp.RequestBody;
 
+import java.util.List;
+
 import cn.bingoogolapple.rxjava.model.JsonResp;
 import cn.bingoogolapple.rxjava.model.Person;
+import cn.bingoogolapple.rxjava.model.RefreshModel;
 import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -14,6 +17,7 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Query;
+import retrofit.http.Url;
 import rx.Observable;
 
 /**
@@ -26,6 +30,7 @@ public interface LocalServerEngine {
     @GET("login")
     Observable<JsonResp> loginGet(@Query("username") String username, @Query("password") String password);
 
+    // 注意：@Field parameters can only be used with form encoding
     @FormUrlEncoded
     @POST("login")
     Observable<JsonResp> loginPost(@Field("username") String username, @Field("password") String password);
@@ -62,5 +67,7 @@ public interface LocalServerEngine {
     @POST("updateAvatar")
     Observable<JsonResp> updateAvatarByBody(@Body RequestBody avatar);
 
-
+    // @Path parameters may not be used with @Url
+    @GET
+    Observable<List<RefreshModel>> dynamicUrl(@Url String url);
 }

@@ -17,9 +17,9 @@ public class GlobalHeaderInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
         Request compressedRequest = originalRequest.newBuilder()
-                .header("globalHeader1", "globalHeader1Value")
+                .header("globalHeader1", "globalHeader1Value")  // overrides the respective header key with value if there is already an existing header identified by key
                 .header("globalHeader2", "globalHeader2Value")
-                .addHeader("globalHeader3", "globalHeader3Value")
+                .addHeader("globalHeader3", "globalHeader3Value") // adds the respective header key and value even if there is an existing header field with the same key
                 .addHeader("globalHeader4", "globalHeader4Value")
                 .method(originalRequest.method(), originalRequest.body())
                 .build();

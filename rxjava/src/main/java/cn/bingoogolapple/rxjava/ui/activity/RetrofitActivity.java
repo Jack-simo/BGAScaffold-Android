@@ -14,6 +14,7 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,12 +27,14 @@ import cn.bingoogolapple.rxjava.R;
 import cn.bingoogolapple.rxjava.engine.LocalServerEngine;
 import cn.bingoogolapple.rxjava.model.JsonResp;
 import cn.bingoogolapple.rxjava.model.Person;
+import cn.bingoogolapple.rxjava.model.RefreshModel;
 import cn.bingoogolapple.rxjava.util.GlobalHeaderInterceptor;
 import cn.bingoogolapple.rxjava.util.LoggingInterceptor;
 import cn.bingoogolapple.rxjava.util.ProgressRequestBody;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
+import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -75,10 +78,15 @@ public class RetrofitActivity extends TitlebarActivity {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
+
         retrofit.client().interceptors().add(new LoggingInterceptor());
 //        retrofit.client().interceptors().add(new GzipRequestInterceptor());
         retrofit.client().interceptors().add(new GlobalHeaderInterceptor());
         retrofit.client().interceptors().add(REWRITE_CACHE_CONTROL_INTERCEPTOR);
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        retrofit.client().interceptors().add(logging);
 
 
         mLocalServerEngine = retrofit.create(LocalServerEngine.class);
@@ -291,5 +299,33 @@ public class RetrofitActivity extends TitlebarActivity {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mMsgObserver);
+    }
+
+    public void dynamicUrl(View v) {
+        mLocalServerEngine.dynamicUrl("http://7xk9dj.com1.z0.glb.clouddn.com/refreshlayout/api/defaultdata.json")
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .flatMap(refreshModels -> Observable.from(refreshModels))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RefreshModel>() {
+                    @Override
+                    public void onCompleted() {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissLoadingDialog();
+                        ToastUtil.show("数据加载失败");
+                    }
+
+                    @Override
+                    public void onNext(RefreshModel refreshModel) {
+                        Logger.i(TAG, refreshModel.title);
+                    }
+                });
     }
 }

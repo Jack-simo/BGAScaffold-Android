@@ -51,5 +51,10 @@
             android:onClick="updateAvatarByBody"
             android:text="updateAvatarByBody" />
 
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="dynamicUrl"
+            android:text="dynamicUrl" />
+
     </LinearLayout>
 </ScrollView>
