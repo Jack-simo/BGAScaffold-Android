@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch.Vertical">
+
+    <Button
+        android:id="@+id/btn_obdervable_test1"
+        style="@style/DemoBtn"
+        android:text="触发点击事件" />
+
+    <Button
+        android:id="@+id/btn_obdervable_test2"
+        style="@style/DemoBtn"
+        android:text="测试传递数据" />
+
+</LinearLayout>

@@ -48,6 +48,10 @@ public class MainActivity extends TitlebarActivity {
         forward(RetrofitActivity.class);
     }
 
+    public void testRxBus(View v) {
+        forward(RxBusActivity.class);
+    }
+
     public void testLeakCanary(View v) {
         new Thread(new Runnable() {
             @Override

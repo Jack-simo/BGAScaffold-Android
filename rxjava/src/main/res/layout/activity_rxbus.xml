@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch.Vertical">
+
+    <fragment
+        android:id="@+id/observableFragment"
+        android:name="cn.bingoogolapple.rxjava.ui.fragment.ObservableFragment"
+        style="@style/MatchAuto" />
+
+    <fragment
+        android:id="@+id/observerOneFragment"
+        android:name="cn.bingoogolapple.rxjava.ui.fragment.ObserverOneFragment"
+        style="@style/MatchAuto" />
+
+    <fragment
+        android:id="@+id/observerTwoFragment"
+        android:name="cn.bingoogolapple.rxjava.ui.fragment.ObserverTwoFragment"
+        style="@style/MatchAuto" />
+
+    <fragment
+        android:id="@+id/observerThreeFragment"
+        android:name="cn.bingoogolapple.rxjava.ui.fragment.ObserverThreeFragment"
+        style="@style/MatchAuto" />
+</LinearLayout>

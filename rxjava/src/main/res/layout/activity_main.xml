@@ -9,32 +9,37 @@
         <Button
             style="@style/DemoBtn"
             android:onClick="helloworld"
-            android:text="Helloworld" />
+            android:text="helloworld" />
 
         <Button
             style="@style/DemoBtn"
             android:onClick="testRxLifecycle"
-            android:text="TestRxLifecycle" />
+            android:text="testRxLifecycle" />
 
         <Button
             style="@style/DemoBtn"
             android:onClick="testRxBinding"
-            android:text="TestRxBinding" />
+            android:text="testRxBinding" />
 
         <Button
             style="@style/DemoBtn"
             android:onClick="testRxPreferences"
-            android:text="TestRxPreferences" />
-
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="testLeakCanary"
-            android:text="TestLeakCanary" />
+            android:text="testRxPreferences" />
 
         <Button
             style="@style/DemoBtn"
             android:onClick="testRetrofit"
-            android:text="TestRetrofit" />
+            android:text="testRetrofit" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="testRxBus"
+            android:text="testRxBus" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="testLeakCanary"
+            android:text="testLeakCanary" />
 
     </LinearLayout>
 </ScrollView>
