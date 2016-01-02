@@ -52,6 +52,10 @@ public class MainActivity extends TitlebarActivity {
         forward(RxBusActivity.class);
     }
 
+    public void testOperator(View v) {
+        forward(OperatorActivity.class);
+    }
+
     public void testLeakCanary(View v) {
         new Thread(new Runnable() {
             @Override

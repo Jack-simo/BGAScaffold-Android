@@ -38,6 +38,11 @@
 
         <Button
             style="@style/DemoBtn"
+            android:onClick="testOperator"
+            android:text="testOperator" />
+
+        <Button
+            style="@style/DemoBtn"
             android:onClick="testLeakCanary"
             android:text="testLeakCanary" />
 
