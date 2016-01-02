@@ -41,5 +41,90 @@
             android:onClick="timer"
             android:text="timer" />
 
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="take"
+            android:text="take" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="takeFirst"
+            android:text="takeFirst" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="takeLast"
+            android:text="takeLast" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="takeLastBuffer"
+            android:text="takeLastBuffer" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="takeUntil"
+            android:text="takeUntil" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="takeWhile"
+            android:text="takeWhile" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="distinct"
+            android:text="distinct" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="first"
+            android:text="first" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="last"
+            android:text="last" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="skip"
+            android:text="skip" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="skipLast"
+            android:text="skipLast" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="skipWhile"
+            android:text="skipWhile" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="elementAt"
+            android:text="elementAt" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="elementAtOrDefault"
+            android:text="elementAtOrDefault" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="switchMap"
+            android:text="switchMap" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="scan"
+            android:text="scan" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="buffer"
+            android:text="buffer" />
+
     </LinearLayout>
 </ScrollView>
