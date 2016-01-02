@@ -40,8 +40,7 @@ public class ObserverOneFragment extends BaseFragment {
         super.onStart();
         RxBus.toObserverable()
                 .compose(this.bindToLifecycle())
-                .filter(o -> o instanceof ObservableFragment.TapEvent)
-                .map(o -> (ObservableFragment.TapEvent) o)
+                .ofType(ObservableFragment.TapEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     mTipTv.setVisibility(View.VISIBLE);
@@ -51,8 +50,7 @@ public class ObserverOneFragment extends BaseFragment {
 
         RxBus.toObserverable()
                 .compose(bindToLifecycle())
-                .filter(o -> o instanceof ObservableFragment.RefreshModelEvent)
-                .map(o -> (ObservableFragment.RefreshModelEvent) o)
+                .ofType(ObservableFragment.RefreshModelEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     Logger.i(TAG, event.getRefreshModel().title);

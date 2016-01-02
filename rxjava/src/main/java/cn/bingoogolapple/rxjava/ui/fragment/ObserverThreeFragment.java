@@ -43,8 +43,7 @@ public class ObserverThreeFragment extends BaseFragment {
 
         ConnectableObservable<ObservableFragment.TapEvent> tapEventEmitter = RxBus.toObserverable()
                 .compose(this.bindToLifecycle())
-                .filter(o -> o instanceof ObservableFragment.TapEvent)
-                .map(o -> (ObservableFragment.TapEvent) o)
+                .ofType(ObservableFragment.TapEvent.class)
                 .publish();
 
         tapEventEmitter
