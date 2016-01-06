@@ -3,13 +3,12 @@ package cn.bingoogolapple.rxjava.util;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okio.BufferedSink;
 
 /**

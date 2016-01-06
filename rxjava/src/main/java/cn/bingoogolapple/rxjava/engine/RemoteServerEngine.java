@@ -3,9 +3,9 @@ package cn.bingoogolapple.rxjava.engine;
 import java.util.List;
 
 import cn.bingoogolapple.rxjava.model.RefreshModel;
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.Path;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**

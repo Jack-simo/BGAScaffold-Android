@@ -9,13 +9,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -31,9 +24,16 @@ import cn.bingoogolapple.rxjava.model.RefreshModel;
 import cn.bingoogolapple.rxjava.util.GlobalHeaderInterceptor;
 import cn.bingoogolapple.rxjava.util.LoggingInterceptor;
 import cn.bingoogolapple.rxjava.util.ProgressRequestBody;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,7 +60,7 @@ public class RetrofitActivity extends TitlebarActivity {
 
     private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
         @Override
-        public Response intercept(Chain chain) throws IOException {
+        public Response intercept(Interceptor.Chain chain) throws IOException {
             Response originalResponse = chain.proceed(chain.request());
             return originalResponse.newBuilder()
                     .header("Cache-Control", "max-age=60")
@@ -72,24 +72,26 @@ public class RetrofitActivity extends TitlebarActivity {
     protected void processLogic(Bundle savedInstanceState) {
         setTitle("Retrofit学习笔记");
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.199.190:8080/netnote/retrofit/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+
+        OkHttpClient okHttpClient = new OkHttpClient
+                .Builder()
+                .addInterceptor(new LoggingInterceptor())
+//                            .addInterceptor(new GzipRequestInterceptor())
+                .addInterceptor(new GlobalHeaderInterceptor())
+//                            .addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                .addInterceptor(logging)
                 .build();
 
-
-        retrofit.client().interceptors().add(new LoggingInterceptor());
-//        retrofit.client().interceptors().add(new GzipRequestInterceptor());
-        retrofit.client().interceptors().add(new GlobalHeaderInterceptor());
-        retrofit.client().interceptors().add(REWRITE_CACHE_CONTROL_INTERCEPTOR);
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        retrofit.client().interceptors().add(logging);
-
-
-        mLocalServerEngine = retrofit.create(LocalServerEngine.class);
+        mLocalServerEngine = new Retrofit.Builder()
+                .baseUrl("http://192.168.199.190:8080/netnote/retrofit/")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build()
+                .create(LocalServerEngine.class);
     }
 
     @Override
@@ -271,7 +273,7 @@ public class RetrofitActivity extends TitlebarActivity {
 
         RequestBody avatar2 = RequestBody.create(MediaType.parse("image/*"), imageFile);
 
-        RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM)
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
                 .addFormDataPart("desc", "通过Body方式上传")
                 .addFormDataPart("avatar", imageFile.getName(), avatar1)
                 .build();
@@ -293,7 +295,7 @@ public class RetrofitActivity extends TitlebarActivity {
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe(mMsgObserver);
 
-        mLocalServerEngine.updateAvatarByPart(RequestBody.create(MultipartBuilder.FORM, imageFile), RequestBody.create(MultipartBuilder.FORM, "通过Part方式上传"))
+        mLocalServerEngine.updateAvatarByPart(RequestBody.create(MultipartBody.FORM, imageFile), RequestBody.create(MultipartBody.FORM, "通过Part方式上传"))
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
                 .subscribeOn(AndroidSchedulers.mainThread())

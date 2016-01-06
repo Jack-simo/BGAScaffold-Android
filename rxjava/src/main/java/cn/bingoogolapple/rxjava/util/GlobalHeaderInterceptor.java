@@ -1,10 +1,11 @@
 package cn.bingoogolapple.rxjava.util;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

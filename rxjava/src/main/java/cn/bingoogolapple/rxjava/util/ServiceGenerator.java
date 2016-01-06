@@ -2,21 +2,20 @@ package cn.bingoogolapple.rxjava.util;
 
 import android.util.Base64;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 
 import cn.bingoogolapple.rxjava.model.JsonResp;
 import cn.bingoogolapple.rxjava.model.Person;
-import retrofit.Converter;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Converter;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.RxJavaCallAdapterFactory;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -119,8 +118,8 @@ public class ServiceGenerator {
      * }
      * });
      */
-    public static JsonResp parseError(retrofit.Response<Person> response, Retrofit retrofit) {
-        Converter<ResponseBody, JsonResp> converter = retrofit.responseConverter(JsonResp.class, new Annotation[0]);
+    public static JsonResp parseError(retrofit2.Response<Person> response, Retrofit retrofit) {
+        Converter<ResponseBody, JsonResp> converter = retrofit.responseBodyConverter(JsonResp.class, new Annotation[0]);
 
         JsonResp error;
 

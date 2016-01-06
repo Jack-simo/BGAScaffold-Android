@@ -18,9 +18,9 @@ import cn.bingoogolapple.rxjava.engine.RemoteServerEngine;
 import cn.bingoogolapple.rxjava.model.Course;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
 import cn.bingoogolapple.rxjava.model.Student;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -52,7 +52,8 @@ public class HelloworldActivity extends TitlebarActivity {
                 .baseUrl("http://7xk9dj.com1.z0.glb.clouddn.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build().create(RemoteServerEngine.class);
+                .build()
+                .create(RemoteServerEngine.class);
     }
 
     @Override
