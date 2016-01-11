@@ -64,7 +64,7 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     }
 
     protected void setContentView(@LayoutRes int layoutResID) {
-        mContentView = LayoutInflater.from(mApp).inflate(layoutResID, null);
+        mContentView = LayoutInflater.from(getActivity()).inflate(layoutResID, null);
     }
 
     /**
