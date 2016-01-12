@@ -19,7 +19,7 @@ public class Fragment12 extends BaseMainFragment {
 
     @Override
     protected void setListener() {
-        getViewById(R.id.changetoback2).setOnClickListener(this);
+        setOnClickListener(R.id.changetoback2);
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
@@ -34,6 +35,15 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
         initView(savedInstanceState);
         setListener();
         processLogic(savedInstanceState);
+    }
+
+    /**
+     * 设置点击事件
+     *
+     * @param id 控件的id
+     */
+    protected void setOnClickListener(@IdRes int id) {
+        getViewById(id).setOnClickListener(this);
     }
 
     /**
@@ -191,5 +201,14 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
      * 显示底部的更多菜单
      */
     protected void showMoreMenu() {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -18,6 +18,8 @@ public abstract class ToolbarActivity extends BaseActivity {
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(R.layout.toolbar_viewstub);
         mToolbar = getViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ViewStub viewStub = getViewById(R.id.viewStub);
         viewStub.setLayoutResource(layoutResID);
         viewStub.inflate();
@@ -25,6 +27,6 @@ public abstract class ToolbarActivity extends BaseActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        mToolbar.setTitle(title);
+        getSupportActionBar().setTitle(title);
     }
 }

@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import cn.bingoogolapple.materialdrawer.R;
+import cn.bingoogolapple.materialdrawer.activity.TestToolbarActivity;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -21,6 +23,7 @@ public class Fragment11 extends BaseMainFragment {
 
     @Override
     protected void setListener() {
+        setOnClickListener(R.id.testToolbarActivity);
     }
 
     @Override
@@ -47,5 +50,12 @@ public class Fragment11 extends BaseMainFragment {
         super.onStart();
         mMainActivity.changeNavIconToMenu(mToolbar);
         setTitle(R.string.menu_11);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.testToolbarActivity) {
+            mActivity.forward(TestToolbarActivity.class);
+        }
     }
 }

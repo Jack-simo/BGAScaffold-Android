@@ -3,10 +3,8 @@
     style="@style/MatchMatch.Vertical"
     android:gravity="center">
 
-    <TextView
-        style="@style/MatchWrap"
-        android:gravity="center"
-        android:text="11"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/textSize_20" />
+    <Button
+        android:id="@+id/testToolbarActivity"
+        style="@style/DemoBtn"
+        android:text="测试ToolbarActivity" />
 </LinearLayout>

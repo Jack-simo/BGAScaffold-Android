@@ -68,6 +68,15 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     }
 
     /**
+     * 设置点击事件
+     *
+     * @param id 控件的id
+     */
+    protected void setOnClickListener(@IdRes int id) {
+        getViewById(id).setOnClickListener(this);
+    }
+
+    /**
      * 查找View
      *
      * @param id   控件的id

@@ -3,12 +3,8 @@
     style="@style/MatchMatch.Vertical"
     android:gravity="center">
 
-    <TextView
+    <Button
         android:id="@+id/changetoback2"
-        style="@style/MatchWrap"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="12  changetoback2"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/textSize_20" />
+        style="@style/DemoBtn"
+        android:text="changetoback2" />
 </LinearLayout>
