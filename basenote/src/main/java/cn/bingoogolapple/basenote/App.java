@@ -10,6 +10,7 @@ import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
+import com.zhy.changeskin.SkinManager;
 
 import java.util.LinkedList;
 
@@ -32,8 +33,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        mNotificationManager = NotificationManagerCompat.from(this);
+        SkinManager.getInstance().init(this);
         mRefWatcher = LeakCanary.install(this);
+        mNotificationManager = NotificationManagerCompat.from(this);
 
         Logger.init().methodCount(3).hideThreadInfo().logLevel(LogLevel.FULL).methodOffset(2).logTool(new AndroidLogTool());
     }

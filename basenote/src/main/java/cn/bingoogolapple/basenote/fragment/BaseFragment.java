@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.zhy.changeskin.SkinManager;
 
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
@@ -122,6 +123,12 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
      * @param v
      */
     public void onClick(View v) {
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SkinManager.getInstance().injectSkin(mContentView);
     }
 
     @Override

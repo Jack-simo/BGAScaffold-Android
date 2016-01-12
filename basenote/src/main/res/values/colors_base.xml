@@ -19,4 +19,10 @@
     <color name="gray_line">#dedede</color>
     <color name="list_item_pressed">#efefef</color>
     <color name="white">#ffffff</color>
+
+
+    <color name="skin_theme_background_green">@color/colorPrimary</color>
+    <color name="skin_theme_background_orange">#f46444</color>
+
+
 </resources>

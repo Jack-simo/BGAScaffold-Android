@@ -7,4 +7,14 @@
         android:id="@+id/testToolbarActivity"
         style="@style/DemoBtn"
         android:text="测试ToolbarActivity" />
+
+    <Button
+        android:id="@+id/changeToOrange"
+        style="@style/DemoBtn"
+        android:text="换成橘色" />
+
+    <TextView
+        style="@style/DemoTv"
+        android:layout_marginTop="@dimen/size_level20"
+        android:text="换肤结果文本" />
 </LinearLayout>

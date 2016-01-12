@@ -7,4 +7,14 @@
         android:id="@+id/changetoback2"
         style="@style/DemoBtn"
         android:text="changetoback2" />
+
+    <Button
+        android:id="@+id/changeToGreen"
+        style="@style/DemoBtn"
+        android:text="换成绿色" />
+
+    <TextView
+        style="@style/DemoTv"
+        android:layout_marginTop="@dimen/size_level20"
+        android:text="换肤结果文本" />
 </LinearLayout>

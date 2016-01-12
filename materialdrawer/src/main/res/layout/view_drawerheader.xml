@@ -5,7 +5,8 @@
     android:paddingBottom="@dimen/size_level2"
     android:paddingLeft="@dimen/size_level2"
     android:paddingRight="@dimen/size_level2"
-    android:paddingTop="@dimen/size_level8">
+    android:paddingTop="@dimen/size_level8"
+    android:tag="skin:skin_theme_background:background">
 
     <ImageView
         style="@style/WrapWrap"

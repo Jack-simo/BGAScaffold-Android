@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import cn.bingoogolapple.basenote.activity.ToolbarActivity;
+import cn.bingoogolapple.basenote.util.SkinUtil;
 import cn.bingoogolapple.materialdrawer.R;
 
 /**
@@ -20,6 +21,7 @@ public class TestToolbarActivity extends ToolbarActivity {
 
     @Override
     protected void setListener() {
+        setOnClickListener(R.id.toggleSkin);
     }
 
     @Override
@@ -28,12 +30,9 @@ public class TestToolbarActivity extends ToolbarActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onClick(View v) {
-
+        if (v.getId() == R.id.toggleSkin) {
+            SkinUtil.toggleSkin(this);
+        }
     }
 }

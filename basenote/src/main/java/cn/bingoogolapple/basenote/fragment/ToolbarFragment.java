@@ -31,10 +31,10 @@ public abstract class ToolbarFragment extends BaseFragment {
     }
 
     public void setTitle(CharSequence title) {
-        mToolbar.setTitle(title);
+        getActivity().setTitle(title);
     }
 
     public void setTitle(@StringRes int titleId) {
-        mToolbar.setTitle(titleId);
+        getActivity().setTitle(titleId);
     }
 }

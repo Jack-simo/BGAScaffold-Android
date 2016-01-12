@@ -8,11 +8,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+import com.zhy.changeskin.SkinManager;
 
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
+import cn.bingoogolapple.basenote.util.SkinUtil;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
@@ -32,6 +34,8 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
         TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
         mApp.addActivity(this);
+        SkinManager.getInstance().register(this);
+
         initView(savedInstanceState);
         setListener();
         processLogic(savedInstanceState);
@@ -79,12 +83,14 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
      *
      * @param v
      */
-    public abstract void onClick(View v);
+    public void onClick(View v) {
+    }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mApp.removeActivity(this);
+        SkinManager.getInstance().unregister(this);
+        super.onDestroy();
     }
 
     @Override
@@ -210,5 +216,11 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SkinUtil.initStatusbarSkin(this);
     }
 }

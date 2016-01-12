@@ -82,10 +82,6 @@ public class MainActivity extends BaseActivity implements Drawer.OnDrawerItemCli
     }
 
     @Override
-    public void onClick(View v) {
-    }
-
-    @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
         String drawerItemTag = (String) drawerItem.getTag();
         FragmentManager fragmentManager = getSupportFragmentManager();

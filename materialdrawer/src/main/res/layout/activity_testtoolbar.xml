@@ -4,9 +4,16 @@
     android:gravity="center">
 
     <TextView
-        style="@style/MatchWrap"
-        android:gravity="center"
-        android:text="测试ToolbarActivity"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/textSize_20" />
+        style="@style/DemoTv"
+        android:text="测试ToolbarActivity" />
+
+    <Button
+        android:id="@+id/toggleSkin"
+        style="@style/DemoBtn"
+        android:text="切换主题" />
+
+    <TextView
+        style="@style/DemoTv"
+        android:layout_marginTop="@dimen/size_level20"
+        android:text="换肤结果文本" />
 </LinearLayout>

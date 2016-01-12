@@ -1,3 +1,11 @@
 <resources>
 
+    <style name="DemoTv" parent="MatchWrap">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/textSize_20</item>
+        <item name="android:padding">@dimen/size_level2</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:tag">skin:skin_theme_background:background</item>
+    </style>
 </resources>
