@@ -3,6 +3,7 @@ package cn.bingoogolapple.rxjava.engine;
 import java.util.List;
 
 import cn.bingoogolapple.rxjava.model.RefreshModel;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -24,4 +25,7 @@ public interface RemoteServerEngine {
 
     @GET("refreshlayout/api/moredata{pageNumber}.json")
     Observable<List<RefreshModel>> loadMoreDataRx(@Path("pageNumber") int pageNumber);
+
+    @GET("medianote/oppo.mp4")
+    Observable<ResponseBody> download();
 }

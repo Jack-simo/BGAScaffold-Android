@@ -56,5 +56,10 @@
             android:onClick="dynamicUrl"
             android:text="dynamicUrl" />
 
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="download"
+            android:text="download" />
+
     </LinearLayout>
 </ScrollView>

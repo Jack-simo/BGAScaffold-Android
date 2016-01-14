@@ -3,7 +3,6 @@ package cn.bingoogolapple.basenote.util;
 import android.app.Activity;
 import android.os.Build;
 import android.support.annotation.ColorRes;
-import android.view.WindowManager;
 
 import com.zhy.changeskin.SkinManager;
 
@@ -53,8 +52,6 @@ public class SkinUtil {
     public static void setStatusbarSkin(Activity activity, @ColorRes int colorResId) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int color = activity.getResources().getColor(colorResId);
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             activity.getWindow().setStatusBarColor(color);
             activity.getWindow().setNavigationBarColor(color);
         }

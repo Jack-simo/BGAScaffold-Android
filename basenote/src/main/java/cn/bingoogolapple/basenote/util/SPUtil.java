@@ -16,9 +16,13 @@ public class SPUtil {
     private SPUtil() {
     }
 
-    private static synchronized SharedPreferences getPreferneces() {
+    private static SharedPreferences getPreferneces() {
         if (mSharedPreferences == null) {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+            synchronized (SPUtil.class) {
+                if (mSharedPreferences == null) {
+                    mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+                }
+            }
         }
         return mSharedPreferences;
     }

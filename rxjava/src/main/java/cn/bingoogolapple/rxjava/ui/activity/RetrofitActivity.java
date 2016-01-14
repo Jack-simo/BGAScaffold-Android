@@ -9,15 +9,20 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.trello.rxlifecycle.ActivityEvent;
+
 import java.io.File;
 import java.io.IOException;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
+import cn.bingoogolapple.basenote.util.Md5Util;
 import cn.bingoogolapple.basenote.util.PermissionUtil;
+import cn.bingoogolapple.basenote.util.StorageUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
 import cn.bingoogolapple.rxjava.engine.LocalServerEngine;
+import cn.bingoogolapple.rxjava.engine.RemoteServerEngine;
 import cn.bingoogolapple.rxjava.model.JsonResp;
 import cn.bingoogolapple.rxjava.model.Person;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
@@ -30,6 +35,7 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -37,11 +43,14 @@ import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class RetrofitActivity extends TitlebarActivity {
     private static final int REQUEST_CODE_CHOOSE_PHOTO = 1;
     private LocalServerEngine mLocalServerEngine;
+    private RemoteServerEngine mRemoteServerEngine;
 
     private enum UpdateAvatarMethod {
         Part, Body
@@ -92,6 +101,14 @@ public class RetrofitActivity extends TitlebarActivity {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
                 .create(LocalServerEngine.class);
+
+
+        mRemoteServerEngine = new Retrofit.Builder()
+                .baseUrl("http://7xk9dj.com1.z0.glb.clouddn.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build()
+                .create(RemoteServerEngine.class);
     }
 
     @Override
@@ -327,6 +344,36 @@ public class RetrofitActivity extends TitlebarActivity {
                     @Override
                     public void onNext(RefreshModel refreshModel) {
                         Logger.i(TAG, refreshModel.title);
+                    }
+                });
+    }
+
+    public void download(View v) {
+        mRemoteServerEngine.download()
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<ResponseBody, File>() {
+                    @Override
+                    public File call(ResponseBody responseBody) {
+                        File file = new File(StorageUtil.getFileDir(), Md5Util.md5("medianote/oppo.mp4") + ".mp4");
+                        StorageUtil.writeFile(file, responseBody.byteStream());
+                        return file;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<File>() {
+                    @Override
+                    public void call(File file) {
+                        dismissLoadingDialog();
+                        ToastUtil.show("下载成功");
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        dismissLoadingDialog();
+                        ToastUtil.show("下载失败" + throwable.getMessage());
                     }
                 });
     }
