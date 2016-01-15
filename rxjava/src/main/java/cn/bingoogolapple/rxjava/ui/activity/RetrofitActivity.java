@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
+import cn.bingoogolapple.basenote.engine.ApiParams;
 import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.Md5Util;
 import cn.bingoogolapple.basenote.util.PermissionUtil;
@@ -142,8 +143,26 @@ public class RetrofitActivity extends TitlebarActivity {
                 .subscribe(mMsgObserver);
     }
 
+    public void loginGetMap(View v) {
+        mLocalServerEngine.loginGetMap(new ApiParams("username", "hello").with("password", "world"))
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(mMsgObserver);
+    }
+
     public void loginPost(View v) {
         mLocalServerEngine.loginPost("hello", "world")
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(mMsgObserver);
+    }
+
+    public void loginPostMap(View v) {
+        mLocalServerEngine.loginPostMap(new ApiParams("username", "hello").with("password", "world"))
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
                 .subscribeOn(AndroidSchedulers.mainThread())

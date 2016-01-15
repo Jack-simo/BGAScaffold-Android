@@ -13,8 +13,18 @@
 
         <Button
             style="@style/DemoBtn"
+            android:onClick="loginGetMap"
+            android:text="loginGetMap" />
+
+        <Button
+            style="@style/DemoBtn"
             android:onClick="loginPost"
             android:text="loginPost" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="loginPostMap"
+            android:text="loginPostMap" />
 
         <Button
             style="@style/DemoBtn"

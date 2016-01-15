@@ -2,6 +2,7 @@ package cn.bingoogolapple.rxjava.engine;
 
 
 import java.util.List;
+import java.util.Map;
 
 import cn.bingoogolapple.rxjava.model.JsonResp;
 import cn.bingoogolapple.rxjava.model.Person;
@@ -9,6 +10,7 @@ import cn.bingoogolapple.rxjava.model.RefreshModel;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -17,6 +19,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -30,10 +33,17 @@ public interface LocalServerEngine {
     @GET("login")
     Observable<JsonResp> loginGet(@Query("username") String username, @Query("password") String password);
 
+    @GET("login")
+    Observable<JsonResp> loginGetMap(@QueryMap Map<String, Object> apiParams);
+
     // 注意：@Field parameters can only be used with form encoding
     @FormUrlEncoded
     @POST("login")
     Observable<JsonResp> loginPost(@Field("username") String username, @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("login")
+    Observable<JsonResp> loginPostMap(@FieldMap Map<String, Object> apiParams);
 
 
     @Headers("headerParam1: headerParam1Value")
