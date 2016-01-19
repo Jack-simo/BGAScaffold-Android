@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch.Vertical">
+
+    <ListView
+        android:id="@+id/lv_main_content"
+        style="@style/MatchAuto"
+        android:background="@color/black_light_trans"
+        android:divider="@null"
+        android:dividerHeight="@dimen/size_level2" />
+
+    <FrameLayout style="@style/MatchWrap">
+
+        <cn.bingoogolapple.recorder.ui.widget.AudioRecorderButton
+            android:id="@+id/arb_main_recorder"
+            style="@style/MatchWrap"
+            android:layout_marginBottom="@dimen/size_level1"
+            android:layout_marginLeft="@dimen/size_level10"
+            android:layout_marginRight="@dimen/size_level10"
+            android:layout_marginTop="@dimen/size_level1"
+            android:background="@drawable/shape_btn_recorder_normal"
+            android:gravity="center"
+            android:minHeight="0dp"
+            android:padding="@dimen/size_level1"
+            android:text="@string/arb_status_normal"
+            android:textColor="@color/black_middle"
+            android:textSize="@dimen/textSize_18" />
+
+        <View style="@style/HLine" />
+    </FrameLayout>
+</LinearLayout>

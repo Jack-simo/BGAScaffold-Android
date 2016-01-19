@@ -119,6 +119,14 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
+    <style name="HLine" parent="MatchOne">
+        <item name="android:background">@color/gray_line</item>
+    </style>
+
+    <style name="VLine" parent="OneMatch">
+        <item name="android:background">@color/gray_line</item>
+    </style>
+
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--colorPrimaryDark对应状态栏的颜色-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
