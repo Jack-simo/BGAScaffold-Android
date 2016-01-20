@@ -8,9 +8,11 @@ import java.io.IOException;
 
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -24,13 +26,15 @@ public class LoggingInterceptor implements Interceptor {
         Request request = chain.request();
 
         long startTime = System.nanoTime();
-        Logger.i(String.format("Sending request %s on %s%n%s%n%s", request.url(), chain.connection(), request.headers(), getRequestBody(request)));
+        Logger.i(String.format("发送 %s on %s%n%s%n%s", request.url(), chain.connection(), request.headers(), getRequestBody(request)));
 
         Response response = chain.proceed(request);
 
-        Logger.i(String.format("Received response for %s in %.1fms%n%s", response.request().url(), (System.nanoTime() - startTime) / 1e6d, response.headers()));
+        MediaType contentType = response.body().contentType();
+        String content = response.body().string();
+        Logger.i(String.format("接收 %s in %.1fms%n%s%n%s", response.request().url(), (System.nanoTime() - startTime) / 1e6d, response.headers(), content));
 
-        return response;
+        return response.newBuilder().body(ResponseBody.create(contentType, content)).build();
     }
 
     @NonNull
