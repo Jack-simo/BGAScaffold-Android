@@ -7,6 +7,7 @@ import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.recorder.R;
+import cn.bingoogolapple.recorder.ui.widget.AudioRecorderButton;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -17,15 +18,16 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 public class MainActivity extends TitlebarActivity implements EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_PERMISSIONS = 1;
+    private AudioRecorderButton mRecorderBtn;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+        mRecorderBtn = getViewById(R.id.arb_main_recorder);
     }
 
     @Override
     protected void setListener() {
-
     }
 
     @Override

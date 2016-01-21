@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/WrapWrap.Vertical"
+    android:background="@mipmap/dialog_loading_bg"
+    android:gravity="center_horizontal"
+    android:padding="@dimen/size_level4">
+
+    <LinearLayout style="@style/WrapWrap.Horizontal">
+
+        <ImageView
+            android:id="@+id/iv_audio_recorder_icon"
+            style="@style/WrapWrap"
+            android:src="@mipmap/recorder" />
+
+        <ImageView
+            android:id="@+id/iv_audio_recorder_voice"
+            style="@style/WrapWrap"
+            android:src="@mipmap/v1" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_audio_recorder_tip"
+        style="@style/WrapWrap"
+        android:layout_marginTop="@dimen/size_level1"
+        android:text="@string/dialog_status_up_cancel"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_14" />
+</LinearLayout>

@@ -1,18 +1,19 @@
 package cn.bingoogolapple.recorder.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.Button;
 
 import cn.bingoogolapple.recorder.R;
+import cn.bingoogolapple.recorder.ui.dialog.AudioRecorderDialog;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/1/20 上午1:01
  * 描述:
  */
-public class AudioRecorderButton extends Button {
+public class AudioRecorderButton extends AppCompatButton {
     private static final int STATE_NORMAL = 1;
     private static final int STATE_RECORDING = 2;
     private static final int STATE_WANT_CANCEL = 3;
@@ -22,11 +23,12 @@ public class AudioRecorderButton extends Button {
 
     private int mDistanceYCancel;
 
-    private Delegate mDelegate;
+    private AudioRecorderDialog mRecorderDialog;
 
     public AudioRecorderButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDistanceYCancel = context.getResources().getDimensionPixelOffset(R.dimen.size_level10);
+        mRecorderDialog = new AudioRecorderDialog(context);
     }
 
     @Override
@@ -35,8 +37,8 @@ public class AudioRecorderButton extends Button {
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                changeState(STATE_RECORDING);
                 mIsRecording = true;
+                changeState(STATE_RECORDING);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mIsRecording) {
@@ -49,9 +51,9 @@ public class AudioRecorderButton extends Button {
                 break;
             case MotionEvent.ACTION_UP:
                 if (mCurrentState == STATE_RECORDING) {
-
+                    mRecorderDialog.dismiss();
                 } else if (mCurrentState == STATE_WANT_CANCEL) {
-
+                    mRecorderDialog.dismiss();
                 }
                 reset();
                 break;
@@ -70,11 +72,14 @@ public class AudioRecorderButton extends Button {
                 case STATE_RECORDING:
                     setBackgroundResource(R.drawable.shape_btn_recorder_recording);
                     setText(R.string.arb_status_recording);
-
+                    if (mIsRecording) {
+                        mRecorderDialog.changeToRecording();
+                    }
                     break;
                 case STATE_WANT_CANCEL:
                     setBackgroundResource(R.drawable.shape_btn_recorder_recording);
                     setText(R.string.arb_status_want_cancel);
+                    mRecorderDialog.changeToWantCancel();
                     break;
             }
         }
@@ -92,13 +97,5 @@ public class AudioRecorderButton extends Button {
     private void reset() {
         mIsRecording = false;
         changeState(STATE_NORMAL);
-    }
-
-    public void setDelegate(Delegate delegate) {
-        mDelegate = delegate;
-    }
-
-    public interface Delegate {
-
     }
 }
