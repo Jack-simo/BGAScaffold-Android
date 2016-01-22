@@ -133,10 +133,26 @@ public class HelloworldActivity extends TitlebarActivity {
             public void call(Subscriber<? super String> subscriber) {
                 Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
                 subscriber.onNext("Hello");
+                subscriber.onNext("World1");
+                subscriber.onNext("World2");
+//                subscriber.onError(new Throwable("测试错误"));
                 subscriber.onNext("RxJava");
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io())  // 指定 subscribe() 所发生的线程，即 Observable.OnSubscribe 被激活时所处的线程。或者叫做事件产生的线程。
+                .doOnNext(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        Logger.i(TAG, "doOnNext ThreadName:" + Thread.currentThread().getName());
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Logger.i(TAG, "doOnError ThreadName:" + Thread.currentThread().getName());
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 所运行在的线程。或者叫做事件消费的线程。
                 .subscribe(mObserver);
 
