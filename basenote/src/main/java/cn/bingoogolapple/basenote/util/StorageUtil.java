@@ -20,6 +20,7 @@ public class StorageUtil {
     public static final String DIR_FILE = DIR_ROOT + File.separator + "file";
     public static final String DIR_IMAGE = DIR_ROOT + File.separator + "image";
     public static final String DIR_CACHE = DIR_ROOT + File.separator + "cache";
+    public static final String DIR_AUDIO = DIR_ROOT + File.separator + "audio";
 
     /**
      * 判断外存储是否可写
@@ -100,6 +101,24 @@ public class StorageUtil {
             throw new RuntimeException("外部存储不可写");
         }
         return cacheDir;
+    }
+
+    /**
+     * 获取当前app音频文件存储目录
+     *
+     * @return
+     */
+    public static File getAudioDir() {
+        File audioDir = null;
+        if (isExternalStorageWritable()) {
+            audioDir = new File(Environment.getExternalStorageDirectory() + File.separator + DIR_AUDIO);
+            if (!audioDir.exists()) {
+                audioDir.mkdirs();
+            }
+        } else {
+            throw new RuntimeException("外部存储不可写");
+        }
+        return audioDir;
     }
 
     /**
