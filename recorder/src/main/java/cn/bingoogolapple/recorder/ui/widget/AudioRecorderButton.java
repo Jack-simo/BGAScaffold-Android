@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 
 import cn.bingoogolapple.recorder.R;
 import cn.bingoogolapple.recorder.ui.dialog.AudioRecorderDialog;
-import cn.bingoogolapple.recorder.ui.util.AudioRecorderManager;
+import cn.bingoogolapple.recorder.util.AudioRecorderManager;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -167,6 +167,6 @@ public class AudioRecorderButton extends AppCompatButton implements AudioRecorde
     }
 
     public interface Delegate {
-        void onAudioRecorderFinish(float seconds, String filePath);
+        void onAudioRecorderFinish(float time, String filePath);
     }
 }

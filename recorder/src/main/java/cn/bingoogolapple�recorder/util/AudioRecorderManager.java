@@ -1,4 +1,4 @@
-package cn.bingoogolapple.recorder.ui.util;
+package cn.bingoogolapple.recorder.util;
 
 import android.media.MediaRecorder;
 
