@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchMatch">
+
+    <GridView
+        android:id="@+id/gv_main_content"
+        style="@style/MatchMatch"
+        android:cacheColorHint="@android:color/transparent"
+        android:horizontalSpacing="@dimen/size_level1"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="@dimen/size_level1" />
+
+    <RelativeLayout
+        android:id="@+id/rl_main_dir"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_level10"
+        android:layout_alignParentBottom="true"
+        android:background="#ee000000"
+        android:clickable="true"
+        android:clipChildren="true">
+
+        <TextView
+            android:id="@+id/tv_main_dirname"
+            style="@style/WrapWrap"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/size_level2"
+            android:textColor="@android:color/white"
+            tools:text="所有图片" />
+
+        <TextView
+            android:id="@+id/tv_main_dircount"
+            style="@style/WrapWrap"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/size_level2"
+            android:textColor="@android:color/white"
+            tools:text="100张" />
+    </RelativeLayout>
+</RelativeLayout>

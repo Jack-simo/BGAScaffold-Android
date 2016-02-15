@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <ImageView
+        android:id="@+id/iv_item_img_icon"
+        style="@style/MatchMatch"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/pictures_no" />
+
+    <ImageButton
+        android:id="@+id/ib_item_img_select"
+        style="@style/WrapWrap"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/size_level1"
+        android:layout_marginTop="@dimen/size_level1"
+        android:background="@null"
+        android:clickable="false"
+        android:src="@mipmap/picture_unselected" />
+</RelativeLayout>

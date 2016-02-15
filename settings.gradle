@@ -1,1 +1,1 @@
-include ':basenote', ':alarmclock', ':amap', ':rxjava', ':materialdrawer', ':recorder'
+include ':basenote', ':alarmclock', ':amap', ':rxjava', ':materialdrawer', ':recorder', ':photopicker'
