@@ -129,9 +129,10 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
     }
 
     @Override
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         mTempCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         mTempCalendar.set(Calendar.MINUTE, minute);
+        mTempCalendar.set(Calendar.SECOND, second);
         mUltimateCalendar.setTimeInMillis(mTempCalendar.getTimeInMillis());
         setTimeText();
     }
