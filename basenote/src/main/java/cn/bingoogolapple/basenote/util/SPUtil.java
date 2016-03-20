@@ -28,11 +28,11 @@ public class SPUtil {
     }
 
     public static void clear() {
-        getPreferneces().edit().clear().commit();
+        getPreferneces().edit().clear().apply();
     }
 
     public static void putString(String key, String value) {
-        getPreferneces().edit().putString(key, value).commit();
+        getPreferneces().edit().putString(key, value).apply();
     }
 
     public static String getString(String key) {
@@ -40,7 +40,7 @@ public class SPUtil {
     }
 
     public static void putInt(String key, int value) {
-        getPreferneces().edit().putInt(key, value).commit();
+        getPreferneces().edit().putInt(key, value).apply();
     }
 
     public static int getInt(String key) {
@@ -48,11 +48,11 @@ public class SPUtil {
     }
 
     public static void putBoolean(String key, Boolean value) {
-        getPreferneces().edit().putBoolean(key, value).commit();
+        getPreferneces().edit().putBoolean(key, value).apply();
     }
 
     public static void putLong(String key, long value) {
-        getPreferneces().edit().putLong(key, value).commit();
+        getPreferneces().edit().putLong(key, value).apply();
     }
 
     public static long getLong(String key) {
@@ -64,7 +64,7 @@ public class SPUtil {
     }
 
     public static void remove(String key) {
-        getPreferneces().edit().remove(key).commit();
+        getPreferneces().edit().remove(key).apply();
     }
 
     public static boolean hasKey(String key) {

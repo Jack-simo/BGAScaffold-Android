@@ -138,7 +138,7 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
 
         public RecorderAdapter(Context context) {
             super(context, R.layout.item_recorder);
-            int screenWidth = UIUtil.getScreenWidth(context);
+            int screenWidth = UIUtil.getScreenWidth();
             mMaxItemWidth = (int) (screenWidth * 0.7f);
             mMinItemWidth = (int) (screenWidth * 0.15f);
         }
