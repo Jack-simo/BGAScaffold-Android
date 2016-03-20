@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
-import com.zhy.changeskin.SkinManager;
 
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
@@ -33,8 +32,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
-        mApp.addActivity(this);
-        SkinManager.getInstance().register(this);
 
         initView(savedInstanceState);
         setListener();
@@ -84,13 +81,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
      * @param v
      */
     public void onClick(View v) {
-    }
-
-    @Override
-    protected void onDestroy() {
-        mApp.removeActivity(this);
-        SkinManager.getInstance().unregister(this);
-        super.onDestroy();
     }
 
     @Override

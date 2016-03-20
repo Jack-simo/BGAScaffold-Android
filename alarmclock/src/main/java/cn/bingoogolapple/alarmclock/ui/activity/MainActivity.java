@@ -100,7 +100,7 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
 
     @Override
     public void onBackPressed() {
-        mApp.exitWithDoubleClick();
+        mApp.getAppManager().exitWithDoubleClick();
     }
 
     @Override
@@ -216,7 +216,7 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
 
     private final class PlanAdapter extends BGARecyclerViewAdapter<Plan> {
         /**
-         * 当前处于打开状态的item
+         * 当前 于打开状态的item
          */
         private List<BGASwipeItemLayout> mOpenedSil = new ArrayList<>();
         private boolean mIsIgnoreChange = false;

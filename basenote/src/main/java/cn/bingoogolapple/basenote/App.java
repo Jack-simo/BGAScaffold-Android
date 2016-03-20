@@ -3,6 +3,7 @@ package cn.bingoogolapple.basenote;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
+import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.orhanobut.logger.AndroidLogTool;
@@ -12,9 +13,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.zhy.changeskin.SkinManager;
 
-import java.util.LinkedList;
-
-import cn.bingoogolapple.basenote.util.ToastUtil;
+import cn.bingoogolapple.basenote.util.AppManager;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -24,10 +23,9 @@ import cn.bingoogolapple.basenote.util.ToastUtil;
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
     private static App sInstance;
-    private long mLastPressBackKeyTime;
-    private LinkedList<Activity> mActivities = new LinkedList<>();
     private NotificationManagerCompat mNotificationManager;
     private RefWatcher mRefWatcher;
+    private AppManager mAppManager;
 
     @Override
     public void onCreate() {
@@ -37,6 +35,8 @@ public class App extends Application {
         mRefWatcher = LeakCanary.install(this);
         mNotificationManager = NotificationManagerCompat.from(this);
 
+        initAppManager();
+
         Logger.init().methodCount(3).hideThreadInfo().logLevel(LogLevel.FULL).methodOffset(2).logTool(new AndroidLogTool());
     }
 
@@ -44,59 +44,39 @@ public class App extends Application {
         return sInstance;
     }
 
-    public static RefWatcher getRefWatcher() {
-        return getInstance().mRefWatcher;
+    public RefWatcher getRefWatcher() {
+        return mRefWatcher;
     }
 
-    /**
-     * 获取当前版本名称
-     *
-     * @return
-     */
-    public String getCurrentVersionName() {
-        try {
-            return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (Exception e) {
-            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
-            return null;
-        }
+    public AppManager getAppManager() {
+        return mAppManager;
     }
 
-
-    public void addActivity(Activity activity) {
-        mActivities.add(activity);
-    }
-
-    public void removeActivity(Activity activity) {
-        mActivities.remove(activity);
-    }
-
-    /**
-     * 双击后完全退出应用程序
-     */
-    public void exitWithDoubleClick() {
-        if (System.currentTimeMillis() - mLastPressBackKeyTime <= 1500) {
-            exit();
-        } else {
-            mLastPressBackKeyTime = System.currentTimeMillis();
-            ToastUtil.show(R.string.toast_exit_tip);
-        }
-    }
-
-    /**
-     * 退出应用程序
-     */
-    public void exit() {
-        Activity activity;
-        while (mActivities.size() != 0) {
-            activity = mActivities.poll();
-            if (!activity.isFinishing()) {
-                activity.finish();
+    private void initAppManager() {
+        mAppManager = new AppManager(new AppManager.Delegate() {
+            @Override
+            public void onEnterFrontStage() {
+                Logger.i(TAG, "进入前台状态");
             }
-        }
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.gc();
-        System.exit(0);
+
+            @Override
+            public void onEnterBackStage() {
+                Logger.i(TAG, "进入后台状态");
+            }
+        }) {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                super.onActivityCreated(activity, savedInstanceState);
+                SkinManager.getInstance().register(activity);
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                super.onActivityDestroyed(activity);
+                SkinManager.getInstance().unregister(activity);
+            }
+        };
+        registerActivityLifecycleCallbacks(mAppManager);
     }
 
     public void addNotification(int id, Notification notification) {
