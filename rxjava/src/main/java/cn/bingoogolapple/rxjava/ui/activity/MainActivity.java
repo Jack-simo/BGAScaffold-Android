@@ -5,6 +5,8 @@ import android.os.SystemClock;
 import android.view.View;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
+import cn.bingoogolapple.basenote.util.NetworkChangeReceiver;
+import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
 
 public class MainActivity extends TitlebarActivity {
@@ -22,6 +24,8 @@ public class MainActivity extends TitlebarActivity {
     protected void processLogic(Bundle savedInstanceState) {
         hiddenLeftCtv();
         setTitle("RxJava学习笔记");
+
+        mNetworkChangeReceiver.register(this);
     }
 
     @Override
@@ -64,4 +68,24 @@ public class MainActivity extends TitlebarActivity {
             }
         }).start();
     }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mNetworkChangeReceiver);
+        mNetworkChangeReceiver = null;
+
+        super.onDestroy();
+    }
+
+    private NetworkChangeReceiver mNetworkChangeReceiver = new NetworkChangeReceiver(new NetworkChangeReceiver.Callback() {
+        @Override
+        public void onNetworkConnected() {
+            ToastUtil.show("成功接入网络");
+        }
+
+        @Override
+        public void onNetworkDisconnected() {
+            ToastUtil.show("网络连接断开");
+        }
+    });
 }
