@@ -2,7 +2,10 @@ package cn.bingoogolapple.basenote.util;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
+
+import com.zhy.changeskin.SkinManager;
 
 import java.util.Stack;
 
@@ -15,18 +18,41 @@ import cn.bingoogolapple.basenote.R;
  * 描述:
  */
 public class AppManager implements Application.ActivityLifecycleCallbacks {
+    private static AppManager sInstance;
     private int mActivityStartedCount = 0;
     private long mLastPressBackKeyTime;
     private Stack<Activity> mActivityStack = new Stack<>();
     private Delegate mDelegate;
+    private Context mContext;
 
-    public AppManager(Delegate delegate) {
+    private AppManager() {
+    }
+
+    public static final AppManager getInstance() {
+        if (sInstance == null) {
+            synchronized (AppManager.class) {
+                if (sInstance == null) {
+                    sInstance = new AppManager();
+                }
+            }
+        }
+        return sInstance;
+    }
+
+    public AppManager init(Context context) {
+        mContext = context.getApplicationContext();
+        return this;
+    }
+
+    public void setDelegate(Delegate delegate) {
         mDelegate = delegate;
     }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         mActivityStack.add(activity);
+
+        SkinManager.getInstance().register(activity);
     }
 
     @Override
@@ -60,6 +86,8 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityDestroyed(Activity activity) {
         mActivityStack.remove(activity);
+
+        SkinManager.getInstance().unregister(activity);
     }
 
     public Activity currentActivity() {
@@ -103,7 +131,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
             }
             popOneActivity(activity);
         }
-        System.gc();
     }
 
     /**

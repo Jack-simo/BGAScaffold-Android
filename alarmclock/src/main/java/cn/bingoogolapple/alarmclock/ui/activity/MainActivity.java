@@ -22,6 +22,7 @@ import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
+import cn.bingoogolapple.basenote.util.AppManager;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.MinTimeRequestTask;
 import cn.bingoogolapple.basenote.util.ToastUtil;
@@ -100,7 +101,7 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
 
     @Override
     public void onBackPressed() {
-        mApp.getAppManager().exitWithDoubleClick();
+        AppManager.getInstance().exitWithDoubleClick();
     }
 
     @Override

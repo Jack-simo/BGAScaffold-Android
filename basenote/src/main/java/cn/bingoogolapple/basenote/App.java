@@ -1,9 +1,7 @@
 package cn.bingoogolapple.basenote;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
-import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.orhanobut.logger.AndroidLogTool;
@@ -14,6 +12,7 @@ import com.squareup.leakcanary.RefWatcher;
 import com.zhy.changeskin.SkinManager;
 
 import cn.bingoogolapple.basenote.util.AppManager;
+import cn.bingoogolapple.basenote.util.CrashHandler;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -25,17 +24,18 @@ public class App extends Application {
     private static App sInstance;
     private NotificationManagerCompat mNotificationManager;
     private RefWatcher mRefWatcher;
-    private AppManager mAppManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        SkinManager.getInstance().init(this);
-        mRefWatcher = LeakCanary.install(this);
-        mNotificationManager = NotificationManagerCompat.from(this);
 
+        mRefWatcher = LeakCanary.install(this);
+        SkinManager.getInstance().init(this);
         initAppManager();
+        CrashHandler.getInstance().init(this);
+
+        mNotificationManager = NotificationManagerCompat.from(this);
 
         Logger.init().methodCount(3).hideThreadInfo().logLevel(LogLevel.FULL).methodOffset(2).logTool(new AndroidLogTool());
     }
@@ -48,12 +48,8 @@ public class App extends Application {
         return mRefWatcher;
     }
 
-    public AppManager getAppManager() {
-        return mAppManager;
-    }
-
     private void initAppManager() {
-        mAppManager = new AppManager(new AppManager.Delegate() {
+        AppManager.getInstance().init(this).setDelegate(new AppManager.Delegate() {
             @Override
             public void onEnterFrontStage() {
                 Logger.i(TAG, "进入前台状态");
@@ -63,20 +59,8 @@ public class App extends Application {
             public void onEnterBackStage() {
                 Logger.i(TAG, "进入后台状态");
             }
-        }) {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                super.onActivityCreated(activity, savedInstanceState);
-                SkinManager.getInstance().register(activity);
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-                super.onActivityDestroyed(activity);
-                SkinManager.getInstance().unregister(activity);
-            }
-        };
-        registerActivityLifecycleCallbacks(mAppManager);
+        });
+        registerActivityLifecycleCallbacks(AppManager.getInstance());
     }
 
     public void addNotification(int id, Notification notification) {
