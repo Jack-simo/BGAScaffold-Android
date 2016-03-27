@@ -3,9 +3,12 @@ package cn.bingoogolapple.basenote.util;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
-import android.widget.Toast;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.lang.reflect.Field;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -61,7 +64,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             public void run() {
                 // 除了主线程，其他线程默认情况下是没有开启looper消息处理的
                 Looper.prepare();
-                Toast.makeText(mContext, "系统出现未知异常，即将退出...", Toast.LENGTH_SHORT).show();
+                ToastUtil.show("系统出现未知异常，即将退出...");
                 Looper.loop();
             }
         }.start();
@@ -79,9 +82,39 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
 
     private void collectionException(Throwable ex) {
-        String deviceInfo = Build.DEVICE + Build.VERSION.SDK_INT + Build.MODEL + Build.PRODUCT;
-        String errorInfo = ex.getMessage();
+        Logger.e(TAG, "【deviceInfo】\n" + getDeviceInfo() + "【errorInfo】\n" + getErrorInfo(ex));
+    }
 
-        Logger.e(TAG, "deviceInfo -- " + deviceInfo + "  errorInfo -- " + errorInfo);
+    private String getErrorInfo(Throwable ex) {
+        Writer writer = new StringWriter();
+        PrintWriter printWriter = null;
+        try {
+            printWriter = new PrintWriter(writer);
+            ex.printStackTrace(printWriter);
+        } catch (Exception e) {
+            Logger.e(TAG, e.getMessage());
+        } finally {
+            if (printWriter != null) {
+                printWriter.close();
+            }
+        }
+        return writer.toString();
+    }
+
+    private String getDeviceInfo() {
+        StringBuffer sb = new StringBuffer();
+        // 通过反射获取系统的硬件信息
+        try {
+            Field[] fields = Build.class.getDeclaredFields();
+            for (Field field : fields) {
+                // 暴力反射 ,获取私有的信息
+                field.setAccessible(true);
+                sb.append(field.getName() + "=" + field.get(null).toString());
+                sb.append("\n");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, e.getMessage());
+        }
+        return sb.toString();
     }
 }

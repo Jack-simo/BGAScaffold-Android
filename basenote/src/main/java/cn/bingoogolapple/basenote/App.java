@@ -4,15 +4,10 @@ import android.app.Application;
 import android.app.Notification;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.orhanobut.logger.AndroidLogTool;
-import com.orhanobut.logger.LogLevel;
-import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
-import com.zhy.changeskin.SkinManager;
 
 import cn.bingoogolapple.basenote.util.AppManager;
-import cn.bingoogolapple.basenote.util.CrashHandler;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -30,14 +25,10 @@ public class App extends Application {
         super.onCreate();
         sInstance = this;
 
+        registerActivityLifecycleCallbacks(AppManager.getInstance().init(this));
+
         mRefWatcher = LeakCanary.install(this);
-        SkinManager.getInstance().init(this);
-        initAppManager();
-        CrashHandler.getInstance().init(this);
-
         mNotificationManager = NotificationManagerCompat.from(this);
-
-        Logger.init().methodCount(3).hideThreadInfo().logLevel(LogLevel.FULL).methodOffset(2).logTool(new AndroidLogTool());
     }
 
     public static App getInstance() {
@@ -46,21 +37,6 @@ public class App extends Application {
 
     public RefWatcher getRefWatcher() {
         return mRefWatcher;
-    }
-
-    private void initAppManager() {
-        AppManager.getInstance().init(this).setDelegate(new AppManager.Delegate() {
-            @Override
-            public void onEnterFrontStage() {
-                Logger.i(TAG, "进入前台状态");
-            }
-
-            @Override
-            public void onEnterBackStage() {
-                Logger.i(TAG, "进入后台状态");
-            }
-        });
-        registerActivityLifecycleCallbacks(AppManager.getInstance());
     }
 
     public void addNotification(int id, Notification notification) {

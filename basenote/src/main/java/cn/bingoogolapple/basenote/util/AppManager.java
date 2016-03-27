@@ -9,7 +9,6 @@ import com.zhy.changeskin.SkinManager;
 
 import java.util.Stack;
 
-import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 
 /**
@@ -18,11 +17,11 @@ import cn.bingoogolapple.basenote.R;
  * 描述:
  */
 public class AppManager implements Application.ActivityLifecycleCallbacks {
+    private static final String TAG = AppManager.class.getSimpleName();
     private static AppManager sInstance;
     private int mActivityStartedCount = 0;
     private long mLastPressBackKeyTime;
     private Stack<Activity> mActivityStack = new Stack<>();
-    private Delegate mDelegate;
     private Context mContext;
 
     private AppManager() {
@@ -41,11 +40,11 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
 
     public AppManager init(Context context) {
         mContext = context.getApplicationContext();
-        return this;
-    }
 
-    public void setDelegate(Delegate delegate) {
-        mDelegate = delegate;
+        SkinManager.getInstance().init(mContext);
+        CrashHandler.getInstance().init(mContext);
+
+        return this;
     }
 
     @Override
@@ -57,8 +56,8 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStarted(Activity activity) {
-        if (mActivityStartedCount == 0 && mDelegate != null) {
-            mDelegate.onEnterFrontStage();
+        if (mActivityStartedCount == 0) {
+            onEnterFrontStage();
         }
         mActivityStartedCount++;
     }
@@ -74,8 +73,8 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStopped(Activity activity) {
         mActivityStartedCount--;
-        if (mActivityStartedCount == 0 && mDelegate != null) {
-            mDelegate.onEnterBackStage();
+        if (mActivityStartedCount == 0) {
+            onEnterBackStage();
         }
     }
 
@@ -140,16 +139,32 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      */
     public String getCurrentVersionName() {
         try {
-            return App.getInstance().getPackageManager().getPackageInfo(App.getInstance().getPackageName(), 0).versionName;
+            return mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName;
         } catch (Exception e) {
             // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
             return null;
         }
     }
 
-    public interface Delegate {
-        void onEnterFrontStage();
+    /**
+     * 获取当前版本号
+     *
+     * @return
+     */
+    public int getCurrentVersionCode() {
+        try {
+            return mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionCode;
+        } catch (Exception e) {
+            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
+            return 0;
+        }
+    }
 
-        void onEnterBackStage();
+    private void onEnterFrontStage() {
+        Logger.i(TAG, "进入前台状态");
+    }
+
+    private void onEnterBackStage() {
+        Logger.i(TAG, "进入后台状态");
     }
 }
