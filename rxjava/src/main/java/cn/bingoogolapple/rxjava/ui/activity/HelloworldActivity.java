@@ -12,6 +12,8 @@ import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
+import cn.bingoogolapple.basenote.util.NetResultFunc;
+import cn.bingoogolapple.basenote.util.SimpleSubscriber;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
 import cn.bingoogolapple.rxjava.engine.RemoteServerEngine;
@@ -558,6 +560,19 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void call(Integer integer) {
                         Logger.i(TAG, "和为 = " + integer);
+                    }
+                });
+    }
+
+    public void testNetResult() {
+        mRemoteServerEngine.testNetResult1()
+                .subscribeOn(Schedulers.io())
+                .map(new NetResultFunc<List<RefreshModel>>())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleSubscriber<List<RefreshModel>>() {
+                    @Override
+                    public void onNext(List<RefreshModel> refreshModels) {
+
                     }
                 });
     }

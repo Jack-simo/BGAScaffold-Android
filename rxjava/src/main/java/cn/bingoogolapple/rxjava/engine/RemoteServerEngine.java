@@ -2,6 +2,7 @@ package cn.bingoogolapple.rxjava.engine;
 
 import java.util.List;
 
+import cn.bingoogolapple.basenote.util.NetResult;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -28,4 +29,7 @@ public interface RemoteServerEngine {
 
     @GET("medianote/oppo.mp4")
     Observable<ResponseBody> download();
+
+
+    Observable<NetResult<List<RefreshModel>>> testNetResult1();
 }
