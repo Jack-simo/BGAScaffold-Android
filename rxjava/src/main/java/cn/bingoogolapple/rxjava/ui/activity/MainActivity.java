@@ -71,10 +71,13 @@ public class MainActivity extends TitlebarActivity {
 
     @Override
     protected void onDestroy() {
+        unregisterNetworkChangeReceiver();
+        super.onDestroy();
+    }
+
+    private void unregisterNetworkChangeReceiver() {
         unregisterReceiver(mNetworkChangeReceiver);
         mNetworkChangeReceiver = null;
-
-        super.onDestroy();
     }
 
     private NetworkChangeReceiver mNetworkChangeReceiver = new NetworkChangeReceiver(new NetworkChangeReceiver.Callback() {
