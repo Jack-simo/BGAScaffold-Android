@@ -13,7 +13,6 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
-import cn.bingoogolapple.basenote.util.SkinUtil;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
@@ -206,11 +205,5 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        SkinUtil.initStatusbarSkin(this);
     }
 }

@@ -26,16 +26,16 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     protected View mContentView;
     protected BaseActivity mActivity;
 
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (BaseActivity) activity;
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
-    }
-
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = (BaseActivity) activity;
     }
 
     @Override

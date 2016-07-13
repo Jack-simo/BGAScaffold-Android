@@ -60,7 +60,6 @@ public class MainActivity extends BaseActivity implements Drawer.OnDrawerItemCli
                 .withSavedInstance(savedInstanceState)
                 .build();
         mDrawer.setSelection(R.string.menu_11);
-        mDrawer.keyboardSupportEnabled(this, true);
         mHeaderDescTv = (TextView) mDrawer.getHeader().findViewById(R.id.tv_drawerheader_desc);
     }
 
