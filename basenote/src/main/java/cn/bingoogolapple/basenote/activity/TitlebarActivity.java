@@ -5,6 +5,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
 import android.view.ViewStub;
+import android.widget.RelativeLayout;
 
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.titlebar.BGATitlebar;
@@ -19,7 +20,15 @@ public abstract class TitlebarActivity extends BaseActivity {
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        super.setContentView(R.layout.activity_titlebar);
+        initViewStubContentView(layoutResID, true);
+    }
+
+    public void setNoLinearContentView(@LayoutRes int layoutResID) {
+        initViewStubContentView(layoutResID, false);
+    }
+
+    private void initViewStubContentView(@LayoutRes int layoutResID, boolean isLinear) {
+        super.setContentView(R.layout.titlebar_viewstub);
         mTitlebar = getViewById(R.id.titlebar);
         setLeftDrawable(R.mipmap.back_normal);
         mTitlebar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
@@ -40,6 +49,10 @@ public abstract class TitlebarActivity extends BaseActivity {
         });
 
         ViewStub viewStub = getViewById(R.id.viewStub);
+        if (isLinear) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewStub.getLayoutParams();
+            lp.addRule(RelativeLayout.BELOW, R.id.titlebar);
+        }
         viewStub.setLayoutResource(layoutResID);
         viewStub.inflate();
     }

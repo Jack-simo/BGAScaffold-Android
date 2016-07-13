@@ -3,7 +3,8 @@ package cn.bingoogolapple.basenote.fragment;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
-import android.view.ViewStub;
+import android.support.v7.widget.ViewStubCompat;
+import android.widget.RelativeLayout;
 
 import cn.bingoogolapple.basenote.R;
 
@@ -16,10 +17,25 @@ public abstract class ToolbarFragment extends BaseFragment {
     protected Toolbar mToolbar;
 
     @Override
-    protected void setContentView(@LayoutRes int layoutResID) {
+    public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(R.layout.toolbar_viewstub);
         mToolbar = getViewById(R.id.toolbar);
-        ViewStub viewStub = getViewById(R.id.viewStub);
+
+        ViewStubCompat viewStub = getViewById(R.id.viewStub);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewStub.getLayoutParams();
+        lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
+
+        viewStub.setLayoutResource(layoutResID);
+        viewStub.inflate();
+
+        setHasOptionsMenu(true);
+    }
+
+    public void setNoLinearContentView(@LayoutRes int layoutResID) {
+        super.setContentView(R.layout.toolbar_viewstub);
+        mToolbar = getViewById(R.id.toolbar);
+
+        ViewStubCompat viewStub = getViewById(R.id.viewStub);
         viewStub.setLayoutResource(layoutResID);
         viewStub.inflate();
 
