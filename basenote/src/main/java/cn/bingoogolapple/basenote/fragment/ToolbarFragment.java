@@ -18,24 +18,22 @@ public abstract class ToolbarFragment extends BaseFragment {
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        super.setContentView(R.layout.toolbar_viewstub);
-        mToolbar = getViewById(R.id.toolbar);
-
-        ViewStubCompat viewStub = getViewById(R.id.viewStub);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewStub.getLayoutParams();
-        lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
-
-        viewStub.setLayoutResource(layoutResID);
-        viewStub.inflate();
-
-        setHasOptionsMenu(true);
+        initViewStubContentView(layoutResID, true);
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
+        initViewStubContentView(layoutResID, false);
+    }
+
+    private void initViewStubContentView(@LayoutRes int layoutResID, boolean isLinear) {
         super.setContentView(R.layout.toolbar_viewstub);
         mToolbar = getViewById(R.id.toolbar);
 
         ViewStubCompat viewStub = getViewById(R.id.viewStub);
+        if (isLinear) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewStub.getLayoutParams();
+            lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
+        }
         viewStub.setLayoutResource(layoutResID);
         viewStub.inflate();
 
