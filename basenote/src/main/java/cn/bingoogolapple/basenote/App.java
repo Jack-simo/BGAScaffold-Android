@@ -2,6 +2,8 @@ package cn.bingoogolapple.basenote;
 
 import android.app.Application;
 import android.app.Notification;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.squareup.leakcanary.LeakCanary;
@@ -45,5 +47,11 @@ public class App extends Application {
 
     public void removeNotification(int id) {
         mNotificationManager.cancel(id);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }

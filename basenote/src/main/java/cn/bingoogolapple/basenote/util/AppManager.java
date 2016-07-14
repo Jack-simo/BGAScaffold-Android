@@ -3,6 +3,8 @@ package cn.bingoogolapple.basenote.util;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.zhy.changeskin.SkinManager;
@@ -144,7 +146,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
             return mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName;
         } catch (Exception e) {
             // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
-            return null;
+            return "";
         }
     }
 
@@ -159,6 +161,20 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         } catch (Exception e) {
             // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
             return 0;
+        }
+    }
+
+    /**
+     * 获取渠道号
+     *
+     * @return
+     */
+    private String getChannel() {
+        try {
+            ApplicationInfo appInfo = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(), PackageManager.GET_META_DATA);
+            return appInfo.metaData.getString("UMENG_CHANNEL");
+        } catch (Exception e) {
+            return "";
         }
     }
 

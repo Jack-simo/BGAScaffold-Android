@@ -197,7 +197,7 @@ public class ImageLoader {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
 
-        options.inSampleSize = caculateInSampleSize(options, width, height);
+        options.inSampleSize = calculateInSampleSize(options, width, height);
 
         // 使用获取到的inSampleSize值在此解析图片
         options.inJustDecodeBounds = false;
@@ -212,7 +212,7 @@ public class ImageLoader {
      * @param reqHeight
      * @return
      */
-    private int caculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         int inSampleSize = 1;
         //图片的原始宽高
         final int originWidth = options.outWidth;
