@@ -15,6 +15,11 @@ import cn.bingoogolapple.materialdrawer.R;
 public class TestToolbarActivity extends ToolbarActivity {
 
     @Override
+    protected boolean isSupportSwipeBack() {
+        return true;
+    }
+
+    @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_testtoolbar);
     }

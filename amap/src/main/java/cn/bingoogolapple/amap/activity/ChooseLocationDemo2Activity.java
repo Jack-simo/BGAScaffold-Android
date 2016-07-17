@@ -51,6 +51,11 @@ public class ChooseLocationDemo2Activity extends TitlebarActivity implements AMa
     private PoiItem mCurrentPoiItem;
 
     @Override
+    protected boolean isSupportSwipeBack() {
+        return true;
+    }
+
+    @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_choose_location_demo2);
         mMapMv = getViewById(R.id.mv_choose_location_demo2_map);

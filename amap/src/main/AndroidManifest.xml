@@ -34,11 +34,13 @@
 
         <activity
             android:name=".activity.ChooseLocationDemo1Activity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent" />
 
         <activity
             android:name=".activity.ChooseLocationDemo2Activity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent" />
 
         <service android:name="com.amap.api.location.APSService" />
 

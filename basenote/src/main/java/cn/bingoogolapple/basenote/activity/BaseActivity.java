@@ -13,6 +13,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
+import cn.bingoogolapple.basenote.widget.BGASwipeBackLayout;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
@@ -20,14 +21,16 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity extends RxAppCompatActivity implements View.OnClickListener {
+public abstract class BaseActivity extends RxAppCompatActivity implements View.OnClickListener, BGASwipeBackLayout.PanelSlideListener {
     protected String TAG;
+    protected BGASwipeBackLayout mSwipeBackLayout;
     protected App mApp;
     protected SweetAlertDialog mLoadingDialog;
     protected BGAAlertController mMoreMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initSwipeBackFinish();
         super.onCreate(savedInstanceState);
         TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
@@ -35,6 +38,50 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
         initView(savedInstanceState);
         setListener();
         processLogic(savedInstanceState);
+    }
+
+    /**
+     * 初始化滑动返回
+     */
+    private void initSwipeBackFinish() {
+        if (isSupportSwipeBack()) {
+            mSwipeBackLayout = new BGASwipeBackLayout(this);
+            mSwipeBackLayout.attachToActivity(this);
+            mSwipeBackLayout.setPanelSlideListener(this);
+        }
+    }
+
+    /**
+     * 是否支持滑动返回
+     *
+     * @return
+     */
+    protected boolean isSupportSwipeBack() {
+        return false;
+    }
+
+    /**
+     * 设置滑动返回是否可用
+     *
+     * @param swipeBackEnable
+     */
+    protected void setSwipeBackEnable(boolean swipeBackEnable) {
+        if (mSwipeBackLayout != null) {
+            mSwipeBackLayout.setSwipeBackEnable(swipeBackEnable);
+        }
+    }
+
+    @Override
+    public void onPanelClosed(View view) {
+    }
+
+    @Override
+    public void onPanelOpened(View view) {
+        swipeBackward();
+    }
+
+    @Override
+    public void onPanelSlide(View view, float v) {
     }
 
     /**
@@ -146,6 +193,15 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
     }
 
     /**
+     * 滑动返回上一个Activity，并销毁当前Activity
+     */
+    public void swipeBackward() {
+        KeyboardUtil.closeKeyboard(this);
+        finish();
+        executeSwipeBackAnim();
+    }
+
+    /**
      * 回到上一个Activity，并销毁当前Activity（应用场景：欢迎、登录、注册这三个界面）
      *
      * @param cls 上一个Activity的Class
@@ -162,6 +218,13 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
      */
     public void executeBackwardAnim() {
         overridePendingTransition(R.anim.activity_backward_enter, R.anim.activity_backward_exit);
+    }
+
+    /**
+     * 执行滑动返回到到上一个Activity的动画
+     */
+    public void executeSwipeBackAnim() {
+        overridePendingTransition(R.anim.activity_swipeback_enter, R.anim.activity_swipeback_exit);
     }
 
     /**

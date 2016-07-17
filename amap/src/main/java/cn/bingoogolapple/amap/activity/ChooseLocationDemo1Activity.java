@@ -39,6 +39,11 @@ public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMa
     private LatLng mLatLng;
 
     @Override
+    protected boolean isSupportSwipeBack() {
+        return true;
+    }
+
+    @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_choose_location_demo1);
         mMapMv = getViewById(R.id.mv_choose_location_demo1_map);

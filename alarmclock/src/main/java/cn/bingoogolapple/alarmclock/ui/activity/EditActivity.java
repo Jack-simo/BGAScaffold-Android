@@ -57,6 +57,11 @@ public class EditActivity extends TitlebarActivity implements DatePickerDialog.O
     }
 
     @Override
+    protected boolean isSupportSwipeBack() {
+        return true;
+    }
+
+    @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_detail);
         mTimeTv = getViewById(R.id.tv_detail_time);
