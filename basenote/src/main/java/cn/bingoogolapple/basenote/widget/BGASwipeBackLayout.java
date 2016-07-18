@@ -51,13 +51,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import cn.bingoogolapple.basenote.R;
+
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/7/17 下午6:52
  * 描述:修改SlidingPaneLayout源码为滑动返回控件
  */
 public class BGASwipeBackLayout extends ViewGroup {
-    private static final String TAG = "BGASwipeBackLayout";
+    private static final String TAG = BGASwipeBackLayout.class.getSimpleName();
 
     /**
      * Default size of the overhang for a pane in the open state.
@@ -164,10 +166,13 @@ public class BGASwipeBackLayout extends ViewGroup {
 
     static final SlidingPanelLayoutImpl IMPL;
 
+    // ============ 新加的 START ============
     private boolean mSwipeBackEnable = true;
     private boolean mIsOnlyTrackingLeftEdge = true;
+    private boolean mIsNeedShowShadow = true;
     private View mLeftView;
     private View mRightView;
+    // ============ 新加的 END ============
 
     static {
         final int deviceVersion = Build.VERSION.SDK_INT;
@@ -180,6 +185,8 @@ public class BGASwipeBackLayout extends ViewGroup {
         }
     }
 
+    // ============ 新加的 START ============
+
     /**
      * 将该滑动返回控件添加到 Activity 上
      *
@@ -189,7 +196,7 @@ public class BGASwipeBackLayout extends ViewGroup {
         setSliderFadeColor(Color.TRANSPARENT);
 
         mLeftView = new View(activity);
-        mLeftView.setBackgroundColor(0x90000000);
+        setIsNeedShowShadow(mIsNeedShowShadow);
         addView(mLeftView, 0, new SlidingPaneLayout.LayoutParams(SlidingPaneLayout.LayoutParams.MATCH_PARENT, SlidingPaneLayout.LayoutParams.MATCH_PARENT));
 
         ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
@@ -210,13 +217,30 @@ public class BGASwipeBackLayout extends ViewGroup {
     }
 
     /**
-     * 是否仅仅跟踪左侧边缘的滑动返回。默认值为true
+     * 设置是否仅仅跟踪左侧边缘的滑动返回。默认值为true
      *
      * @param isOnlyTrackingLeftEdge
      */
     public void setIsOnlyTrackingLeftEdge(boolean isOnlyTrackingLeftEdge) {
         mIsOnlyTrackingLeftEdge = isOnlyTrackingLeftEdge;
     }
+
+    /**
+     * 设置是否显示滑动返回的阴影效果
+     *
+     * @param isNeedShowShadow
+     */
+    public void setIsNeedShowShadow(boolean isNeedShowShadow) {
+        mIsNeedShowShadow = isNeedShowShadow;
+        if (mLeftView != null) {
+            if (mIsNeedShowShadow) {
+                mLeftView.setBackgroundResource(R.mipmap.swipeback_shadow);
+            } else {
+                mLeftView.setBackgroundResource(android.R.color.transparent);
+            }
+        }
+    }
+    // ============ 新加的 END ============
 
     /**
      * Listener for monitoring events about sliding panes.
@@ -277,8 +301,11 @@ public class BGASwipeBackLayout extends ViewGroup {
         super(context, attrs, defStyle);
 
         final float density = context.getResources().getDisplayMetrics().density;
+
+        // ============ 新加的 START ============
 //        mOverhangSize = (int) (DEFAULT_OVERHANG_SIZE * density + 0.5f);
         mOverhangSize = 0;
+        // ============ 新加的 END ============
 
         final ViewConfiguration viewConfig = ViewConfiguration.get(context);
 
@@ -349,8 +376,6 @@ public class BGASwipeBackLayout extends ViewGroup {
     }
 
     void dispatchOnPanelSlide(View panel) {
-        mLeftView.setAlpha(0.2f * (1.0f - mSlideOffset));
-
         if (mPanelSlideListener != null) {
             mPanelSlideListener.onPanelSlide(panel, mSlideOffset);
         }
@@ -991,6 +1016,14 @@ public class BGASwipeBackLayout extends ViewGroup {
         if (lp.dimWhenOffset) {
             dimChildView(mSlideableView, mSlideOffset, mSliderFadeColor);
         }
+
+        // ============ 新加的 START ============
+        if (mIsNeedShowShadow && mLeftView != null) {
+            ViewCompat.setAlpha(mLeftView, 1.0f - mSlideOffset);
+            ViewCompat.setTranslationX(mLeftView, -mLeftView.getMeasuredWidth() + newLeft);
+        }
+        // ============ 新加的 END ============
+
         dispatchOnPanelSlide(mSlideableView);
     }
 
