@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch">
+
+    <LinearLayout
+        style="@style/MatchMatch.Vertical"
+        android:paddingBottom="@dimen/size_level3">
+
+        <TextView
+            android:id="@+id/tv_dagger2_three_result"
+            style="@style/MatchWrap"
+            android:gravity="center"
+            android:minLines="2"
+            android:padding="@dimen/size_level2"
+            android:text="结果"
+            android:textColor="@color/black_middle" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="perform"
+            android:text="perform" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
@@ -21,6 +23,11 @@ android {
 //            buildConfigField "boolean", "IS_DEVELOP_MODE", "false"
             buildConfigField "boolean", "IS_DEVELOP_MODE", "true"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -57,6 +64,11 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.wdullaer:materialdatetimepicker:2.3.0'
     compile 'com.zhy:changeskin:4.0.2'
+
+    // https://github.com/google/dagger
+    apt 'com.google.dagger:dagger-compiler:2.5'
+//    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.google.dagger:dagger:2.5'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

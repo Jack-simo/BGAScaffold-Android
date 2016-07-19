@@ -28,10 +28,6 @@ public class MainActivity extends TitlebarActivity {
         mNetworkChangeReceiver.register(this);
     }
 
-    @Override
-    public void onClick(View v) {
-    }
-
     public void helloworld(View v) {
         forward(HelloworldActivity.class);
     }
@@ -67,6 +63,10 @@ public class MainActivity extends TitlebarActivity {
                 SystemClock.sleep(20000);
             }
         }).start();
+    }
+
+    public void testDagger2(View v) {
+        forward(Dagger2OneActivity.class);
     }
 
     @Override
