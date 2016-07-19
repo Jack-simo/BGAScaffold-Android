@@ -444,13 +444,13 @@ public class HelloworldActivity extends TitlebarActivity {
 
         showLoadingDialog(R.string.loading);
         Observable.concat(mRemoteServerEngine.loadInitDatasRx(), mRemoteServerEngine.loadMoreDataRx(1), mRemoteServerEngine.loadMoreDataRx(1))
-                .compose(applySchedulers())
                 .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
                     @Override
                     public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
                         return Observable.from(refreshModels);
                     }
                 })
+                .compose(applySchedulers())
                 .subscribe(new Observer<RefreshModel>() {
                     @Override
                     public void onCompleted() {
