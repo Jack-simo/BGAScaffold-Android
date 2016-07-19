@@ -234,7 +234,7 @@ public class BGASwipeBackLayout extends ViewGroup {
         mIsNeedShowShadow = isNeedShowShadow;
         if (mLeftView != null) {
             if (mIsNeedShowShadow) {
-                mLeftView.setBackgroundResource(R.mipmap.swipeback_shadow);
+                mLeftView.setBackgroundResource(R.drawable.swipeback_shadow);
             } else {
                 mLeftView.setBackgroundResource(android.R.color.transparent);
             }
