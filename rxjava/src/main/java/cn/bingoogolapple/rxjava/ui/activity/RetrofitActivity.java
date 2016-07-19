@@ -135,11 +135,16 @@ public class RetrofitActivity extends TitlebarActivity {
     };
 
     public void loginGet(View v) {
+//        mLocalServerEngine.loginGet("hello", "world")
+//                .subscribeOn(Schedulers.io())
+//                .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(mMsgObserver);
+
+        showLoadingDialog(R.string.loading);
         mLocalServerEngine.loginGet("hello", "world")
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() -> showLoadingDialog(R.string.loading))
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(applySchedulers())
                 .subscribe(mMsgObserver);
     }
 

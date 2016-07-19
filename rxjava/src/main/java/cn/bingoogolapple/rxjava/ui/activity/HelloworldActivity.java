@@ -406,21 +406,51 @@ public class HelloworldActivity extends TitlebarActivity {
 //        })
 
 //        Observable.merge(mEngine.loadInitDatasRx(), mEngine.loadMoreDataRx(1), mEngine.loadMoreDataRx(1)).subscribeOn(Schedulers.io())
-        Observable.concat(mRemoteServerEngine.loadInitDatasRx(), mRemoteServerEngine.loadMoreDataRx(1), mRemoteServerEngine.loadMoreDataRx(1)).subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        showLoadingDialog(R.string.loading);
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
+
+//        Observable.concat(mRemoteServerEngine.loadInitDatasRx(), mRemoteServerEngine.loadMoreDataRx(1), mRemoteServerEngine.loadMoreDataRx(1)).subscribeOn(Schedulers.io())
+//                .doOnSubscribe(new Action0() {
+//                    @Override
+//                    public void call() {
+//                        showLoadingDialog(R.string.loading);
+//                    }
+//                })
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
+//                    @Override
+//                    public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
+//                        return Observable.from(refreshModels);
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<RefreshModel>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        dismissLoadingDialog();
+//                        ToastUtil.show("数据加载成功");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        dismissLoadingDialog();
+//                        ToastUtil.show("数据加载失败");
+//                    }
+//
+//                    @Override
+//                    public void onNext(RefreshModel refreshModel) {
+//                        Logger.i(TAG, refreshModel.title);
+//                    }
+//                });
+
+
+        showLoadingDialog(R.string.loading);
+        Observable.concat(mRemoteServerEngine.loadInitDatasRx(), mRemoteServerEngine.loadMoreDataRx(1), mRemoteServerEngine.loadMoreDataRx(1))
+                .compose(applySchedulers())
                 .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
                     @Override
                     public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
                         return Observable.from(refreshModels);
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RefreshModel>() {
                     @Override
                     public void onCompleted() {
