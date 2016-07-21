@@ -166,7 +166,7 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
             ToastUtil.show("未扫描到任何图片");
         } else {
             mImgAdapter.setDirPath(mCurrentDir.getAbsolutePath());
-            mImgAdapter.setDatas(Arrays.asList(mCurrentDir.list(new ImgFilenameFilter())));
+            mImgAdapter.setData(Arrays.asList(mCurrentDir.list(new ImgFilenameFilter())));
 
             mDirnameTv.setText(mCurrentDir.getName());
             mDircountTv.setText(String.valueOf(mMaxCount));
@@ -280,7 +280,7 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
         }
 
         public void handleSelect(int position) {
-            String filePath = mDirPath + mDatas.get(position);
+            String filePath = mDirPath + mData.get(position);
             if (mSelectedImg.contains(filePath)) {
                 mSelectedImg.remove(filePath);
             } else {

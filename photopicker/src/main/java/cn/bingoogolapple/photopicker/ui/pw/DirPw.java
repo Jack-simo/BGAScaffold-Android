@@ -78,7 +78,7 @@ public class DirPW extends PopupWindow implements AdapterView.OnItemClickListene
 
         public DirAdapter(Context context, List<FolderModel> datas) {
             super(context, R.layout.item_dir);
-            mDatas = datas;
+            mData = datas;
         }
 
         @Override

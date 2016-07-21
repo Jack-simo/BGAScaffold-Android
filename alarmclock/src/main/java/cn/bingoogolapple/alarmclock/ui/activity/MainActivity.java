@@ -150,7 +150,7 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
             @Override
             protected void onPostExecute(List<Plan> plans) {
                 dismissLoadingDialog();
-                mPlanAdapter.setDatas(plans);
+                mPlanAdapter.setData(plans);
             }
         }.execute();
     }

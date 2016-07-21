@@ -214,7 +214,7 @@ public class ChooseLocationDemo2Activity extends TitlebarActivity implements AMa
 
         List<PoiItem> poiItems = poiResult.getPois();
         poiItems.add(0, mCurrentPoiItem);
-        mLocationAdapter.setDatas(poiItems);
+        mLocationAdapter.setData(poiItems);
     }
 
     @Override
