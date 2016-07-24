@@ -5,7 +5,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
 import android.view.ViewStub;
-import android.widget.RelativeLayout;
 
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.titlebar.BGATitlebar;
@@ -20,15 +19,15 @@ public abstract class TitlebarActivity extends BaseActivity {
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(layoutResID, true);
+        initViewStubContentView(R.layout.titlebar_viewstub_linearlayout, layoutResID);
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(layoutResID, false);
+        initViewStubContentView(R.layout.titlebar_viewstub_framelayout, layoutResID);
     }
 
-    private void initViewStubContentView(@LayoutRes int layoutResID, boolean isLinear) {
-        super.setContentView(R.layout.titlebar_viewstub);
+    private void initViewStubContentView(@LayoutRes int rootLayoutResID, @LayoutRes int layoutResID) {
+        super.setContentView(rootLayoutResID);
         mTitlebar = getViewById(R.id.titlebar);
         setLeftDrawable(R.mipmap.back_normal);
         mTitlebar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
@@ -49,10 +48,6 @@ public abstract class TitlebarActivity extends BaseActivity {
         });
 
         ViewStub viewStub = getViewById(R.id.viewStub);
-        if (isLinear) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewStub.getLayoutParams();
-            lp.addRule(RelativeLayout.BELOW, R.id.titlebar);
-        }
         viewStub.setLayoutResource(layoutResID);
         viewStub.inflate();
     }

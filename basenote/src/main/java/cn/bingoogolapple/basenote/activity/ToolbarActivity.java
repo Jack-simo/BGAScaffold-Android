@@ -3,7 +3,6 @@ package cn.bingoogolapple.basenote.activity;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.ViewStubCompat;
-import android.widget.RelativeLayout;
 
 import cn.bingoogolapple.basenote.R;
 
@@ -17,24 +16,20 @@ public abstract class ToolbarActivity extends BaseActivity {
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(layoutResID, true);
+        initViewStubContentView(R.layout.toolbar_viewstub_linearlayout, layoutResID);
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(layoutResID, false);
+        initViewStubContentView(R.layout.toolbar_viewstub_framelayout, layoutResID);
     }
 
-    private void initViewStubContentView(@LayoutRes int layoutResID, boolean isLinear) {
-        super.setContentView(R.layout.toolbar_viewstub);
+    private void initViewStubContentView(@LayoutRes int rootLayoutResID, @LayoutRes int layoutResID) {
+        super.setContentView(rootLayoutResID);
         mToolbar = getViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ViewStubCompat viewStub = getViewById(R.id.viewStub);
-        if (isLinear) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewStub.getLayoutParams();
-            lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
-        }
         viewStub.setLayoutResource(layoutResID);
         viewStub.inflate();
     }
