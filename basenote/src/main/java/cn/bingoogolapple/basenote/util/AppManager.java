@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import com.zhy.changeskin.SkinManager;
 
+import java.util.Iterator;
 import java.util.Stack;
 
 import cn.bingoogolapple.basenote.R;
@@ -109,6 +110,26 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
             activity.finish();
         }
         mActivityStack.remove(activity);
+    }
+
+    /**
+     * 应用场景：支付完后，关闭 MainActivity 之外的其他页面
+     *
+     * @param activityClass
+     */
+    public void popOthersActivity(Class<Activity> activityClass) {
+        if (activityClass == null || mActivityStack.isEmpty()) {
+            return;
+        }
+
+        Iterator<Activity> iterator = mActivityStack.iterator();
+        while (iterator.hasNext()) {
+            Activity activity = iterator.next();
+            if (!activity.getClass().equals(activityClass)) {
+                activity.finish();
+                iterator.remove();
+            }
+        }
     }
 
     /**
