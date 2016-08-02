@@ -9,10 +9,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import cn.bingoogolapple.basenote.component.AComponent;
-import cn.bingoogolapple.basenote.component.AModule;
-import cn.bingoogolapple.basenote.component.AppComponent;
-import cn.bingoogolapple.basenote.component.DaggerAppComponent;
 import cn.bingoogolapple.basenote.util.AppManager;
 
 /**
@@ -25,8 +21,6 @@ public class App extends Application {
     private static App sInstance;
     private NotificationManagerCompat mNotificationManager;
     private RefWatcher mRefWatcher;
-    private AppComponent mAppComponent;
-    private AComponent mAComponent;
 
     @Override
     public void onCreate() {
@@ -37,8 +31,6 @@ public class App extends Application {
 
         mRefWatcher = LeakCanary.install(this);
         mNotificationManager = NotificationManagerCompat.from(this);
-
-        mAppComponent = DaggerAppComponent.builder().build();
     }
 
     public static App getInstance() {
@@ -61,16 +53,5 @@ public class App extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
-    }
-
-    public AppComponent getAppComponent() {
-        return mAppComponent;
-    }
-
-    public AComponent getAComponent() {
-        if (mAComponent == null){
-            mAComponent = mAppComponent.plus(new AModule());
-        }
-        return mAComponent;
     }
 }

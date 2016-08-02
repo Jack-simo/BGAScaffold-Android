@@ -48,18 +48,6 @@
             android:name=".ui.activity.OperatorActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".ui.activity.Dagger2OneActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.activity.Dagger2TwoActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="cn.bingoogolapple.basenote.activity.Dagger2ThreeActivity"
-            android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>

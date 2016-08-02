@@ -65,10 +65,6 @@ public class MainActivity extends TitlebarActivity {
         }).start();
     }
 
-    public void testDagger2(View v) {
-        forward(Dagger2OneActivity.class);
-    }
-
     @Override
     protected void onDestroy() {
         unregisterNetworkChangeReceiver();

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.neenbedankt.android-apt'
 
 def releaseTime() {
     return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
@@ -118,7 +117,4 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':basenote')
-
-    apt 'com.google.dagger:dagger-compiler:2.5'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
 }

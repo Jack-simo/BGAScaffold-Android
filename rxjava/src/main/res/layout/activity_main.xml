@@ -46,10 +46,5 @@
             android:onClick="testLeakCanary"
             android:text="testLeakCanary" />
 
-        <Button
-            style="@style/DemoBtn"
-            android:onClick="testDagger2"
-            android:text="testDagger2" />
-
     </LinearLayout>
 </ScrollView>
