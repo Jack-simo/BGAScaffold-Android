@@ -212,18 +212,49 @@ public class ImageLoader {
      * @param reqHeight
      * @return
      */
+//    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+//        int inSampleSize = 1;
+//        //图片的原始宽高
+//        final int originWidth = options.outWidth;
+//        final int originHeight = options.outHeight;
+//
+//        if (originWidth > reqWidth || originHeight > reqHeight) {
+//            int widthRadio = Math.round(originWidth * 1.0f / reqWidth);
+//            int heightRadio = Math.round(originHeight * 1.0f / reqHeight);
+//            // 选择宽和高中最小的比率作为inSampleSize的值，这样可以保证最终图片的宽和高一定都会大于等于目标的宽和高
+//            inSampleSize = Math.min(widthRadio, heightRadio);
+//        }
+//        return inSampleSize;
+//    }
+
+    /**
+     * 根据需求的宽和高以及图片实际的宽和高计算inSampleSize
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // 默认值为1，不进行采样，原图加载
         int inSampleSize = 1;
+
         //图片的原始宽高
         final int originWidth = options.outWidth;
         final int originHeight = options.outHeight;
 
+        // 当原始宽度或高度大于期望的宽度或高度时，计算采样率
         if (originWidth > reqWidth || originHeight > reqHeight) {
-            int widthRadio = Math.round(originWidth * 1.0f / reqWidth);
-            int heightRadio = Math.round(originHeight * 1.0f / reqHeight);
-            // 选择宽和高中最小的比率作为inSampleSize的值，这样可以保证最终图片的宽和高一定都会大于等于目标的宽和高
-            inSampleSize = Math.min(widthRadio, heightRadio);
+            final int halfOriginWidth = originWidth / 2;
+            final int halfOriginHeight = originHeight / 2;
+
+            // 缩放后的图片宽高不能小于期望的宽高，否则图片就会被拉伸，从而导致模糊。
+            // 这个公式的理解方式：当 originWidth / (inSampleSize * 2) >= reqWidth 时，inSampleSize才乘以2
+            while ((halfOriginWidth / inSampleSize) >= reqWidth && (halfOriginHeight / inSampleSize) >= reqHeight) {
+                inSampleSize *= 2;
+            }
         }
+
         return inSampleSize;
     }
 
