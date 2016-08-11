@@ -1,6 +1,5 @@
 package cn.bingoogolapple.basenote.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -29,26 +28,95 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     protected View mContentView;
     protected BaseActivity mActivity;
 
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = (BaseActivity) activity;
-    }
+    protected boolean mIsPrepared = false;
+    protected boolean mIsFirstResume = true;
+    protected boolean mIsFirstVisible = true;
+    protected boolean mIsFirstInvisible = true;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
+        mActivity = (BaseActivity) getActivity();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initPrepare();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mIsFirstResume) {
+            mIsFirstResume = false;
+            return;
+        }
+        if (getUserVisibleHint()) {
+            onUserVisible();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getUserVisibleHint()) {
+            onUserInvisible();
+        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            onUserVisible();
+            if (mIsFirstVisible) {
+                mIsFirstVisible = false;
+                initPrepare();
+            } else {
+                onUserVisible();
+            }
         } else {
-            onUserInVisible();
+            if (mIsFirstInvisible) {
+                mIsFirstInvisible = false;
+                onFirstUserInvisible();
+            } else {
+                onUserInvisible();
+            }
         }
+    }
+
+    public synchronized void initPrepare() {
+        if (mIsPrepared) {
+            onFirstUserVisible();
+        } else {
+            mIsPrepared = true;
+        }
+    }
+
+    /**
+     * 第一次对用户可见时会调用该方法
+     */
+    public void onFirstUserVisible() {
+    }
+
+    /**
+     * 对用户可见时会调用该方法，除了第一次
+     */
+    public void onUserVisible() {
+    }
+
+    /**
+     * 第一次对用户不可见时会调用该方法
+     */
+    public void onFirstUserInvisible() {
+    }
+
+    /**
+     * 对用户不可见时会调用该方法，除了第一次
+     */
+    public void onUserInvisible() {
     }
 
     @Override
@@ -67,6 +135,28 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
         return mContentView;
     }
 
+    /**
+     * 初始化View控件
+     */
+    protected abstract void initView(Bundle savedInstanceState);
+
+    /**
+     * 给View控件添加事件监听器
+     */
+    protected abstract void setListener();
+
+    /**
+     * 处理业务逻辑，状态恢复等操作
+     *
+     * @param savedInstanceState
+     */
+    protected abstract void processLogic(Bundle savedInstanceState);
+
+    /**
+     * 设置布局资源id
+     *
+     * @param layoutResID
+     */
     protected void setContentView(@LayoutRes int layoutResID) {
         mContentView = LayoutInflater.from(getActivity()).inflate(layoutResID, null);
     }
@@ -89,35 +179,6 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
      */
     protected <VT extends View> VT getViewById(@IdRes int id) {
         return (VT) mContentView.findViewById(id);
-    }
-
-    /**
-     * 初始化View控件
-     */
-    protected abstract void initView(Bundle savedInstanceState);
-
-    /**
-     * 给View控件添加事件监听器
-     */
-    protected abstract void setListener();
-
-    /**
-     * 处理业务逻辑，状态恢复等操作
-     *
-     * @param savedInstanceState
-     */
-    protected abstract void processLogic(Bundle savedInstanceState);
-
-    /**
-     * 当fragment对用户可见时，会调用该方法，可在该方法中懒加载网络数据
-     */
-    public void onUserVisible() {
-    }
-
-    /**
-     * 当fragment对用户不可见时，会调用该方法
-     */
-    public void onUserInVisible() {
     }
 
     /**

@@ -63,12 +63,11 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
             onEnterFrontStage();
         }
         mActivityStartedCount++;
-
-        SkinUtil.initStatusbarSkin(activity);
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
+        SkinUtil.initStatusbarSkin(activity);
     }
 
     @Override

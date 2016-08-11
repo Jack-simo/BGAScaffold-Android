@@ -1,6 +1,5 @@
 package cn.bingoogolapple.materialdrawer.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,16 +20,10 @@ public abstract class BaseMainFragment extends ToolbarFragment {
     protected MainActivity mMainActivity;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mMainActivity = (MainActivity) activity;
-        Logger.i(TAG, "onAttach Activity");
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Logger.i(TAG, "onAttach Context");
+        mMainActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -102,15 +95,23 @@ public abstract class BaseMainFragment extends ToolbarFragment {
     }
 
     @Override
+    public void onFirstUserVisible() {
+        Logger.i(TAG, "onFirstUserVisible");
+    }
+
+    @Override
     public void onUserVisible() {
-        super.onUserVisible();
         Logger.i(TAG, "onUserVisible");
     }
 
     @Override
-    public void onUserInVisible() {
-        Logger.i(TAG, "onUserInVisible");
-        super.onUserInVisible();
+    public void onFirstUserInvisible() {
+        Logger.i(TAG, "onFirstUserInvisible");
+    }
+
+    @Override
+    public void onUserInvisible() {
+        Logger.i(TAG, "onUserInvisible");
     }
 
     @Override
