@@ -28,8 +28,6 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     protected View mContentView;
     protected BaseActivity mActivity;
 
-    protected boolean mIsPrepared = false;
-    protected boolean mIsFirstResume = true;
     protected boolean mIsFirstVisible = true;
     protected boolean mIsFirstInvisible = true;
 
@@ -42,56 +40,43 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        initPrepare();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        if (mIsFirstResume) {
-            mIsFirstResume = false;
-            return;
-        }
-        if (getUserVisibleHint()) {
-            onUserVisible();
-        }
+
+//        if (getUserVisibleHint() && !mIsFirstVisible) {
+//            onUserVisible();
+//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (getUserVisibleHint()) {
-            onUserInvisible();
-        }
+
+//        if (getUserVisibleHint() && !mIsFirstInvisible) {
+//            onUserInvisible();
+//        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if (mIsFirstVisible) {
-                mIsFirstVisible = false;
-                initPrepare();
-            } else {
-                onUserVisible();
-            }
-        } else {
-            if (mIsFirstInvisible) {
-                mIsFirstInvisible = false;
-                onFirstUserInvisible();
-            } else {
-                onUserInvisible();
-            }
-        }
-    }
 
-    public synchronized void initPrepare() {
-        if (mIsPrepared) {
-            onFirstUserVisible();
-        } else {
-            mIsPrepared = true;
+        if (mContentView != null) {
+            if (isVisibleToUser) {
+                if (mIsFirstVisible) {
+                    mIsFirstVisible = false;
+                    onFirstUserVisible();
+                } else {
+                    onUserVisible();
+                }
+            } else {
+                if (mIsFirstInvisible) {
+                    mIsFirstInvisible = false;
+                    onFirstUserInvisible();
+                } else {
+                    onUserInvisible();
+                }
+            }
         }
     }
 

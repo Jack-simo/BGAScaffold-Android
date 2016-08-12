@@ -166,6 +166,7 @@
         <item name="bgatitlebar_titleTextColor">@color/white</item>
         <item name="bgatitlebar_titleTextSize">@dimen/textSize_18</item>
         <item name="bgatitlebar_leftAndRightPadding">@dimen/size_level2</item>
+        <item name="bgatitlebar_titleDrawablePadding">@dimen/size_level1</item>
     </style>
 
     <style name="DemoBtn" parent="MatchWrap">
