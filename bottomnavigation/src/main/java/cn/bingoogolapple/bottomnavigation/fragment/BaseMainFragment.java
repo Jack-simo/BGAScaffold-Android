@@ -42,6 +42,18 @@ public abstract class BaseMainFragment extends TitlebarFragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        Logger.i(TAG, "setUserVisibleHint " + isVisibleToUser);
+    }
+
+    @Override
+    public void lazyLoadDataOnce() {
+        Logger.i(TAG, "lazyLoadDataOnce");
+    }
+
+    @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         // show/hidden方式和replace方式都会打印
@@ -89,37 +101,5 @@ public abstract class BaseMainFragment extends TitlebarFragment {
     public void onDetach() {
         Logger.i(TAG, "onDetach");
         super.onDetach();
-    }
-
-    @Override
-    public void onFirstUserVisible() {
-        Logger.i(TAG, "onFirstUserVisible");
-    }
-
-    @Override
-    public void onUserVisible() {
-        Logger.i(TAG, "onUserVisible");
-    }
-
-    @Override
-    public void onFirstUserInvisible() {
-        Logger.i(TAG, "onFirstUserInvisible");
-    }
-
-    @Override
-    public void onUserInvisible() {
-        Logger.i(TAG, "onUserInvisible");
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden) {
-            // 使用show和hidden却换到另一个fragment时会打印隐藏
-            Logger.i(TAG, "隐藏");
-        } else {
-            // 还没发现哪种情况会打印显示
-            Logger.i(TAG, "显示");
-        }
     }
 }

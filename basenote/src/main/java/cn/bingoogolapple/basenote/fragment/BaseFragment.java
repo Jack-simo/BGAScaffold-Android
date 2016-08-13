@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,7 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     protected View mContentView;
     protected BaseActivity mActivity;
 
-    protected boolean mIsFirstVisible = true;
-    protected boolean mIsFirstInvisible = true;
+    protected boolean mIsLoadedData = false;
 
     @Override
     public void onAttach(Context context) {
@@ -37,71 +37,6 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
         TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
         mActivity = (BaseActivity) getActivity();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-//        if (getUserVisibleHint() && !mIsFirstVisible) {
-//            onUserVisible();
-//        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-//        if (getUserVisibleHint() && !mIsFirstInvisible) {
-//            onUserInvisible();
-//        }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (mContentView != null) {
-            if (isVisibleToUser) {
-                if (mIsFirstVisible) {
-                    mIsFirstVisible = false;
-                    onFirstUserVisible();
-                } else {
-                    onUserVisible();
-                }
-            } else {
-                if (mIsFirstInvisible) {
-                    mIsFirstInvisible = false;
-                    onFirstUserInvisible();
-                } else {
-                    onUserInvisible();
-                }
-            }
-        }
-    }
-
-    /**
-     * 第一次对用户可见时会调用该方法
-     */
-    public void onFirstUserVisible() {
-    }
-
-    /**
-     * 对用户可见时会调用该方法，除了第一次
-     */
-    public void onUserVisible() {
-    }
-
-    /**
-     * 第一次对用户不可见时会调用该方法
-     */
-    public void onFirstUserInvisible() {
-    }
-
-    /**
-     * 对用户不可见时会调用该方法，除了第一次
-     */
-    public void onUserInvisible() {
     }
 
     @Override
@@ -120,6 +55,27 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
         return mContentView;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        handleLazyLoadDataOnce();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        handleLazyLoadDataOnce();
+    }
+
+    private void handleLazyLoadDataOnce() {
+        if (mContentView != null && getUserVisibleHint() && !mIsLoadedData) {
+            mIsLoadedData = true;
+            lazyLoadDataOnce();
+        }
+    }
+
     /**
      * 初始化View控件
      */
@@ -136,6 +92,12 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
      * @param savedInstanceState
      */
     protected abstract void processLogic(Bundle savedInstanceState);
+
+    /**
+     * 懒加载一次
+     */
+    protected void lazyLoadDataOnce() {
+    }
 
     /**
      * 设置布局资源id
