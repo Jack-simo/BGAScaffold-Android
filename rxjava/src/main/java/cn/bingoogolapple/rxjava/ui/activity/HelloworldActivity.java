@@ -18,6 +18,9 @@ import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
 import cn.bingoogolapple.rxjava.engine.RemoteServerEngine;
 import cn.bingoogolapple.rxjava.model.Course;
+import cn.bingoogolapple.rxjava.model.ModelCombine;
+import cn.bingoogolapple.rxjava.model.ModelOne;
+import cn.bingoogolapple.rxjava.model.ModelTwo;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
 import cn.bingoogolapple.rxjava.model.Student;
 import retrofit2.Retrofit;
@@ -603,6 +606,87 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void onNext(List<RefreshModel> refreshModels) {
 
+                    }
+                });
+    }
+
+
+    public void test12(View v) {
+        Observable modelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
+            @Override
+            public void call(Subscriber<? super ModelOne> subscriber) {
+                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                subscriber.onNext(new ModelOne("value1"));
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                subscriber.onNext(new ModelOne("value2"));
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                subscriber.onNext(new ModelOne("value3"));
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()); // 这里如果不指定线程，则两个Observable会在combineLatest后指定的线程中顺序执行
+
+        Observable modelTwoObservable = Observable.create(new Observable.OnSubscribe<ModelTwo>() {
+            @Override
+            public void call(Subscriber<? super ModelTwo> subscriber) {
+                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                subscriber.onNext(new ModelTwo(1));
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                subscriber.onNext(new ModelTwo(2));
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                subscriber.onNext(new ModelTwo(3));
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()); // 这里如果不指定线程，则两个Observable会在combineLatest后指定的线程中顺序执行
+
+        /**
+         * Zip操作符返回一个Obversable，它使用这个函数按顺序结合两个或多个Observables发射的数据项，然后它发射这个函数返回的结果。
+         * 它按照严格的顺序应用这个函数。它只发射与发射数据项最少的那个Observable一样多的数据。
+         */
+
+        /**
+         * CombineLatest操作符行为类似于zip，但是只有当原始的Observable中的每一个都发射了一条数据时zip才发射数据。
+         * CombineLatest则在原始的Observable中任意一个发射了数据时发射一条数据。当原始Observables的任何一个发射了一条数据时，
+         * CombineLatest使用一个函数结合它们最近发射的数据，然后发射这个函数的返回值。
+         */
+        Observable.combineLatest(modelOneObservable, modelTwoObservable, new Func2<ModelOne, ModelTwo, ModelCombine>() {
+
+            @Override
+            public ModelCombine call(ModelOne modelOne, ModelTwo modelTwo) {
+                return new ModelCombine(modelOne, modelTwo);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleSubscriber<ModelCombine>() {
+
+                    @Override
+                    public void onNext(ModelCombine modelCombine) {
+                        Logger.i(TAG, "onNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value);
                     }
                 });
     }

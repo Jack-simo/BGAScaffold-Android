@@ -66,5 +66,10 @@
             android:onClick="test11"
             android:text="test11" />
 
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="test12"
+            android:text="test12" />
+
     </LinearLayout>
 </ScrollView>
