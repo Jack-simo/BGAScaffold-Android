@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.trello.rxlifecycle.ActivityEvent;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -483,7 +485,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
+                .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {    // 类型转Observable
                     @Override
                     public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
                         return Observable.from(refreshModels);
@@ -536,6 +538,9 @@ public class HelloworldActivity extends TitlebarActivity {
         return mRemoteServerEngine.loadMoreData(page).execute().body();
     }
 
+    /**
+     * concat + first 实现三级缓存
+     */
     private void testConcat() {
         Observable<String> memory = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -569,20 +574,20 @@ public class HelloworldActivity extends TitlebarActivity {
     public void test11(View v) {
         Observable
                 .just("1", "2", "3", "3", "5", "6")
-                .map(new Func1<String, Integer>() {
+                .map(new Func1<String, Integer>() {   // 类型转类型
                     @Override
                     public Integer call(String s) {
                         return Integer.parseInt(s);
                     }
                 })
-                .filter(new Func1<Integer, Boolean>() {
+                .filter(new Func1<Integer, Boolean>() {  // 过滤后    2、3、3、5、6
                     @Override
                     public Boolean call(Integer integer) {
                         return integer > 1;
                     }
                 })
-                .distinct()
-                .take(3)
+                .distinct()  // 去重后    2、3、5、6
+                .take(3)   // 只取前三个后     2、3、5
                 .reduce(new Func2<Integer, Integer, Integer>() {
                     @Override
                     public Integer call(Integer integer, Integer integer2) {
@@ -611,70 +616,72 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
 
-    public void test12(View v) {
-        Observable modelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
-            @Override
-            public void call(Subscriber<? super ModelOne> subscriber) {
-                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                subscriber.onNext(new ModelOne("value1"));
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                subscriber.onNext(new ModelOne("value2"));
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                subscriber.onNext(new ModelOne("value3"));
-                subscriber.onCompleted();
+    private Observable mModelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
+        @Override
+        public void call(Subscriber<? super ModelOne> subscriber) {
+            Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }).subscribeOn(Schedulers.io()); // 这里如果不指定线程，则两个Observable会在combineLatest后指定的线程中顺序执行
+            subscriber.onNext(new ModelOne("value1"));
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            subscriber.onNext(new ModelOne("value2"));
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            subscriber.onNext(new ModelOne("value3"));
+            try {
+                Thread.sleep(4000);   // combineLatest时：mModelOneObservable里总的call的时间比mModelTwoObservable里总的call的时间长，当mModelTwoObservable里调了onCompleted方法后，如果mModelOneObservable还在睡眠就会报InterruptedException。zip时不会有这个问题
+//                Thread.sleep(1000);     // combineLatest时：mModelOneObservable里总的call的时间比mModelTwoObservable里总的call的时间短，当mModelTwoObservable里调了onCompleted方法后，如果mModelOneObservable还在睡眠就不会报InterruptedException
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            subscriber.onNext(new ModelOne("value4"));
+            subscriber.onCompleted();
+        }
+    }).subscribeOn(Schedulers.io()); // 这里如果不指定线程，则两个Observable会在combineLatest/zip后指定的线程中串行执行
 
-        Observable modelTwoObservable = Observable.create(new Observable.OnSubscribe<ModelTwo>() {
-            @Override
-            public void call(Subscriber<? super ModelTwo> subscriber) {
-                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                subscriber.onNext(new ModelTwo(1));
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                subscriber.onNext(new ModelTwo(2));
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                subscriber.onNext(new ModelTwo(3));
-                subscriber.onCompleted();
+    private Observable mModelTwoObservable = Observable.create(new Observable.OnSubscribe<ModelTwo>() {
+        @Override
+        public void call(Subscriber<? super ModelTwo> subscriber) {
+            Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }).subscribeOn(Schedulers.io()); // 这里如果不指定线程，则两个Observable会在combineLatest后指定的线程中顺序执行
+            subscriber.onNext(new ModelTwo(1));
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            subscriber.onNext(new ModelTwo(2));
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            subscriber.onNext(new ModelTwo(3));
+            subscriber.onCompleted();
+        }
+    }).subscribeOn(Schedulers.io()); // 这里如果不指定线程，则两个Observable会在combineLatest/zip后指定的线程中串行执行
+
+    public void zip(View v) {
 
         /**
          * Zip操作符返回一个Obversable，它使用这个函数按顺序结合两个或多个Observables发射的数据项，然后它发射这个函数返回的结果。
          * 它按照严格的顺序应用这个函数。它只发射与发射数据项最少的那个Observable一样多的数据。
          */
-
-        /**
-         * CombineLatest操作符行为类似于zip，但是只有当原始的Observable中的每一个都发射了一条数据时zip才发射数据。
-         * CombineLatest则在原始的Observable中任意一个发射了数据时发射一条数据。当原始Observables的任何一个发射了一条数据时，
-         * CombineLatest使用一个函数结合它们最近发射的数据，然后发射这个函数的返回值。
-         */
-        Observable.combineLatest(modelOneObservable, modelTwoObservable, new Func2<ModelOne, ModelTwo, ModelCombine>() {
+        Observable.zip(mModelOneObservable, mModelTwoObservable, new Func2<ModelOne, ModelTwo, ModelCombine>() {
 
             @Override
             public ModelCombine call(ModelOne modelOne, ModelTwo modelTwo) {
@@ -682,12 +689,66 @@ public class HelloworldActivity extends TitlebarActivity {
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new SimpleSubscriber<ModelCombine>() {
 
                     @Override
                     public void onNext(ModelCombine modelCombine) {
                         Logger.i(TAG, "onNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value);
                     }
+
+                    @Override
+                    public void onCompleted() {
+                        Logger.i(TAG, "onCompleted");  // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.i(TAG, "onError " + e.getLocalizedMessage());
+                    }
+                });
+    }
+
+
+    public void combineLatest(View v) {
+        /**
+         * CombineLatest操作符行为类似于zip，但是只有当原始的Observable中的每一个都发射了一条数据时zip才发射数据。
+         * CombineLatest则在原始的Observable中任意一个发射了数据时发射一条数据。当原始Observables的任何一个发射了一条数据时，
+         * CombineLatest使用一个函数结合它们最近发射的数据，然后发射这个函数的返回值。
+         */
+        Observable.combineLatest(mModelOneObservable, mModelTwoObservable, new Func2<ModelOne, ModelTwo, ModelCombine>() {
+
+            @Override
+            public ModelCombine call(ModelOne modelOne, ModelTwo modelTwo) {
+                return new ModelCombine(modelOne, modelTwo);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .doOnNext(new Action1<ModelCombine>() {
+
+                    @Override
+                    public void call(ModelCombine modelCombine) {
+                        Logger.i(TAG, "doOnNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value + " " + Thread.currentThread().getName());
+                    }
+                })
+                .subscribe(new SimpleSubscriber<ModelCombine>() {
+
+                    @Override
+                    public void onNext(ModelCombine modelCombine) {
+                        Logger.i(TAG, "onNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        Logger.i(TAG, "onCompleted");   // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.i(TAG, "onError " + e.getLocalizedMessage());
+                    }
+
                 });
     }
 

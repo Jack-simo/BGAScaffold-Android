@@ -68,8 +68,12 @@
 
         <Button
             style="@style/DemoBtn"
-            android:onClick="test12"
-            android:text="test12" />
+            android:onClick="zip"
+            android:text="zip" />
 
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="combineLatest"
+            android:text="combineLatest" />
     </LinearLayout>
 </ScrollView>
