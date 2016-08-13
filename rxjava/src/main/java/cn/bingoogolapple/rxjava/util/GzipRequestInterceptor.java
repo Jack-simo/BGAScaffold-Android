@@ -22,6 +22,7 @@ public class GzipRequestInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
+
         if (originalRequest.body() == null || originalRequest.header("Content-Encoding") != null) {
             return chain.proceed(originalRequest);
         }
@@ -30,6 +31,7 @@ public class GzipRequestInterceptor implements Interceptor {
                 .header("Content-Encoding", "gzip")
                 .method(originalRequest.method(), gzip(originalRequest.body()))
                 .build();
+
         return chain.proceed(compressedRequest);
     }
 
