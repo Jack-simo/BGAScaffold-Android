@@ -23,7 +23,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             if (!mIsFirstReceiveBroadcast) {
-                if (NetManager.getInstance(context).isNetworkAvailable()) {
+                if (NetUtil.isNetworkAvailable()) {
                     if (mCallback != null) {
                         mCallback.onNetworkConnected();
                     }

@@ -13,10 +13,13 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
+import cn.bingoogolapple.basenote.util.NetResult;
+import cn.bingoogolapple.basenote.util.ServerException;
 import cn.bingoogolapple.basenote.widget.BGASwipeBackLayout;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -273,15 +276,30 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
         return super.onOptionsItemSelected(item);
     }
 
-    protected final Observable.Transformer mSchedulersTransformer = new Observable.Transformer() {
-        @Override
-        public Object call(Object observable) {
-            return ((Observable) observable).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-    };
+    public static <T> Observable.Transformer<NetResult<T>, T> flatMapResultAndApplySchedulers() {
+        return new Observable.Transformer<NetResult<T>, T>() {
+            @Override
+            public Observable<T> call(Observable<NetResult<T>> observable) {
+                return observable.flatMap(new Func1<NetResult<T>, Observable<T>>() {
+                    @Override
+                    public Observable<T> call(NetResult<T> result) {
+                        if (result.code == 0) {
+                            return Observable.just(result.data);
+                        } else {
+                            return Observable.error(new ServerException(result.msg));
+                        }
+                    }
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
 
-    protected <T> Observable.Transformer<T, T> applySchedulers() {
-        return (Observable.Transformer<T, T>) mSchedulersTransformer;
+    public static <T> Observable.Transformer<T, T> applySchedulers() {
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> observable) {
+                return observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
     }
 }

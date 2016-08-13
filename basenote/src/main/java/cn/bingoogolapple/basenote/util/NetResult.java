@@ -8,5 +8,5 @@ package cn.bingoogolapple.basenote.util;
 public class NetResult<T> {
     public int code;
     public String msg;
-    public T content;
+    public T data;
 }

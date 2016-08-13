@@ -75,5 +75,11 @@
             style="@style/DemoBtn"
             android:onClick="combineLatest"
             android:text="combineLatest" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="compose"
+            android:text="compose" />
+
     </LinearLayout>
 </ScrollView>

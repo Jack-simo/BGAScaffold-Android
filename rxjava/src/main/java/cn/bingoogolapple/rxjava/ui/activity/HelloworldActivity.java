@@ -14,7 +14,7 @@ import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
-import cn.bingoogolapple.basenote.util.NetResultFunc;
+import cn.bingoogolapple.basenote.util.NetResult;
 import cn.bingoogolapple.basenote.util.SimpleSubscriber;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
@@ -604,9 +604,7 @@ public class HelloworldActivity extends TitlebarActivity {
 
     public void testNetResult() {
         mRemoteServerEngine.testNetResult1()
-                .subscribeOn(Schedulers.io())
-                .map(new NetResultFunc<List<RefreshModel>>())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(flatMapResultAndApplySchedulers())
                 .subscribe(new SimpleSubscriber<List<RefreshModel>>() {
                     @Override
                     public void onNext(List<RefreshModel> refreshModels) {
@@ -749,6 +747,32 @@ public class HelloworldActivity extends TitlebarActivity {
                         Logger.i(TAG, "onError " + e.getLocalizedMessage());
                     }
 
+                });
+    }
+
+    public void compose(View v) {
+        Observable.create(new Observable.OnSubscribe<NetResult<ModelOne>>() {
+            @Override
+            public void call(Subscriber<? super NetResult<ModelOne>> subscriber) {
+                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                NetResult<ModelOne> netResult = new NetResult<>();
+                netResult.code = 0;
+                subscriber.onNext(netResult);
+                subscriber.onCompleted();
+            }
+        }).compose(flatMapResultAndApplySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new SimpleSubscriber<ModelOne>(this, false) {
+                    @Override
+                    public void onNext(ModelOne modelOne) {
+                        ToastUtil.show("请求成功");
+                    }
                 });
     }
 
