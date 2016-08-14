@@ -88,8 +88,13 @@
 
         <Button
             style="@style/DemoBtn"
-            android:onClick="concatMap"
-            android:text="concatMap" />
+            android:onClick="concatMapDemo1"
+            android:text="concatMapDemo1" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="concatMapDemo2"
+            android:text="concatMapDemo2" />
 
         <Button
             style="@style/DemoBtn"

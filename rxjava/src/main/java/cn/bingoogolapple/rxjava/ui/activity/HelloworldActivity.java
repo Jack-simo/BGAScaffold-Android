@@ -682,9 +682,93 @@ public class HelloworldActivity extends TitlebarActivity {
                 });
     }
 
+    /**
+     * 既要是多个线程完成任务，又要保持任务的顺序
+     */
+    public void concatMapDemo1(View v) {
+        Observable.just(
+                "http://www.baidu.com/",
+                "http://www.google.com/",
+                "https://www.bing.com/")
+                .concatMap(new Func1<String, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(String url) {
+                        logWithThread("外层获取IP地址", url);
+                        return Observable.create(new Observable.OnSubscribe<String>() {
 
-    public void concatMap(View v) {
+                            @Override
+                            public void call(Subscriber<? super String> subscriber) {
+                                logWithThread("内层获取IP地址", url);
+                                try {
+                                    subscriber.onNext(getIpString(url));
+                                } catch (Exception e) {
+                                    //subscriber.onError(e);
+                                    subscriber.onNext(null);
+                                }
+                                subscriber.onCompleted();
+                            }
+//                        });
+                            // 如果这里不指定线程，他们是通过一个线程来完成所有的任务的，队列中的数据一个个通过Func1转换，同步的。输出的结果不是乱序的
+                        }).subscribeOn(Schedulers.io());
+                        // 这里指定了线程，但输出的结果不是乱序的
+                    }
+                })
+                .compose(RxUtil.applySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new SimpleSubscriber<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        logWithThread("结果", s);
+                    }
 
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Logger.i(TAG, "onCompleted");
+                    }
+                });
+    }
+
+    public void concatMapDemo2(View v) {
+        Observable.just(
+                "http://www.baidu.com/",
+                "http://www.google.com/",
+                "https://www.bing.com/")
+                .concatMap(new Func1<String, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(String url) {
+                        logWithThread("外层获取IP地址", url);
+
+                        return Observable.defer(new Func0<Observable<String>>() {
+                            @Override
+                            public Observable<String> call() {
+                                logWithThread("内层获取IP地址", url);
+                                try {
+                                    return Observable.just(getIpString(url));
+                                } catch (Exception e) {
+                                    return Observable.error(e);
+                                }
+                            }
+//                        });
+                            // 如果这里不指定线程，他们是通过一个线程来完成所有的任务的，队列中的数据一个个通过Func1转换，同步的。输出的结果不是乱序的
+                        }).subscribeOn(Schedulers.io());
+                        // 这里指定了线程，但输出的结果不是乱序的
+                    }
+                })
+                .compose(RxUtil.applySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new SimpleSubscriber<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        logWithThread("结果", s);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Logger.i(TAG, "onCompleted");
+                    }
+                });
     }
 
     private Observable mModelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
