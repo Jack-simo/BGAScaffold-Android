@@ -43,11 +43,6 @@
 
         <Button
             style="@style/DemoBtn"
-            android:onClick="test7"
-            android:text="test7" />
-
-        <Button
-            style="@style/DemoBtn"
             android:onClick="test8"
             android:text="test8" />
 
@@ -58,8 +53,8 @@
 
         <Button
             style="@style/DemoBtn"
-            android:onClick="test10"
-            android:text="test10" />
+            android:onClick="defer"
+            android:text="defer" />
 
         <Button
             style="@style/DemoBtn"
@@ -75,6 +70,26 @@
             style="@style/DemoBtn"
             android:onClick="mapDemo2"
             android:text="mapDemo2" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="flatMapDemo1"
+            android:text="flatMapDemo1" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="flatMapDemo2"
+            android:text="flatMapDemo2" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="flatMapDemo3"
+            android:text="flatMapDemo3" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="concatMap"
+            android:text="concatMap" />
 
         <Button
             style="@style/DemoBtn"

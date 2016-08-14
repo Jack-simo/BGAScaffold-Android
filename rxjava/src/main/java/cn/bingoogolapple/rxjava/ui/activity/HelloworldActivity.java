@@ -1,6 +1,5 @@
 package cn.bingoogolapple.rxjava.ui.activity;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -277,80 +276,28 @@ public class HelloworldActivity extends TitlebarActivity {
                 subscriber.onNext(drawable);
                 subscriber.onCompleted();
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Drawable>() {
-            @Override
-            public void onNext(Drawable drawable) {
-                ((ImageView) findViewById(R.id.iv_helloworld_test)).setImageDrawable(drawable);
-            }
-
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ToastUtil.show("加载图片失败");
-            }
-        });
-    }
-
-    public void test7(View v) {
-
+        }).compose(RxUtil.applySchedulers())
+                .subscribe(new SimpleSubscriber<Drawable>() {
+                    @Override
+                    public void onNext(Drawable drawable) {
+                        ((ImageView) findViewById(R.id.iv_helloworld_test)).setImageDrawable(drawable);
+                    }
+                });
     }
 
     /**
-     * 事件对象的直接变换
+     * Observable.just(1, 2, 3, 4) // IO 线程，由 subscribeOn() 指定
+     * .subscribeOn(Schedulers.io())
+     * .observeOn(Schedulers.newThread())
+     * .map(mapOperator) // 新线程，由 observeOn() 指定
+     * .observeOn(Schedulers.io())
+     * .map(mapOperator2) // IO 线程，由 observeOn() 指定
+     * .observeOn(AndroidSchedulers.mainThread)
+     * .subscribe(subscriber);  // Android 主线程，由 observeOn() 指定
+     * <p>
+     * <p>
+     * 不同于 observeOn() ， subscribeOn() 的位置放在哪里都可以，但它是只能调用一次的
      */
-    private void map() {
-        Observable.just("").map(new Func1<String, Bitmap>() {
-            @Override
-            public Bitmap call(String s) {
-                return null;
-            }
-        }).subscribe(new Action1<Bitmap>() {
-            @Override
-            public void call(Bitmap bitmap) {
-
-            }
-        });
-    }
-
-    private void flatMap() {
-        Student[] students = null;
-        Observable.from(students).flatMap(new Func1<Student, Observable<Course>>() {
-            @Override
-            public Observable<Course> call(Student student) {
-                return Observable.from(student.courses);
-            }
-        }).subscribe(new Subscriber<Course>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(Course course) {
-            }
-        });
-
-        /**
-         Observable.just(1, 2, 3, 4) // IO 线程，由 subscribeOn() 指定
-         .subscribeOn(Schedulers.io())
-         .observeOn(Schedulers.newThread())
-         .map(mapOperator) // 新线程，由 observeOn() 指定
-         .observeOn(Schedulers.io())
-         .map(mapOperator2) // IO 线程，由 observeOn() 指定
-         .observeOn(AndroidSchedulers.mainThread)
-         .subscribe(subscriber);  // Android 主线程，由 observeOn() 指定
-
-
-         不同于 observeOn() ， subscribeOn() 的位置放在哪里都可以，但它是只能调用一次的
-         */
-    }
-
     public void test8(View v) {
         mRemoteServerEngine.loadMoreDataRx(1)
                 .subscribeOn(Schedulers.io())
@@ -480,35 +427,15 @@ public class HelloworldActivity extends TitlebarActivity {
                 });
     }
 
-    public void test10(View v) {
-        newMethod(1).subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        showLoadingDialog(R.string.loading);
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {    // 类型转Observable
-                    @Override
-                    public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
-                        return Observable.from(refreshModels);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<RefreshModel>() {
-                    @Override
-                    public void onCompleted() {
-                        dismissLoadingDialog();
-                        ToastUtil.show("数据加载成功");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        dismissLoadingDialog();
-                        ToastUtil.show("数据加载失败");
-                    }
-
+    public void defer(View v) {
+        newMethod(1).flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
+            @Override
+            public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
+                return Observable.from(refreshModels);
+            }
+        }).compose(RxUtil.applySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new SimpleSubscriber<RefreshModel>() {
                     @Override
                     public void onNext(RefreshModel refreshModel) {
                         Logger.i(TAG, refreshModel.title);
@@ -518,17 +445,17 @@ public class HelloworldActivity extends TitlebarActivity {
 
     /**
      * Retrofit可以返回Observable对象，但是如果你使用的别的库并不支持这样怎么办？
-     * 或者说一个内部的内码，你想把他们转换成Observable的？有什么简单的办法没？
+     * 或者说一个内部的代码，你想把他们转换成Observable的？有什么简单的办法没？
      * 绝大多数时候Observable.just() 和 Observable.from() 能够帮助你从遗留代码中创建 Observable 对象
      * 如果oldMethod()足够快是没有什么问题的，但是如果很慢呢？调用oldMethod()将会阻塞住他所在的线程。
-     * <p>
-     * 使用defer()来包装缓慢的代码
+     * 可以使用defer()来包装缓慢的代码
      */
     private Observable<List<RefreshModel>> newMethod(final int param) {
+        logWithThread("defer", "newMethod");
         return Observable.defer(new Func0<Observable<List<RefreshModel>>>() {
             @Override
             public Observable<List<RefreshModel>> call() {
-                Logger.i(TAG, "defer call:" + Thread.currentThread().getName());
+                logWithThread("defer", "call");
                 try {
                     return Observable.just(oldMethod(param));
                 } catch (IOException e) {
@@ -565,16 +492,17 @@ public class HelloworldActivity extends TitlebarActivity {
                         return integer + integer2;
                     }
                 })
-                .subscribe(new Action1<Integer>() {
+                .compose(RxUtil.applySchedulers())
+                .subscribe(new SimpleSubscriber<Integer>() {
                     @Override
-                    public void call(Integer integer) {
-                        Logger.i(TAG, "和为 = " + integer);
+                    public void onNext(Integer integer) {
+                        logWithThread("和为", integer + "");
                     }
                 });
     }
 
     /**
-     * map: 对Observable发射的数据都应用一个函数，然后再发射最后的结果集。最后map()方法返回一个新的Observable。队列中的数据一个个通过Func1转换，同步的
+     * map: 对Observable发射的数据都应用一个函数，然后再发射最后的结果集。最后map()方法返回一个新的Observable。队列中的数据一个个通过Func1转换，同步的，输出的结果不是乱序的
      */
     public void mapDemo1(View v) {
         // 假设我们从服务器获取了一个字符串集合，我们想里面的数据项都转成大写，然后把集合的顺序反转。
@@ -613,28 +541,150 @@ public class HelloworldActivity extends TitlebarActivity {
                 "https://www.bing.com")
                 .map(new Func1<String, String>() {
                     @Override
-                    public String call(String s) {
-                        logWithThread("获取IP地址", s);
+                    public String call(String url) {
+                        logWithThread("获取IP地址", url);
 
                         // 这里添加ip地址的转换是耗时操作，转换完一个就会调用一次SimpleSubscriber的onNext方法，并不是所有的网址都转换完才调用SimpleSubscriber的onNext方法
                         try {
-                            Thread.sleep(2000);
-                            String address = InetAddress.getByName(new URL(s).getHost()).toString();
-                            int preIndex = address.indexOf("/");
-                            s += ":" + address.substring(preIndex + 1);
+                            url = getIpString(url);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        return s;
+                        return url;
                     }
                 })
                 .compose(RxUtil.applySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new SimpleSubscriber<String>() {
                     @Override
                     public void onNext(String s) {
                         logWithThread("结果", s);
                     }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Logger.i(TAG, "onCompleted");
+                    }
                 });
+    }
+
+    private String getIpString(String url) throws Exception {
+        Thread.sleep(2000);
+        String address = InetAddress.getByName(new URL(url).getHost()).toString();
+        int preIndex = address.indexOf("/");
+        return url + ":" + address.substring(preIndex + 1);
+    }
+
+    /**
+     * 对Observable发射的数据都应用(apply)一个函数，这个函数返回一个Observable，然后合并这些Observables，并且发送（emit）合并的结果。
+     * flatMap和map操作符很相像，flatMap发送的是合并后的Observables，map操作符发送的是应用函数后返回的结果集。
+     * flatMap的call方法里返回的Observable指定线程后，输出的结果是乱序的。不指定线程的话，输出的结果不是乱序的
+     */
+    public void flatMapDemo1(View v) {
+        Observable.just(
+                "http://www.baidu.com/",
+                "http://www.google.com/",
+                "https://www.bing.com/")
+                .flatMap(new Func1<String, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(String url) {
+                        logWithThread("外层获取IP地址", url);
+                        return Observable.create(new Observable.OnSubscribe<String>() {
+
+                            @Override
+                            public void call(Subscriber<? super String> subscriber) {
+                                logWithThread("内层获取IP地址", url);
+                                try {
+                                    subscriber.onNext(getIpString(url));
+                                } catch (Exception e) {
+                                    //subscriber.onError(e);
+                                    subscriber.onNext(null);
+                                }
+                                subscriber.onCompleted();
+                            }
+//                        });
+                            // 如果这里不指定线程，他们是通过一个线程来完成所有的任务的，队列中的数据一个个通过Func1转换，同步的。输出的结果不是乱序的
+                        }).subscribeOn(Schedulers.io());
+                        // 如果这里指定了线程，他们是通过不同线程来完成任务的，输出的结果是乱序的
+                    }
+                })
+                .compose(RxUtil.applySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new SimpleSubscriber<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        logWithThread("结果", s);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Logger.i(TAG, "onCompleted");
+                    }
+                });
+    }
+
+    public void flatMapDemo2(View v) {
+        Observable.just(
+                "http://www.baidu.com/",
+                "http://www.google.com/",
+                "https://www.bing.com/")
+                .flatMap(new Func1<String, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(String url) {
+                        logWithThread("外层获取IP地址", url);
+
+                        return Observable.defer(new Func0<Observable<String>>() {
+                            @Override
+                            public Observable<String> call() {
+                                logWithThread("内层获取IP地址", url);
+                                try {
+                                    return Observable.just(getIpString(url));
+                                } catch (Exception e) {
+                                    return Observable.error(e);
+                                }
+                            }
+//                        });
+                            // 如果这里不指定线程，他们是通过一个线程来完成所有的任务的，队列中的数据一个个通过Func1转换，同步的。输出的结果不是乱序的
+                        }).subscribeOn(Schedulers.io());
+                        // 如果这里指定了线程，他们是通过不同线程来完成任务的，输出的结果是乱序的
+                    }
+                })
+                .compose(RxUtil.applySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new SimpleSubscriber<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        logWithThread("结果", s);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Logger.i(TAG, "onCompleted");
+                    }
+                });
+    }
+
+    public void flatMapDemo3(View v) {
+        Student[] students = null;
+        Observable.from(students).flatMap(new Func1<Student, Observable<Course>>() {
+            @Override
+            public Observable<Course> call(Student student) {
+                return Observable.from(student.courses);
+            }
+        }).compose(RxUtil.applySchedulers())
+                .subscribe(new SimpleSubscriber<Course>() {
+                    @Override
+                    public void onNext(Course course) {
+                    }
+                });
+    }
+
+
+    public void concatMap(View v) {
+
     }
 
     private Observable mModelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
@@ -720,6 +770,7 @@ public class HelloworldActivity extends TitlebarActivity {
 
                     @Override
                     public void onCompleted() {
+                        super.onCompleted();
                         Logger.i(TAG, "onCompleted");  // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
                     }
 
@@ -762,6 +813,7 @@ public class HelloworldActivity extends TitlebarActivity {
 
                     @Override
                     public void onCompleted() {
+                        super.onCompleted();
                         Logger.i(TAG, "onCompleted");   // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
                     }
 
@@ -876,6 +928,7 @@ public class HelloworldActivity extends TitlebarActivity {
 
                     @Override
                     public void onCompleted() {
+                        super.onCompleted();
                         Logger.i(TAG, "onCompleted");
                     }
 

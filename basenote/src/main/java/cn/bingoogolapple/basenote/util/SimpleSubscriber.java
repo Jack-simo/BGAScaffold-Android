@@ -3,6 +3,7 @@ package cn.bingoogolapple.basenote.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.CallSuper;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
@@ -74,6 +75,7 @@ public abstract class SimpleSubscriber<T> extends Subscriber<T> {
         }
     }
 
+    @CallSuper
     @Override
     public void onCompleted() {
         dismissLoadingDialog();
@@ -95,7 +97,7 @@ public abstract class SimpleSubscriber<T> extends Subscriber<T> {
     /**
      * 隐藏加载对话框
      */
-    private void dismissLoadingDialog() {
+    protected void dismissLoadingDialog() {
         if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();
         }
