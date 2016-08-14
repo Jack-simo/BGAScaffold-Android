@@ -68,6 +68,16 @@
 
         <Button
             style="@style/DemoBtn"
+            android:onClick="mapDemo1"
+            android:text="mapDemo1" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="mapDemo2"
+            android:text="mapDemo2" />
+
+        <Button
+            style="@style/DemoBtn"
             android:onClick="zip"
             android:text="zip" />
 

@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import com.trello.rxlifecycle.ActivityEvent;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
@@ -32,7 +35,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -571,17 +573,69 @@ public class HelloworldActivity extends TitlebarActivity {
                 });
     }
 
-    public void testNetResult() {
-        mRemoteServerEngine.testNetResult1()
-                .compose(RxUtil.flatMapResultAndApplySchedulers())
-                .subscribe(new SimpleSubscriber<List<RefreshModel>>() {
+    /**
+     * map: 对Observable发射的数据都应用一个函数，然后再发射最后的结果集。最后map()方法返回一个新的Observable。队列中的数据一个个通过Func1转换，同步的
+     */
+    public void mapDemo1(View v) {
+        // 假设我们从服务器获取了一个字符串集合，我们想里面的数据项都转成大写，然后把集合的顺序反转。
+        // 如把[“this”,”is”,”rxJava”]转成[“RXJAVA”,”IS”,“THIS”]
+        Observable.from(new String[]{"This", "is", "RxJava"})
+                .map(new Func1<String, String>() {
                     @Override
-                    public void onNext(List<RefreshModel> refreshModels) {
-
+                    public String call(String s) {
+                        logWithThread("转换大写", s);
+                        return s.toUpperCase();
+                    }
+                })
+                .toList()
+                .map(new Func1<List<String>, List<String>>() {
+                    @Override
+                    public List<String> call(List<String> strings) {
+                        logWithThread("倒序排队", strings.toString());
+                        Collections.reverse(strings);
+                        return strings;
+                    }
+                })
+                .compose(RxUtil.applySchedulers())
+                .subscribe(new SimpleSubscriber<List<String>>() {
+                    @Override
+                    public void onNext(List<String> strings) {
+                        logWithThread("结果", strings.toString());
                     }
                 });
     }
 
+    public void mapDemo2(View v) {
+        // 假设我们有一个主机列表，想根据这个主机列表好获取它们的IP地址。
+        Observable.just(
+                "http://www.baidu.com",
+                "http://www.google.com",
+                "https://www.bing.com")
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        logWithThread("获取IP地址", s);
+
+                        // 这里添加ip地址的转换是耗时操作，转换完一个就会调用一次SimpleSubscriber的onNext方法，并不是所有的网址都转换完才调用SimpleSubscriber的onNext方法
+                        try {
+                            Thread.sleep(2000);
+                            String address = InetAddress.getByName(new URL(s).getHost()).toString();
+                            int preIndex = address.indexOf("/");
+                            s += ":" + address.substring(preIndex + 1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return s;
+                    }
+                })
+                .compose(RxUtil.applySchedulers())
+                .subscribe(new SimpleSubscriber<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        logWithThread("结果", s);
+                    }
+                });
+    }
 
     private Observable mModelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
         @Override
@@ -810,7 +864,7 @@ public class HelloworldActivity extends TitlebarActivity {
             }
         });
         // 不管是否给concat中的Observable单独指定工作线程，都是按添加的先后顺序串行执行的
-        Subscription subscription = Observable.concat(memoryObservable, diskObservable, networkObservable)
+        Observable.concat(memoryObservable, diskObservable, networkObservable)
                 .first()
                 .compose(RxUtil.applySchedulers())
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
@@ -830,6 +884,10 @@ public class HelloworldActivity extends TitlebarActivity {
                         Logger.i(TAG, "onError:" + msg);
                     }
                 });
+    }
+
+    private void logWithThread(String methodName, String msg) {
+        Logger.i(TAG, "| " + Thread.currentThread().getName() + " | " + methodName + " | " + msg);
     }
 
 }
