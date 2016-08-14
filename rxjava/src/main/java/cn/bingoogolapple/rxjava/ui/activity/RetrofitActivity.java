@@ -19,6 +19,7 @@ import cn.bingoogolapple.basenote.engine.ApiParams;
 import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.Md5Util;
 import cn.bingoogolapple.basenote.util.PermissionUtil;
+import cn.bingoogolapple.basenote.util.RxUtil;
 import cn.bingoogolapple.basenote.util.StorageUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
@@ -144,7 +145,7 @@ public class RetrofitActivity extends TitlebarActivity {
 
         showLoadingDialog(R.string.loading);
         mLocalServerEngine.loginGet("hello", "world")
-                .compose(applySchedulers())
+                .compose(RxUtil.applySchedulers())
                 .subscribe(mMsgObserver);
     }
 

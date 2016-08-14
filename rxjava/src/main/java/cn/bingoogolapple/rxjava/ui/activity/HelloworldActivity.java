@@ -15,6 +15,7 @@ import java.util.List;
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.NetResult;
+import cn.bingoogolapple.basenote.util.RxUtil;
 import cn.bingoogolapple.basenote.util.SimpleSubscriber;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
@@ -455,7 +456,7 @@ public class HelloworldActivity extends TitlebarActivity {
                         return Observable.from(refreshModels);
                     }
                 })
-                .compose(applySchedulers())
+                .compose(RxUtil.applySchedulers())
                 .subscribe(new Observer<RefreshModel>() {
                     @Override
                     public void onCompleted() {
@@ -604,7 +605,7 @@ public class HelloworldActivity extends TitlebarActivity {
 
     public void testNetResult() {
         mRemoteServerEngine.testNetResult1()
-                .compose(flatMapResultAndApplySchedulers())
+                .compose(RxUtil.flatMapResultAndApplySchedulers())
                 .subscribe(new SimpleSubscriber<List<RefreshModel>>() {
                     @Override
                     public void onNext(List<RefreshModel> refreshModels) {
@@ -766,7 +767,7 @@ public class HelloworldActivity extends TitlebarActivity {
                 subscriber.onNext(netResult);
                 subscriber.onCompleted();
             }
-        }).compose(flatMapResultAndApplySchedulers())
+        }).compose(RxUtil.flatMapResultAndApplySchedulers())
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new SimpleSubscriber<ModelOne>(this, false) {
                     @Override

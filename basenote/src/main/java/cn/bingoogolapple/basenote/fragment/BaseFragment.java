@@ -14,9 +14,6 @@ import com.zhy.changeskin.SkinManager;
 
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -146,17 +143,5 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     public void onDestroy() {
         super.onDestroy();
         mApp.getRefWatcher().watch(this);
-    }
-
-    protected final Observable.Transformer mSchedulersTransformer = new Observable.Transformer() {
-        @Override
-        public Object call(Object observable) {
-            return ((Observable) observable).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-    };
-
-    protected <T> Observable.Transformer<T, T> applySchedulers() {
-        return (Observable.Transformer<T, T>) mSchedulersTransformer;
     }
 }
