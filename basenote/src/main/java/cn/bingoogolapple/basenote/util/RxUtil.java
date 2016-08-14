@@ -53,9 +53,8 @@ public class RxUtil {
                 T cache = (T) CacheManager.readObject(context, cacheKey, expireTime);
                 if (cache != null) {
                     subscriber.onNext(cache);
-                } else {
-                    subscriber.onCompleted();
                 }
+                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 

@@ -32,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -539,39 +540,6 @@ public class HelloworldActivity extends TitlebarActivity {
         return mRemoteServerEngine.loadMoreData(page).execute().body();
     }
 
-    /**
-     * concat + first 实现三级缓存
-     */
-    private void testConcat() {
-        Observable<String> memory = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                String memoryCache = "";
-                if (memoryCache != null) {
-                    subscriber.onNext(memoryCache);
-                } else {
-                    subscriber.onCompleted();
-                }
-            }
-        });
-        Observable<String> disk = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                String cachePref = "";
-                if (!TextUtils.isEmpty(cachePref)) {
-                    subscriber.onNext(cachePref);
-                } else {
-                    subscriber.onCompleted();
-                }
-            }
-        });
-        Observable<String> network = Observable.just("network");
-        Observable.concat(memory, disk, network)
-                .first()
-                .subscribeOn(Schedulers.newThread())
-                .subscribe();
-    }
-
     public void test11(View v) {
         Observable
                 .just("1", "2", "3", "3", "5", "6")
@@ -773,6 +741,93 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void onNext(ModelOne modelOne) {
                         ToastUtil.show("请求成功");
+                    }
+                });
+    }
+
+    /**
+     * concat + first 实现三级缓存
+     */
+    public void concat(View v) {
+        Observable<String> memoryObservable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                Logger.i(TAG, "memoryObservable call ThreadName:" + Thread.currentThread().getName());
+                String result = "";
+                try {
+                    Thread.sleep(3000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!TextUtils.isEmpty(result)) {
+                    subscriber.onNext(result);
+                }
+                subscriber.onCompleted();
+            }
+        });
+        Observable<String> diskObservable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                Logger.i(TAG, "diskObservable call ThreadName:" + Thread.currentThread().getName());
+                String result = "磁盘";
+                try {
+                    Thread.sleep(2000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!TextUtils.isEmpty(result)) {
+                    subscriber.onNext(result);
+                }
+                subscriber.onCompleted();
+            }
+        }).map(new Func1<String, String>() {
+            @Override
+            public String call(String s) {
+                // 缓存到内存中
+                return s;
+            }
+        });
+        Observable<String> networkObservable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                Logger.i(TAG, "networkObservable call ThreadName:" + Thread.currentThread().getName());
+                String result = "网络";
+                try {
+                    Thread.sleep(1000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!TextUtils.isEmpty(result)) {
+                    subscriber.onNext(result);
+                }
+                subscriber.onCompleted();
+            }
+        }).map(new Func1<String, String>() {
+            @Override
+            public String call(String s) {
+                // 缓存到硬盘和内存中
+                return s;
+            }
+        });
+        // 不管是否给concat中的Observable单独指定工作线程，都是按添加的先后顺序串行执行的
+        Subscription subscription = Observable.concat(memoryObservable, diskObservable, networkObservable)
+                .first()
+                .compose(RxUtil.applySchedulers())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new SimpleSubscriber<String>() {
+                    @Override
+                    public void onNext(String result) {
+                        Logger.i(TAG, "请求成功:" + result);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        Logger.i(TAG, "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(String msg) {
+                        Logger.i(TAG, "onError:" + msg);
                     }
                 });
     }

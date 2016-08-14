@@ -81,5 +81,10 @@
             android:onClick="compose"
             android:text="compose" />
 
+        <Button
+            style="@style/DemoBtn"
+            android:onClick="concat"
+            android:text="concat" />
+
     </LinearLayout>
 </ScrollView>
