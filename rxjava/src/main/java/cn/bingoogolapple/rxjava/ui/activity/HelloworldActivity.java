@@ -683,7 +683,7 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
     /**
-     * 既要是多个线程完成任务，又要保持任务的顺序
+     * 功能与flatMap类似，但是发射数据是有序的。既要是多个线程完成任务，又要保持任务的顺序
      */
     public void concatMapDemo1(View v) {
         Observable.just(
@@ -770,6 +770,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     }
                 });
     }
+
 
     private Observable mModelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
         @Override
@@ -936,14 +937,19 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
     /**
-     * concat + first 实现三级缓存
+     * concat操作符是接收若干个Observables，发射数据是有序的，不会交叉。
+     * concat + takeFirst 实现三级缓存
+     *
+     * 使用first时需要注意的是，如果memoryObservable, diskObservable, networkObservable返回的都null，那么会报一个异常：java.util.NoSuchElementException: Sequence contains no elements
+     * 可以使用takeFirst操作，即使都没有数据，也不会报异常。
+     * 如果想针对三个都返回空时提示具体的提示信息就还是用first，并根据NoSuchElementException来提示
      */
     public void concat(View v) {
         Observable<String> memoryObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 Logger.i(TAG, "memoryObservable call ThreadName:" + Thread.currentThread().getName());
-                String result = "";
+                String result = null;
                 try {
                     Thread.sleep(3000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
                 } catch (InterruptedException e) {
@@ -959,7 +965,7 @@ public class HelloworldActivity extends TitlebarActivity {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 Logger.i(TAG, "diskObservable call ThreadName:" + Thread.currentThread().getName());
-                String result = "磁盘";
+                String result = null;
                 try {
                     Thread.sleep(2000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
                 } catch (InterruptedException e) {
@@ -981,7 +987,7 @@ public class HelloworldActivity extends TitlebarActivity {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 Logger.i(TAG, "networkObservable call ThreadName:" + Thread.currentThread().getName());
-                String result = "网络";
+                String result = null;
                 try {
                     Thread.sleep(1000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
                 } catch (InterruptedException e) {
@@ -1001,7 +1007,13 @@ public class HelloworldActivity extends TitlebarActivity {
         });
         // 不管是否给concat中的Observable单独指定工作线程，都是按添加的先后顺序串行执行的
         Observable.concat(memoryObservable, diskObservable, networkObservable)
-                .first()
+//                .first()   // 如果memoryObservable, diskObservable, networkObservable返回的都null，那么会报一个异常：java.util.NoSuchElementException: Sequence contains no elements
+                .takeFirst(new Func1<String, Boolean>() {  // 使用takeFirst操作，即使memoryObservable, diskObservable, networkObservable返回的都null，也不会报异常。
+                    @Override
+                    public Boolean call(String s) {
+                        return s != null;
+                    }
+                })
                 .compose(RxUtil.applySchedulers())
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new SimpleSubscriber<String>() {
