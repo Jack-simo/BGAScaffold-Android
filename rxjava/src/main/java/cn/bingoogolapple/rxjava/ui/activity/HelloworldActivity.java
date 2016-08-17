@@ -939,7 +939,7 @@ public class HelloworldActivity extends TitlebarActivity {
     /**
      * concat操作符是接收若干个Observables，发射数据是有序的，不会交叉。
      * concat + takeFirst 实现三级缓存
-     *
+     * <p>
      * 使用first时需要注意的是，如果memoryObservable, diskObservable, networkObservable返回的都null，那么会报一个异常：java.util.NoSuchElementException: Sequence contains no elements
      * 可以使用takeFirst操作，即使都没有数据，也不会报异常。
      * 如果想针对三个都返回空时提示具体的提示信息就还是用first，并根据NoSuchElementException来提示
@@ -1040,3 +1040,18 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
 }
+
+/**
+ * RxJava 使用debounce和switchMap操作符 优化app搜索功能   http://blog.csdn.net/johnny901114/article/details/51555203
+ * <p>
+ * switchMap操作符 和 flatMap操作符 差不多，区别是switchMap操作符只会发射[emit]最近的Observables。
+ * 也就是说，当400毫秒后，发出第一个搜索请求，当这个请求的过程中，用户又去搜索了，发出第二个请求，不管怎样，switchMap操作符只会发射第二次请求的Observable
+ */
+
+/**
+ * RxJava retryWhen操作符实现错误重试机制    http://blog.csdn.net/johnny901114/article/details/51539708
+ */
+
+/**
+ * RxJava onErrorResumeNext操作符实现app与服务器间token机制    http://blog.csdn.net/johnny901114/article/details/51533586
+ */
