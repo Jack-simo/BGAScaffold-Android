@@ -1,1 +1,1 @@
-include ':basenote', ':alarmclock', ':materialdrawer'
+include ':basenote', ':alarmclock'
