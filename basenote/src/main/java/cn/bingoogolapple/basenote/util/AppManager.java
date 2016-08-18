@@ -132,7 +132,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     /**
-     * 双击后 全退出应用程序
+     * 1500毫秒内，连续点击两次按返回键时退出应用程序
      */
     public void exitWithDoubleClick() {
         if (System.currentTimeMillis() - mLastPressBackKeyTime <= 1500) {

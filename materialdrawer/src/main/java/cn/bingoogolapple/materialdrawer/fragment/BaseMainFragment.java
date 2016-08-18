@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import cn.bingoogolapple.basenote.fragment.ToolbarFragment;
+import cn.bingoogolapple.basenote.view.ToolbarFragment;
 import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.materialdrawer.activity.MainActivity;
 

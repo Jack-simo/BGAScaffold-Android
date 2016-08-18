@@ -29,7 +29,7 @@ public class RxUtil {
                         if (result.code == 0) {
                             return Observable.just(result.data);
                         } else {
-                            return Observable.error(new ServerException(result.msg));
+                            return Observable.error(new ApiException(result.msg));
                         }
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

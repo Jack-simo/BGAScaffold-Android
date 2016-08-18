@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchMatch.Vertical">
+
+    <LinearLayout
+        style="@style/MatchWrap.Horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/size_level2">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/WrapWrap"
+            android:layout_marginRight="@dimen/size_level2"
+            android:text="@string/plan_time"
+            android:textColor="@color/black_dark"
+            android:textSize="@dimen/textSize_16" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_edit_plan_time"
+            style="@style/MatchWrap"
+            android:background="@drawable/shape_stroke_line"
+            android:ellipsize="end"
+            android:padding="@dimen/size_level2"
+            android:singleLine="true"
+            android:textColor="@color/black_dark"
+            android:textSize="@dimen/textSize_16"
+            tools:text="2015-10-11 12:15" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/MatchWrap.Horizontal"
+        android:baselineAligned="false"
+        android:padding="@dimen/size_level2">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/WrapWrap"
+            android:layout_marginRight="@dimen/size_level2"
+            android:paddingTop="@dimen/size_level2"
+            android:text="@string/plan_content"
+            android:textColor="@color/black_dark"
+            android:textSize="@dimen/textSize_16" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_edit_plan_content"
+            style="@style/MatchWrap"
+            android:background="@drawable/shape_stroke_line"
+            android:gravity="start"
+            android:lines="10"
+            android:padding="@dimen/size_level2"
+            android:textColor="@color/black_dark"
+            android:textSize="@dimen/textSize_16"
+            tools:text="我是计划内容" />
+    </LinearLayout>
+</LinearLayout>

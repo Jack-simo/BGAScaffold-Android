@@ -3,7 +3,7 @@ package cn.bingoogolapple.materialdrawer.activity;
 import android.os.Bundle;
 import android.view.View;
 
-import cn.bingoogolapple.basenote.activity.ToolbarActivity;
+import cn.bingoogolapple.basenote.view.ToolbarActivity;
 import cn.bingoogolapple.basenote.util.SkinUtil;
 import cn.bingoogolapple.materialdrawer.R;
 

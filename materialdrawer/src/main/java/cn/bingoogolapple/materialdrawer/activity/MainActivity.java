@@ -15,7 +15,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import cn.bingoogolapple.basenote.activity.BaseActivity;
+import cn.bingoogolapple.basenote.view.BaseActivity;
 import cn.bingoogolapple.materialdrawer.R;
 import cn.bingoogolapple.materialdrawer.fragment.Fragment11;
 import cn.bingoogolapple.materialdrawer.fragment.Fragment12;
