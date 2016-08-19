@@ -1,4 +1,4 @@
-package cn.bingoogolapple.alarmclock.ui.activity;
+package cn.bingoogolapple.alarmclock.plans;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.model.Plan;
-import cn.bingoogolapple.alarmclock.presenter.PlansPresenter;
-import cn.bingoogolapple.alarmclock.presenter.impl.PlansPresenterImpl;
+import cn.bingoogolapple.alarmclock.data.Plan;
+import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
 import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListener;

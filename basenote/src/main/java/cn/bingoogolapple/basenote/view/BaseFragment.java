@@ -169,4 +169,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     public void showMsg(String msg) {
         ToastUtil.show(msg);
     }
+
+    @Override
+    public BaseActivity getBaseActivity() {
+        return mActivity;
+    }
 }

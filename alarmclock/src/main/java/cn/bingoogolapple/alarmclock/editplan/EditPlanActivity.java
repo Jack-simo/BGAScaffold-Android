@@ -1,4 +1,4 @@
-package cn.bingoogolapple.alarmclock.ui.activity;
+package cn.bingoogolapple.alarmclock.editplan;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,9 +15,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.model.Plan;
-import cn.bingoogolapple.alarmclock.presenter.EditPlanPresenter;
-import cn.bingoogolapple.alarmclock.presenter.impl.EditPlanPresenterImpl;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.util.CalendarUtil;

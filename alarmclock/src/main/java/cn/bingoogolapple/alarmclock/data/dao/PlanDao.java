@@ -1,4 +1,4 @@
-package cn.bingoogolapple.alarmclock.dao;
+package cn.bingoogolapple.alarmclock.data.dao;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -8,7 +8,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bingoogolapple.alarmclock.model.Plan;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.provider.PlanProvider;
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.util.Logger;

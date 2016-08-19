@@ -1,13 +1,10 @@
-package cn.bingoogolapple.alarmclock.presenter.impl;
-
-import android.app.Activity;
+package cn.bingoogolapple.alarmclock.plans;
 
 import java.util.List;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.dao.PlanDao;
-import cn.bingoogolapple.alarmclock.model.Plan;
-import cn.bingoogolapple.alarmclock.presenter.PlansPresenter;
+import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.basenote.presenter.BasePresenterImpl;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
@@ -39,9 +36,9 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                     List<Plan> plans = PlanDao.queryPlan();
                     long endTime = System.currentTimeMillis();
                     long time = endTime - beginTime;
-                    if (time < 700) {
+                    if (time < 1000) {
                         try {
-                            Thread.sleep(700 - time);
+                            Thread.sleep(1000 - time);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -61,7 +58,7 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                 }
             }
         }).compose(RxUtil.applySchedulers())
-                .subscribe(new LocalSubscriber<List<Plan>>((Activity) mView) {
+                .subscribe(new LocalSubscriber<List<Plan>>(mView.getBaseActivity()) {
                     @Override
                     public void onNext(List<Plan> plans) {
                         mView.showPlans(plans);

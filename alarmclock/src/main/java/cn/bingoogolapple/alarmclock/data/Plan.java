@@ -1,4 +1,4 @@
-package cn.bingoogolapple.alarmclock.model;
+package cn.bingoogolapple.alarmclock.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -12,4 +12,6 @@ public interface BaseView {
     void showMsg(@StringRes int resId);
 
     void showMsg(String msg);
+
+    BaseActivity getBaseActivity();
 }

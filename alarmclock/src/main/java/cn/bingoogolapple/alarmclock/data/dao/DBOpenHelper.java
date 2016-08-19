@@ -1,4 +1,4 @@
-package cn.bingoogolapple.alarmclock.dao;
+package cn.bingoogolapple.alarmclock.data.dao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

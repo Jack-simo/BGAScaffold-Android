@@ -9,9 +9,9 @@ import android.media.RingtoneManager;
 import android.support.v7.app.NotificationCompat;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.model.Plan;
-import cn.bingoogolapple.alarmclock.ui.activity.AlarmActivity;
-import cn.bingoogolapple.alarmclock.ui.activity.EditPlanActivity;
+import cn.bingoogolapple.alarmclock.data.Plan;
+import cn.bingoogolapple.alarmclock.alarm.AlarmActivity;
+import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.basenote.App;
 

@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import cn.bingoogolapple.alarmclock.dao.DBOpenHelper;
+import cn.bingoogolapple.alarmclock.data.dao.DBOpenHelper;
 import cn.bingoogolapple.basenote.util.Logger;
 
 /**

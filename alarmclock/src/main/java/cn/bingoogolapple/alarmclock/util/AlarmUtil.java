@@ -5,9 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import cn.bingoogolapple.alarmclock.model.Plan;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.receiver.AlarmReceiver;
-import cn.bingoogolapple.alarmclock.ui.activity.EditPlanActivity;
+import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
 import cn.bingoogolapple.basenote.App;
 
 /**

@@ -1,8 +1,8 @@
-package cn.bingoogolapple.alarmclock.presenter;
+package cn.bingoogolapple.alarmclock.plans;
 
 import java.util.List;
 
-import cn.bingoogolapple.alarmclock.model.Plan;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.basenote.presenter.BasePresenter;
 import cn.bingoogolapple.basenote.view.BaseView;
 

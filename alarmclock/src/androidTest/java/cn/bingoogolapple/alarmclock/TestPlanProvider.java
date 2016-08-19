@@ -5,8 +5,8 @@ import android.test.AndroidTestCase;
 import java.util.Calendar;
 import java.util.List;
 
-import cn.bingoogolapple.alarmclock.dao.PlanDao;
-import cn.bingoogolapple.alarmclock.model.Plan;
+import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.Logger;
 

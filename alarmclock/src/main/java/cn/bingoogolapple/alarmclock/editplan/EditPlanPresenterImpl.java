@@ -1,9 +1,8 @@
-package cn.bingoogolapple.alarmclock.presenter.impl;
+package cn.bingoogolapple.alarmclock.editplan;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.dao.PlanDao;
-import cn.bingoogolapple.alarmclock.model.Plan;
-import cn.bingoogolapple.alarmclock.presenter.EditPlanPresenter;
+import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.basenote.presenter.BasePresenterImpl;
 import cn.bingoogolapple.basenote.util.LocalSubscriber;

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rv_plans_plan"
     style="@style/MatchMatch"
-    android:background="@android:color/white"
+    android:background="@color/white"
     android:overScrollMode="never"
     android:scrollbars="none"
     tools:listitem="@layout/item_plan" />

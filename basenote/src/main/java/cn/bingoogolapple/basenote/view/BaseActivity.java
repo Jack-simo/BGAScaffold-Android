@@ -294,4 +294,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     public void showMsg(String msg) {
         ToastUtil.show(msg);
     }
+
+    @Override
+    public BaseActivity getBaseActivity() {
+        return this;
+    }
 }

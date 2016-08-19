@@ -1,4 +1,4 @@
-package cn.bingoogolapple.alarmclock.ui.activity;
+package cn.bingoogolapple.alarmclock.alarm;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.model.Plan;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.basenote.presenter.BasePresenter;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.view.TitlebarActivity;
