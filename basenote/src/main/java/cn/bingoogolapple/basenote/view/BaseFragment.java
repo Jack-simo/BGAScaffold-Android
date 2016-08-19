@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zhy.changeskin.SkinManager;
-
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.presenter.BasePresenter;
 import cn.bingoogolapple.basenote.util.ToastUtil;
@@ -139,12 +137,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
      * @param v
      */
     public void onClick(View v) {
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        SkinManager.getInstance().injectSkin(mContentView);
     }
 
     @Override

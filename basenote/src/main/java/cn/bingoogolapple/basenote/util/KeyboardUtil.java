@@ -2,7 +2,10 @@ package cn.bingoogolapple.basenote.util;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -19,6 +22,7 @@ public class KeyboardUtil {
 
     /**
      * 关闭activity中打开的键盘
+     *
      * @param activity
      */
     public static void closeKeyboard(Activity activity) {
@@ -31,6 +35,7 @@ public class KeyboardUtil {
 
     /**
      * 关闭dialog中打开的键盘
+     *
      * @param dialog
      */
     public static void closeKeyboard(Dialog dialog) {
@@ -43,6 +48,7 @@ public class KeyboardUtil {
 
     /**
      * 打开键盘
+     *
      * @param context
      * @param editText
      */
@@ -56,5 +62,20 @@ public class KeyboardUtil {
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         }, 300);
+    }
+
+    /**
+     * 拷贝文档到黏贴板
+     *
+     * @param text
+     */
+    public static void clip(Context context, String text) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setText(text);
+        } else {
+            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setPrimaryClip(ClipData.newPlainText("content", text));
+        }
     }
 }

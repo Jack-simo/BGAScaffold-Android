@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryDark">#00ce7d</color>
+    <color name="colorPrimaryDark">#00ae7d</color>
     <color name="colorPrimary">#00ce7d</color>
     <color name="navigationBarColor">@color/colorPrimary</color>
     <color name="colorAccent">@color/colorPrimary</color>
@@ -19,10 +19,5 @@
     <color name="gray_line">#dedede</color>
     <color name="list_item_pressed">#efefef</color>
     <color name="white">#ffffff</color>
-
-
-    <color name="skin_theme_background_green">@color/colorPrimary</color>
-    <color name="skin_theme_background_orange">#f46444</color>
-
 
 </resources>

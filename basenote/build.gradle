@@ -58,7 +58,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.wdullaer:materialdatetimepicker:2.3.0'
-    compile 'com.zhy:changeskin:4.0.2'
+    compile 'com.daimajia.numberprogressbar:library:1.2@aar'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

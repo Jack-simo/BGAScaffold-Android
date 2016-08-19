@@ -7,8 +7,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import com.zhy.changeskin.SkinManager;
-
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -44,7 +42,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     public AppManager init(Context context) {
         mContext = context.getApplicationContext();
 
-        SkinManager.getInstance().init(mContext);
         CrashHandler.getInstance().init(mContext);
 
         return this;
@@ -53,8 +50,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         mActivityStack.add(activity);
-
-        SkinManager.getInstance().register(activity);
     }
 
     @Override
@@ -67,7 +62,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
-        SkinUtil.initStatusbarSkin(activity);
     }
 
     @Override
@@ -89,8 +83,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityDestroyed(Activity activity) {
         mActivityStack.remove(activity);
-
-        SkinManager.getInstance().unregister(activity);
     }
 
     public Activity currentActivity() {

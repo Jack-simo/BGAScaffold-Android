@@ -39,4 +39,11 @@ public abstract class ToolbarActivity<P extends BasePresenter> extends BaseActiv
     public void setTitle(CharSequence title) {
         getSupportActionBar().setTitle(title);
     }
+
+    /**
+     * 隐藏返回箭头
+     */
+    public void hiddenBackArrow() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
 }
