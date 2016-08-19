@@ -47,7 +47,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
             initView(savedInstanceState);
             setListener();
             processLogic(savedInstanceState);
-            initPresenter();
         }
         return mContentView;
     }
@@ -59,9 +58,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         if (parent != null) {
             parent.removeView(mContentView);
         }
-    }
-
-    protected void initPresenter() {
     }
 
     @Override

@@ -41,7 +41,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         initView(savedInstanceState);
         setListener();
         processLogic(savedInstanceState);
-        initPresenter();
     }
 
     /**
@@ -124,9 +123,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * @param savedInstanceState
      */
     protected abstract void processLogic(Bundle savedInstanceState);
-
-    protected void initPresenter() {
-    }
 
     /**
      * 需要处理点击事件时，重写该方法
