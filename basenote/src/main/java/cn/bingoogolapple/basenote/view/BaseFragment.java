@@ -149,10 +149,10 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mPresenter != null) {
             mPresenter.onDestroy();
         }
+        super.onDestroy();
         mApp.getRefWatcher().watch(this);
     }
 
