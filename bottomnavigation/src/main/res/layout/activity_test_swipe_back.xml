@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MatchMatch.Vertical">
+              style="@style/MatchMatch.Vertical">
 
-    <TextView
-        style="@style/MatchMatch"
-        android:gravity="center"
-        android:text="测试滑动返回"
-        android:textColor="@color/orange_normal"
-        android:textSize="50sp" />
+    <Button
+        android:id="@+id/load_from_assets"
+        style="@style/DemoBtn"
+        android:text="loadFromAssets"/>
+
+    <Button
+        android:id="@+id/load_from_sdcard"
+        style="@style/DemoBtn"
+        android:text="loadFromSDCard"/>
+
+    <Button
+        android:id="@+id/receive_msg"
+        style="@style/DemoBtn"
+        android:text="receiveMsg"/>
+
+    <Button
+        android:id="@+id/load_from_remote"
+        style="@style/DemoBtn"
+        android:text="loadFromRemote"/>
+
+    <WebView
+        android:id="@+id/webView"
+        style="@style/MatchMatch"/>
 </LinearLayout>

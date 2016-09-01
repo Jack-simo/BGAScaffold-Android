@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Test HTML5</title>
+    <style type="text/css">
+        input {
+        width: 90%;
+        height: 30px;
+        }
+        button {
+        width: 60%;
+        height: 30px;
+        background: #ff00ff;
+        }
+    </style>
+    <script type="text/javascript">
+        function sendMsg() {
+            var msg = document.getElementById("msg").value;
+            app.sendMsg(msg);
+        }
+
+        function receiveMsg(msg) {
+            document.getElementById("msg").value = msg;
+        }
+    </script>
+</head>
+<body>
+<input id="msg"/>
+<br>
+<br>
+<button onclick="sendMsg()">发送消息</button>
+</body>
+</html>
