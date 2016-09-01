@@ -26,7 +26,8 @@
         <activity
             android:name=".activity.TestSwipeBackActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/AppTheme.Transparent"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
     </application>
 
 </manifest>

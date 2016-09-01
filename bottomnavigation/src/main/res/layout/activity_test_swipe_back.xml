@@ -24,5 +24,6 @@
 
     <WebView
         android:id="@+id/webView"
-        style="@style/MatchMatch"/>
+        style="@style/MatchMatch"
+        android:layerType="hardware"/>
 </LinearLayout>

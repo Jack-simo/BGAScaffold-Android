@@ -1,14 +1,25 @@
 package cn.bingoogolapple.bottomnavigation.activity;
 
 import android.Manifest;
+import android.graphics.Bitmap;
+import android.net.http.SslError;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
+import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.bottomnavigation.R;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -47,9 +58,79 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
     protected void processLogic(Bundle savedInstanceState) {
         setLeftDrawable(R.drawable.selector_nav_back);
         setTitle("测试滑动返回");
+
+        initWebSettings();
+    }
+
+    private void initWebSettings() {
         mWebAppInterface = new WebAppInterface();
-        mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(mWebAppInterface, "app");
+
+        WebSettings settings = mWebView.getSettings();
+        // WebView默认是不支持JavaScript的,这里设置支持JavaScript
+        settings.setJavaScriptEnabled(true);
+        settings.setAppCacheEnabled(true);
+        // 设置优先从缓存加载
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        settings.setLoadWithOverviewMode(true);
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        settings.setSupportZoom(true);
+
+        /**
+         * 如果没有提供 WebViewClient 对象，则 WebView 会请求 Activity 管理者选择合适的 URL 处理方式，一般情况就是启动浏览器来加载URL；
+         * 如果提供了 WebViewClient 对象且shouldOverrideUrlLoading 方法返回 true，则主机应用（意思应该是 Android 系统）处理URL；
+         * 如果提供了 WebViewClient 对象且shouldOverrideUrlLoading 方法返回 false，则当前 WebView 处理URL；
+         */
+        mWebView.setWebViewClient(new WebViewClient() {
+            // 如果不拦截特定的url,不用重写该方法
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (!TextUtils.isEmpty(url)) {
+                    view.loadUrl(url);
+                }
+                return true;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                showLoadingDialog(R.string.loading_data_tip);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                dismissLoadingDialog();
+                /**
+                 * Uncaught ReferenceError: functionName is not defined
+                 * 问题出现原因，网页的js代码没有加载完成，就调用了js方法。解决方法是在网页加载完成之后调用js方法
+                 * 即在 onPageFinished 方法里调用js里的方法
+                 */
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                dismissLoadingDialog();
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                // 当加载https时候，需要加入下面代码,接受所有证书
+                handler.proceed();
+            }
+        });
+
+        // 如果不 setWebChromeClient,那么 html 里的 Alert 将无法弹出
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                Logger.i(TAG, "progress:" + newProgress);
+            }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                setTitle(title);
+            }
+        });
     }
 
     @Override
@@ -61,7 +142,7 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
         } else if (v.getId() == R.id.receive_msg) {
             mWebAppInterface.receiveMsg("来自java的消息");
         } else if (v.getId() == R.id.load_from_remote) {
-            mWebView.loadUrl("http://www.bingoogolapple.cn");
+            mWebView.loadUrl("http://image.baidu.com");
         }
     }
 
@@ -89,13 +170,61 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
         }
     }
 
+    @Override
+    protected void onResume() {
+        if (mWebView != null) {
+            mWebView.onResume();
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        if (mWebView != null) {
+            mWebView.onPause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mWebView != null) {
+            ((ViewGroup) mWebView.getParent()).removeView(mWebView);
+            mWebView.removeAllViews();
+            mWebView.destroy();
+            mWebView = null;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mWebView.canGoBack()) {
+            mWebView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     class WebAppInterface {
+        /**
+         * 如果在没有混淆的版本运行正常，在混淆后的版本的代码运行错误，并提示Uncaught TypeError: Object [object Object] has no method，那就是没有做混淆例外处理。
+         * <p>
+         * keepattributes *Annotation*
+         * keepattributes JavascriptInterface
+         * -keep class cn.bingoogolapple.bottomnavigation.activity$WebAppInterface { *; }
+         */
+
         @JavascriptInterface
         public void sendMsg(String msg) {
             ToastUtil.show(msg);
         }
 
         public void receiveMsg(String msg) {
+            /**
+             * All WebView methods must be called on the same thread
+             * 在js调用后的Java回调线程并不是主线程,需将webview操作放在主线程
+             */
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -105,3 +234,9 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
         }
     }
 }
+
+/**
+ * 使用本地浏览器打开网页
+ * Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://image.baidu.com"));
+ * startActivity(intent);
+ */
