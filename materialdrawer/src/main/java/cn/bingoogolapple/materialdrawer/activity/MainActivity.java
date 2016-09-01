@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity implements Drawer.OnDrawerItemCli
     public void putBackFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fl_main_content, fragment);
+        // 如果这里不添加这一句会走onDestroy方法
         fragmentTransaction.addToBackStack(fragment.getClass().getName());
         fragmentTransaction.commit();
     }
