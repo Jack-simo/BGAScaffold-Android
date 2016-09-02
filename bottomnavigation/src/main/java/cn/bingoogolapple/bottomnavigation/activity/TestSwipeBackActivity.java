@@ -13,8 +13,6 @@ import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -110,9 +108,10 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
             }
 
             @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 dismissLoadingDialog();
+                // 根据错误码展示具体的错误界面。展示原生的错误界面或加载本地的html错误界面
+                Logger.i(TAG, "errorCode =" + errorCode + " description = " + description + " failingUrl = " + failingUrl);
             }
 
             @Override
