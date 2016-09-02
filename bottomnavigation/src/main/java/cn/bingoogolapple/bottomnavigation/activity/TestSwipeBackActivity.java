@@ -1,12 +1,15 @@
 package cn.bingoogolapple.bottomnavigation.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
@@ -131,6 +134,21 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
                 setTitle(title);
             }
         });
+
+        mWebView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+                // 这里处理文件下载
+                Logger.i(TAG, "url = " + url + " userAgent = " + userAgent + " contentDisposition = " + contentDisposition + " mimetype = " + " contentLength = " + contentLength);
+
+                if (url.endsWith(".apk")) {
+                    // 调用系统浏览器下载文件,也可以自己根据url来写下载的逻辑
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -142,7 +160,7 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
         } else if (v.getId() == R.id.receive_msg) {
             mWebAppInterface.receiveMsg("来自java的消息");
         } else if (v.getId() == R.id.load_from_remote) {
-            mWebView.loadUrl("http://image.baidu.com");
+            mWebView.loadUrl("http://shouji.baidu.com/software/9782214.html");
         }
     }
 
