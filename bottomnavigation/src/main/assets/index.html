@@ -2,34 +2,43 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Test HTML5</title>
+    <title>Test Assets HTML5</title>
     <style type="text/css">
         input {
-        width: 90%;
-        height: 30px;
+        width: 100%;
+        height: 50px;
         }
         button {
-        width: 60%;
-        height: 30px;
-        background: #ff00ff;
+        width: 50%;
+        height: 50px;
+        background: #69BF1C;
         }
     </style>
     <script type="text/javascript">
-        function sendMsg() {
+        function jsCallJava() {
             var msg = document.getElementById("msg").value;
-            alert(msg);
-            app.sendMsg(msg);
+            app.jsCallJava(msg);
         }
 
-        function receiveMsg(msg) {
+        function javaCallJs(msg) {
             document.getElementById("msg").value = msg;
         }
+
+        function getStringFromJs() {
+            return "来自js的String";
+        }
+
+        function getStringFromJava() {
+            document.getElementById("msg").value = app.getStringFromJava();
+        }
+
     </script>
 </head>
 <body>
-<input id="msg"/>
+<input id="msg" value="来自js的消息"/>
 <br>
 <br>
-<button onclick="sendMsg()">发送消息</button>
+<button onclick="jsCallJava()">发送消息</button>
+<button onclick="getStringFromJava()">getStringFromJava</button>
 </body>
 </html>

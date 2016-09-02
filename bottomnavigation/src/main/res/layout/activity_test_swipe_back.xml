@@ -2,28 +2,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               style="@style/MatchMatch.Vertical">
 
-    <Button
-        android:id="@+id/load_from_assets"
-        style="@style/DemoBtn"
-        android:text="loadFromAssets"/>
+    <FrameLayout
+        android:id="@+id/video_full"
+        style="@style/MatchMatch"
+        android:visibility="gone">
+    </FrameLayout>
 
-    <Button
-        android:id="@+id/load_from_sdcard"
-        style="@style/DemoBtn"
-        android:text="loadFromSDCard"/>
+    <LinearLayout
+        style="@style/MatchWrap.Horizontal">
 
-    <Button
-        android:id="@+id/receive_msg"
-        style="@style/DemoBtn"
-        android:text="receiveMsg"/>
+        <Button
+            android:id="@+id/load_from_assets"
+            style="@style/WrapWrapBtn"
+            android:text="loadFromAssets"/>
 
-    <Button
-        android:id="@+id/load_from_remote"
-        style="@style/DemoBtn"
-        android:text="loadFromRemote"/>
+        <Button
+            android:id="@+id/load_from_sdcard"
+            style="@style/WrapWrapBtn"
+            android:text="loadFromSDCard"/>
+
+        <Button
+            android:id="@+id/load_from_remote"
+            style="@style/WrapWrapBtn"
+            android:text="loadFromRemote"/>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/MatchWrap.Horizontal">
+
+        <Button
+            android:id="@+id/java_call_js"
+            style="@style/WrapWrapBtn"
+            android:text="javaCallJs"/>
+
+        <Button
+            android:id="@+id/get_string_from_js"
+            style="@style/WrapWrapBtn"
+            android:text="getStringFromJs"/>
+    </LinearLayout>
 
     <WebView
         android:id="@+id/webView"
-        style="@style/MatchMatch"
-        android:layerType="hardware"/>
+        style="@style/MatchMatch">
+
+        <TextView
+            style="@style/MatchWrap"
+            android:text="WebView继承自AbsoluteLayout"/>
+
+        <Button
+            android:id="@+id/load_video"
+            style="@style/WrapWrapBtn"
+            android:layout_y="20dp"
+            android:text="加载视频"/>
+    </WebView>
 </LinearLayout>
