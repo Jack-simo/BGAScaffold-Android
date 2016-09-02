@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
@@ -79,16 +78,16 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
 
         /**
          * 如果没有提供 WebViewClient 对象，则 WebView 会请求 Activity 管理者选择合适的 URL 处理方式，一般情况就是启动浏览器来加载URL；
-         * 如果提供了 WebViewClient 对象且shouldOverrideUrlLoading 方法返回 true，则主机应用（意思应该是 Android 系统）处理URL；
+         * 如果提供了 WebViewClient 对象且shouldOverrideUrlLoading 方法返回 true，则由当前应用自己处理URL,需调用view.loadUrl(url),否则不会加载；
          * 如果提供了 WebViewClient 对象且shouldOverrideUrlLoading 方法返回 false，则当前 WebView 处理URL；
          */
         mWebView.setWebViewClient(new WebViewClient() {
-            // 如果不拦截特定的url,不用重写该方法
+            // 默认就是返回false。如果不拦截特定的url,不用重写该方法
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (!TextUtils.isEmpty(url)) {
-                    view.loadUrl(url);
-                }
+//                if (!TextUtils.isEmpty(url)) {
+//                    view.loadUrl(url);
+//                }
                 return true;
             }
 
