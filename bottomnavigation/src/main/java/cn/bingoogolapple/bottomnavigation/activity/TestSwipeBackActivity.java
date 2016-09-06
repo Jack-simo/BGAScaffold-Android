@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
+import cn.bingoogolapple.basenote.util.NetUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.bottomnavigation.R;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -78,13 +80,18 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
     private void initWebSettings() {
         mWebAppInterface = new WebAppInterface();
         mWebView.addJavascriptInterface(mWebAppInterface, "app");
+        mWebView.requestFocusFromTouch();
 
         WebSettings settings = mWebView.getSettings();
         settings.setPluginState(WebSettings.PluginState.ON);
         // WebView默认是不支持JavaScript的,这里设置支持JavaScript
         settings.setJavaScriptEnabled(true);
-        // 设置优先从缓存加载
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        if (NetUtil.isNetworkAvailable()) {
+            settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        } else {
+            // 设置优先从缓存加载
+            settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        }
 
         String cacheDirPath = getCacheDir().getAbsolutePath() + "/webViewCache ";
         //开启 database storage API 功能
@@ -106,7 +113,15 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+
         settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+
+        //html中的_bank标签就是新建窗口打开，有时会打不开，需要加以下
+        //然后 复写 WebChromeClient的onCreateWindow方法
+        settings.setSupportMultipleWindows(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
         /**
          * 为4.4以上系统在onPageFinished时再恢复图片加载时,如果存在多张图片引用的是相同的src时，
@@ -255,7 +270,6 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (mWebView != null) {
             mWebView.loadUrl("about:blank");
             mWebView.stopLoading();
@@ -266,6 +280,7 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
             mWebView.destroy();
             mWebView = null;
         }
+        super.onDestroy();
     }
 
     @Override
@@ -291,6 +306,15 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
         @Override
         public void onReceivedTitle(WebView view, String title) {
             setTitle(title);
+        }
+
+        @Override
+        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+            // 处理html中的_bank标签多窗口问题
+            WebView.HitTestResult result = view.getHitTestResult();
+            String data = result.getExtra();
+            mWebView.loadUrl(data);
+            return true;
         }
 
         // 播放网络视频时全屏会被调用的方法
@@ -394,3 +418,7 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
  */
 
 // WebView·开车指南    http://mp.weixin.qq.com/s?__biz=MzI3NDM3Mjg5NQ==&mid=2247483682&idx=1&sn=b1e03bfb789f75467c351a8ed7dfc156&scene=0#rd
+
+// 史上最全WebView使用，附送Html5Activity一份   http://www.jianshu.com/p/3fcf8ba18d7f
+
+// Android WebView的Js对象注入漏洞解决方案   http://blog.csdn.net/leehong2005/article/details/11808557
