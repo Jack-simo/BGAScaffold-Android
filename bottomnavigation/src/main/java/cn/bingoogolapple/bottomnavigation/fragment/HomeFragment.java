@@ -7,7 +7,8 @@ import java.util.List;
 
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.bottomnavigation.R;
-import cn.bingoogolapple.bottomnavigation.activity.TestSwipeBackActivity;
+import cn.bingoogolapple.bottomnavigation.activity.TestCountDownActivity;
+import cn.bingoogolapple.bottomnavigation.activity.TestWebViewActivity;
 import cn.bingoogolapple.bottomnavigation.model.HomeCategory;
 import cn.bingoogolapple.bottomnavigation.pw.HomeCategoryPopupWindow;
 
@@ -38,8 +39,13 @@ public class HomeFragment extends BaseMainFragment {
     }
 
     @Override
+    protected void onClickLeft() {
+        mActivity.forward(TestCountDownActivity.class);
+    }
+
+    @Override
     protected void onClickRight() {
-        mActivity.forward(TestSwipeBackActivity.class);
+        mActivity.forward(TestWebViewActivity.class);
     }
 
     @Override

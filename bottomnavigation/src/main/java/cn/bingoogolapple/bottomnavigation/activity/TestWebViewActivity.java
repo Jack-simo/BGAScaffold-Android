@@ -38,7 +38,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * 创建时间:16/8/12 下午11:25
  * 描述:
  */
-public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermissions.PermissionCallbacks {
+public class TestWebViewActivity extends TitlebarActivity implements EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_PERMISSIONS = 1;
     private WebView mWebView;
     private WebAppInterface mWebAppInterface;
@@ -54,7 +54,7 @@ public class TestSwipeBackActivity extends TitlebarActivity implements EasyPermi
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_test_swipe_back);
+        setContentView(R.layout.activity_test_webview);
         mWebView = getViewById(R.id.webView);
         mVideoFull = getViewById(R.id.video_full);
     }
