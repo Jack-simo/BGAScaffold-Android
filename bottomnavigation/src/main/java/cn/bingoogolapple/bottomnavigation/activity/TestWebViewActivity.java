@@ -22,11 +22,14 @@ import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import java.lang.ref.ReferenceQueue;
 import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
@@ -169,6 +172,17 @@ public class TestWebViewActivity extends TitlebarActivity implements EasyPermiss
                     return false;
                 }
             }
+
+            // API 21及以上系统版本才支持该方法
+//            @Override
+//            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+//                request.getUrl();
+//                request.getRequestHeaders();
+//                request.getMethod();
+//                request.isForMainFrame();
+//                request.isRedirect();
+//                return super.shouldInterceptRequest(view, request);
+//            }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
