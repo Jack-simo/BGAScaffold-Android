@@ -1,6 +1,7 @@
 package cn.bingoogolapple.bottomnavigation.activity;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -150,10 +151,20 @@ public class TestWebViewActivity extends TitlebarActivity implements EasyPermiss
             // 默认就是返回false。如果不拦截特定的url,不用重写该方法
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (!TextUtils.isEmpty(url)) {
-                    view.loadUrl(url);
+                if (TextUtils.isEmpty(url)) {
+                    return true;
+                } else if (url.startsWith("http:") || url.startsWith("https:")) {
+                    return false;
                 }
-                return true;
+
+                try {
+                    // 这里try一下,避免ActivityNotFoundException导致应用闪退
+                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    return true;
+                } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
 
             @Override

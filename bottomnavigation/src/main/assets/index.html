@@ -32,6 +32,9 @@
             document.getElementById("msg").value = app.getStringFromJava();
         }
 
+
+
+
     </script>
 </head>
 <body>
@@ -40,5 +43,11 @@
 <br>
 <button onclick="jsCallJava()">发送消息</button>
 <button onclick="getStringFromJava()">getStringFromJava</button>
+
+<!--自动加载隐藏页面跳转-->
+<!--<iframe src="bga://www.bingoogolapple.com:80/path1/path2?param1=param1value&param2=param2value&param3=param3value"
+        style="display:none"></iframe>-->
+<!--手动点击跳转-->
+<a href="bga://www.bingoogolapple.com:80/path1/path2?param1=param1value&param2=param2value&param3=param3value">跳转到SchemeActivity</a>
 </body>
 </html>

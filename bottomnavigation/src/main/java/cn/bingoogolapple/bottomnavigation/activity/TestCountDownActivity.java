@@ -25,7 +25,7 @@ public class TestCountDownActivity extends TitlebarActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_count_down);
         mSendVcodeTv = getViewById(R.id.send_vcode);
     }
 
