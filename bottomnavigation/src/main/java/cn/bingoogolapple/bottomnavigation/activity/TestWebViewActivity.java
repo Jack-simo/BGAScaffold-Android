@@ -14,8 +14,11 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
 import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -367,6 +370,42 @@ public class TestWebViewActivity extends TitlebarActivity implements EasyPermiss
                 return mDefaultVideoPoster;
             }
             return super.getDefaultVideoPoster();
+        }
+
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            Logger.i(TAG, "onJsPrompt: url = " + url + " message = " + message + " defaultValue = " + defaultValue);
+//            return super.onJsPrompt(view, url, message, defaultValue, result);
+            // 返回true表示自己处理,如果这里不手动掉一次confirm/cancel方法的话界面上的按钮不会失去焦点,整个应用的webview都会出问题,接收不到触摸事件
+            result.confirm();
+            return true;
+        }
+
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            Logger.i(TAG, "onJsAlert: url = " + url + " message = " + message);
+//            return super.onJsAlert(view, url, message, result);
+            // 返回true表示自己处理,如果这里不手动掉一次confirm/cancel方法的话界面上的按钮不会失去焦点,整个应用的webview都会出问题,接收不到触摸事件
+            result.confirm();
+            return true;
+        }
+
+        // Confirm方式基本上是耗时最短和最稳定的
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+            Logger.i(TAG, "onJsConfirm: url = " + url + " message = " + message);
+//            return super.onJsConfirm(view, url, message, result);
+            // 返回true表示自己处理,如果这里不手动掉一次confirm/cancel方法的话界面上的按钮不会失去焦点,整个应用的webview都会出问题,接收不到触摸事件
+            result.confirm();
+            return true;
+        }
+
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            Logger.i(TAG, "onConsoleMessage: message = " + consoleMessage.message() + " sourceId = " + consoleMessage.sourceId());
+//            return super.onConsoleMessage(consoleMessage);
+            // 返回true表示自己处理,webview将不会再打印该日志
+            return true;
         }
     }
 

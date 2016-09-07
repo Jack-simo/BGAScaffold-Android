@@ -15,7 +15,7 @@
         }
     </style>
     <script type="text/javascript">
-        function jsCallJava() {
+        function jsCallJavaWithJavascriptInterface() {
             var msg = document.getElementById("msg").value;
             app.jsCallJava(msg);
         }
@@ -32,6 +32,22 @@
             document.getElementById("msg").value = app.getStringFromJava();
         }
 
+        function jsCallJavaWithConfirm() {
+            document.getElementById("msg").value = window.confirm("jsCallJavaWithConfirm");
+        }
+
+        function jsCallJavaWithAlert() {
+            window.alert("jsCallJavaWithAlert");
+        }
+
+        function jsCallJavaWithPrompt() {
+            window.prompt("jsCallJavaWithPrompt", "jsCallJavaWithPrompt的默认值");
+        }
+
+        function jsCallJavaWithConsole() {
+            console.log("jsCallJavaWithConsole");
+        }
+
 
 
 
@@ -41,7 +57,11 @@
 <input id="msg" value="来自js的消息"/>
 <br>
 <br>
-<button onclick="jsCallJava()">发送消息</button>
+<button onclick="jsCallJavaWithJavascriptInterface()">jsCallJavaWithJavascriptInterface</button>
+<button onclick="jsCallJavaWithConfirm()">jsCallJavaWithConfirm</button>
+<button onclick="jsCallJavaWithAlert()">jsCallJavaWithAlert</button>
+<button onclick="jsCallJavaWithPrompt()">jsCallJavaWithPrompt</button>
+<button onclick="jsCallJavaWithConsole()">jsCallJavaWithConsole</button>
 <button onclick="getStringFromJava()">getStringFromJava</button>
 
 <!--自动加载隐藏页面跳转-->
