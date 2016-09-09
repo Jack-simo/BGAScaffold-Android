@@ -20,7 +20,7 @@ public abstract class ToolbarActivity extends BaseActivity {
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.toolbar_viewstub_framelayout, layoutResID);
+        initViewStubContentView(R.layout.toolbar_viewstub_merge, layoutResID);
     }
 
     private void initViewStubContentView(@LayoutRes int rootLayoutResID, @LayoutRes int layoutResID) {

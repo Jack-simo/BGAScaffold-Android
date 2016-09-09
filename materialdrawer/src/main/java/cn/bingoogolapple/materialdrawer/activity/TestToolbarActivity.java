@@ -21,7 +21,8 @@ public class TestToolbarActivity extends ToolbarActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_testtoolbar);
+//        setContentView(R.layout.activity_testtoolbar);
+        setNoLinearContentView(R.layout.activity_testtoolbar);
     }
 
     @Override

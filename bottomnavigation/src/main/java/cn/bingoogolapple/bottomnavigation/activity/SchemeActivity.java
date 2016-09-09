@@ -24,6 +24,7 @@ public class SchemeActivity extends TitlebarActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_scheme);
+//        setNoLinearContentView(R.layout.activity_scheme);
         mResultTv = getViewById(R.id.tv_scheme_result);
     }
 
