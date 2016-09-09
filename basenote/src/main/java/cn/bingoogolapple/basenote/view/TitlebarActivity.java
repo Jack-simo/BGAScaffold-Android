@@ -24,7 +24,7 @@ public abstract class TitlebarActivity<P extends BasePresenter> extends BaseActi
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.titlebar_viewstub_framelayout, layoutResID);
+        initViewStubContentView(R.layout.titlebar_viewstub_merge, layoutResID);
     }
 
     private void initViewStubContentView(@LayoutRes int rootLayoutResID, @LayoutRes int layoutResID) {
