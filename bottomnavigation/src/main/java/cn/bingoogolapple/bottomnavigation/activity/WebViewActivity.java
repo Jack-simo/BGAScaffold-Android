@@ -22,14 +22,11 @@ import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import java.lang.ref.ReferenceQueue;
 import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
@@ -45,7 +42,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * 创建时间:16/8/12 下午11:25
  * 描述:
  */
-public class TestWebViewActivity extends TitlebarActivity implements EasyPermissions.PermissionCallbacks {
+public class WebViewActivity extends TitlebarActivity implements EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_PERMISSIONS = 1;
     private WebView mWebView;
     private WebAppInterface mWebAppInterface;
@@ -61,7 +58,7 @@ public class TestWebViewActivity extends TitlebarActivity implements EasyPermiss
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_test_webview);
+        setContentView(R.layout.activity_webview);
         mWebView = getViewById(R.id.webView);
         mVideoFull = getViewById(R.id.video_full);
     }
@@ -78,8 +75,7 @@ public class TestWebViewActivity extends TitlebarActivity implements EasyPermiss
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        setLeftDrawable(R.drawable.selector_nav_back);
-        setTitle("测试滑动返回");
+        setTitle("WebView学习笔记");
 
         initWebSettings();
     }

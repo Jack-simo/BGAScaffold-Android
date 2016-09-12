@@ -67,7 +67,8 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
-        SkinUtil.initStatusbarSkin(activity);
+        // 做换肤功能时才打开该选项
+//        SkinUtil.initStatusbarSkin(activity);
     }
 
     @Override

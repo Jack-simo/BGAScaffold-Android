@@ -14,7 +14,7 @@ import cn.bingoogolapple.bottomnavigation.R;
  * 创建时间:16/9/6 下午6:07
  * 描述:
  */
-public class TestCountDownActivity extends TitlebarActivity {
+public class CountDownActivity extends TitlebarActivity {
     private TextView mSendVcodeTv;
     private CountDownTimer mCountDownTimer;
 

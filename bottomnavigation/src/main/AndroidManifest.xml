@@ -15,7 +15,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.Transparent"
         tools:replace="android:icon">
         <activity android:name=".activity.MainActivity">
             <intent-filter>
@@ -26,25 +26,22 @@
         </activity>
 
         <activity
-            android:name=".activity.TestWebViewActivity"
+            android:name=".activity.WebViewActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
-            android:name=".activity.TestCountDownActivity"
+            android:name=".activity.CountDownActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
             android:name=".activity.SchemeActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

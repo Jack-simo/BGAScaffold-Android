@@ -21,7 +21,6 @@ public class MeFragment extends BaseMainFragment {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        hiddenLeftCtv();
         setTitle(R.string.me);
 
     }

@@ -1,5 +1,8 @@
 package cn.bingoogolapple.bottomnavigation.fragment;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.PopupWindow;
 
@@ -7,8 +10,7 @@ import java.util.List;
 
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.bottomnavigation.R;
-import cn.bingoogolapple.bottomnavigation.activity.TestCountDownActivity;
-import cn.bingoogolapple.bottomnavigation.activity.TestWebViewActivity;
+import cn.bingoogolapple.bottomnavigation.activity.WebViewActivity;
 import cn.bingoogolapple.bottomnavigation.model.HomeCategory;
 import cn.bingoogolapple.bottomnavigation.pw.HomeCategoryPopupWindow;
 
@@ -32,20 +34,38 @@ public class HomeFragment extends BaseMainFragment {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        setLeftDrawable(R.drawable.selector_nav_friendsearch);
-        setRightDrawable(R.drawable.selector_nav_pop);
+        mTitlebar.setLeftText("WebView");
+
+        mTitlebar.setRightText("Scheme");
+
         setTitle(R.string.home);
         setTitleDrawable(R.drawable.selector_nav_arrow_orange);
     }
 
     @Override
     protected void onClickLeft() {
-        mActivity.forward(TestCountDownActivity.class);
+        mActivity.forward(WebViewActivity.class);
     }
 
     @Override
     protected void onClickRight() {
-        mActivity.forward(TestWebViewActivity.class);
+        Intent intent = new Intent();
+        Uri uri = new Uri.Builder()
+                .scheme("bga")
+                .authority("www.bingoogolapple.cn")
+                .path("/path1/path2")
+                .appendPath("path3")
+                .query("param1=param1value&param2=param2value") // 这种方式传递后通过getQueryParameter方法拿不到参数,只能通过getQuery方法获取到参数
+                .appendQueryParameter("param3", "param3value")
+                .build();
+        intent.setData(uri);
+
+        try {
+            // 这里try一下,避免ActivityNotFoundException导致应用闪退
+            mActivity.forward(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

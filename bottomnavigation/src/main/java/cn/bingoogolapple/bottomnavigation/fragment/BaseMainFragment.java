@@ -2,6 +2,7 @@ package cn.bingoogolapple.bottomnavigation.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,12 @@ public abstract class BaseMainFragment extends TitlebarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Logger.i(TAG, "onCreateView");
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
+        setLeftDrawable(null);
     }
 
     @Override
