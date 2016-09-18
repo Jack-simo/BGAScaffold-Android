@@ -2,7 +2,10 @@ package cn.bingoogolapple.basenote.util;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -59,6 +62,21 @@ public class KeyboardUtil {
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         }, 300);
+    }
+
+    /**
+     * 拷贝文档到黏贴板
+     *
+     * @param text
+     */
+    public static void clip(Context context, String text) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setText(text);
+        } else {
+            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setPrimaryClip(ClipData.newPlainText("content", text));
+        }
     }
 
     /**
