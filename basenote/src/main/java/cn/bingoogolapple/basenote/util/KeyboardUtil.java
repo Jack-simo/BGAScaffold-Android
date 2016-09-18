@@ -65,6 +65,18 @@ public class KeyboardUtil {
     }
 
     /**
+     * 切换键盘的显示与隐藏
+     *
+     * @param activity
+     */
+    public static void toggleKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isActive()) {
+            inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    /**
      * 拷贝文档到黏贴板
      *
      * @param text
