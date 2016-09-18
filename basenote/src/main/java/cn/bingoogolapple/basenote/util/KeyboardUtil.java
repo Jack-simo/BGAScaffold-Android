@@ -19,6 +19,7 @@ public class KeyboardUtil {
 
     /**
      * 关闭activity中打开的键盘
+     *
      * @param activity
      */
     public static void closeKeyboard(Activity activity) {
@@ -31,6 +32,7 @@ public class KeyboardUtil {
 
     /**
      * 关闭dialog中打开的键盘
+     *
      * @param dialog
      */
     public static void closeKeyboard(Dialog dialog) {
@@ -43,6 +45,7 @@ public class KeyboardUtil {
 
     /**
      * 打开键盘
+     *
      * @param context
      * @param editText
      */
@@ -56,5 +59,17 @@ public class KeyboardUtil {
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         }, 300);
+    }
+
+    /**
+     * 切换键盘的显示与隐藏
+     *
+     * @param activity
+     */
+    public static void toggleKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isActive()) {
+            inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

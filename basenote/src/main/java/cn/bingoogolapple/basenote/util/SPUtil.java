@@ -16,7 +16,7 @@ public class SPUtil {
     private SPUtil() {
     }
 
-    private static SharedPreferences getPreferneces() {
+    private static SharedPreferences getPreferences() {
         if (mSharedPreferences == null) {
             synchronized (SPUtil.class) {
                 if (mSharedPreferences == null) {
@@ -28,46 +28,46 @@ public class SPUtil {
     }
 
     public static void clear() {
-        getPreferneces().edit().clear().apply();
+        getPreferences().edit().clear().apply();
     }
 
     public static void putString(String key, String value) {
-        getPreferneces().edit().putString(key, value).apply();
+        getPreferences().edit().putString(key, value).apply();
     }
 
     public static String getString(String key) {
-        return getPreferneces().getString(key, null);
+        return getPreferences().getString(key, null);
     }
 
     public static void putInt(String key, int value) {
-        getPreferneces().edit().putInt(key, value).apply();
+        getPreferences().edit().putInt(key, value).apply();
     }
 
     public static int getInt(String key) {
-        return getPreferneces().getInt(key, 0);
+        return getPreferences().getInt(key, 0);
     }
 
     public static void putBoolean(String key, Boolean value) {
-        getPreferneces().edit().putBoolean(key, value).apply();
+        getPreferences().edit().putBoolean(key, value).apply();
     }
 
     public static void putLong(String key, long value) {
-        getPreferneces().edit().putLong(key, value).apply();
+        getPreferences().edit().putLong(key, value).apply();
     }
 
     public static long getLong(String key) {
-        return getPreferneces().getLong(key, 0);
+        return getPreferences().getLong(key, 0);
     }
 
     public static boolean getBoolean(String key, boolean defValue) {
-        return getPreferneces().getBoolean(key, defValue);
+        return getPreferences().getBoolean(key, defValue);
     }
 
     public static void remove(String key) {
-        getPreferneces().edit().remove(key).apply();
+        getPreferences().edit().remove(key).apply();
     }
 
     public static boolean hasKey(String key) {
-        return getPreferneces().contains(key);
+        return getPreferences().contains(key);
     }
 }
