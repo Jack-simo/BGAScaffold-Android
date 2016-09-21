@@ -5,8 +5,11 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.Logger;
+import cn.bingoogolapple.basenote.widget.BGATimerTextView;
 import cn.bingoogolapple.bottomnavigation.R;
 
 /**
@@ -16,6 +19,7 @@ import cn.bingoogolapple.bottomnavigation.R;
  */
 public class CountDownActivity extends TitlebarActivity {
     private TextView mSendVcodeTv;
+    private BGATimerTextView mTimerTextView;
     private CountDownTimer mCountDownTimer;
 
     @Override
@@ -27,11 +31,13 @@ public class CountDownActivity extends TitlebarActivity {
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_count_down);
         mSendVcodeTv = getViewById(R.id.send_vcode);
+        mTimerTextView = getViewById(R.id.send_vcode_custom);
     }
 
     @Override
     protected void setListener() {
         mSendVcodeTv.setOnClickListener(this);
+        mTimerTextView.setOnClickListener(this);
         setOnClickListener(R.id.stop_send);
     }
 
@@ -55,6 +61,7 @@ public class CountDownActivity extends TitlebarActivity {
                         mSendVcodeTv.setText(millisUntilFinished / 1000 + "秒后可重新发送");
                         Logger.i(TAG, String.valueOf(millisUntilFinished));
                         Logger.i(TAG, String.valueOf(millisUntilFinished / 1000));
+                        Logger.i(TAG, String.valueOf(BigDecimal.valueOf(millisUntilFinished).divide(BigDecimal.valueOf(1000)).intValue()));
                         Logger.i(TAG, String.valueOf((int) Math.ceil(millisUntilFinished / 1000.0)));
                     }
 
@@ -67,6 +74,8 @@ public class CountDownActivity extends TitlebarActivity {
             }
 
             mCountDownTimer.start();
+        } else if (v.getId() == R.id.send_vcode_custom) {
+            mTimerTextView.start();
         } else if (v.getId() == R.id.stop_send) {
             if (mCountDownTimer != null) {
                 mSendVcodeTv.setEnabled(true);

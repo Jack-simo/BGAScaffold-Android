@@ -5,8 +5,19 @@
 
     <TextView
         android:id="@+id/send_vcode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWrap"
+        android:layout_margin="10dp"
+        android:background="@color/black_light"
+        android:clickable="true"
+        android:padding="@dimen/size_level2"
+        android:text="发送验证码"
+        android:textColor="@color/black_middle"
+        android:textSize="@dimen/textSize_16"/>
+
+    <cn.bingoogolapple.basenote.widget.BGATimerTextView
+        android:id="@+id/send_vcode_custom"
+        style="@style/MatchWrap"
+        android:layout_margin="10dp"
         android:background="@color/black_light"
         android:clickable="true"
         android:padding="@dimen/size_level2"
