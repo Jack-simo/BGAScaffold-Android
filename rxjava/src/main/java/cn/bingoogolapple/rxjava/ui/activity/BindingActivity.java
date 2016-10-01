@@ -20,6 +20,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class BindingActivity extends TitlebarActivity {
 
@@ -42,7 +43,7 @@ public class BindingActivity extends TitlebarActivity {
 
         RxTextView.textChanges(getViewById(R.id.et_binding_debounce))
                 .skip(1)
-                .debounce(1, TimeUnit.SECONDS)
+                .debounce(600, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> charSequence.toString().trim())
@@ -54,11 +55,12 @@ public class BindingActivity extends TitlebarActivity {
                         return false;
                     }
                 })
+                .observeOn(Schedulers.io())
                 .switchMap(new Func1<CharSequence, Observable<NetResult<ArrayList<RefreshModel>>>>() {
                     @Override
                     public Observable<NetResult<ArrayList<RefreshModel>>> call(CharSequence charSequence) {
                         return null;
-//                        return mApi.search(new ApiParams("Keyword", charSequence)).subscribeOn(Schedulers.io());
+//                        return mApi.search(new ApiParams("Keyword", charSequence));
                     }
                 })
                 .compose(RxUtil.flatMapResultAndApplySchedulersBindToLifecycle(this))
