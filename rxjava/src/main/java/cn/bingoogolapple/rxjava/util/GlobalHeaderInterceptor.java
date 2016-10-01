@@ -48,7 +48,7 @@ public class GlobalHeaderInterceptor implements Interceptor {
 //                .addQueryParameter("v", "1.0")
 //                .build();
 //
-//        Logger.i(TAG, url.toString());
+//        Logger.i(url.toString());
 //        return chain.proceed(builder.build());
 //    }
 

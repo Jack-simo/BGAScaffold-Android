@@ -33,4 +33,6 @@
     <dimen name="form_item_height">45dp</dimen>
 
     <dimen name="btn_radius">3dp</dimen>
+
+    <dimen name="divider_size">1px</dimen>
 </resources>

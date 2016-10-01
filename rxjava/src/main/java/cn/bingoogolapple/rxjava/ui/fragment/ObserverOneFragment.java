@@ -5,8 +5,9 @@ import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.orhanobut.logger.Logger;
+
 import cn.bingoogolapple.basenote.fragment.BaseFragment;
-import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.RxBus;
 import cn.bingoogolapple.rxjava.R;
 import rx.android.schedulers.AndroidSchedulers;
@@ -53,7 +54,7 @@ public class ObserverOneFragment extends BaseFragment {
                 .ofType(ObservableFragment.RefreshModelEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
-                    Logger.i(TAG, event.getRefreshModel().title);
+                    Logger.i(event.getRefreshModel().title);
                 });
     }
 }

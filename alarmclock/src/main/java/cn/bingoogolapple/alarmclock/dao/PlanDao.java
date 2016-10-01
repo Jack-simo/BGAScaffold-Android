@@ -5,13 +5,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.alarmclock.model.Plan;
 import cn.bingoogolapple.alarmclock.provider.PlanProvider;
 import cn.bingoogolapple.basenote.App;
-import cn.bingoogolapple.basenote.util.Logger;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -31,7 +32,7 @@ public class PlanDao {
         long newlyId = ContentUris.parseId(uri);
         if (newlyId != -1) {
             plan.id = newlyId;
-            Logger.i(TAG, "添加成功" + newlyId);
+            Logger.i("添加成功" + newlyId);
             return true;
         } else {
             return false;
@@ -41,7 +42,7 @@ public class PlanDao {
     public static boolean deletePlan(long id) {
         int deletedCount = App.getInstance().getContentResolver().delete(PlanProvider.URI_PLAN, DBOpenHelper.PlanTable._ID + "=?", new String[]{"" + id});
         if (deletedCount > 0) {
-            Logger.i(TAG, "删除成功 " + deletedCount);
+            Logger.i("删除成功 " + deletedCount);
             return true;
         } else {
             return false;
@@ -55,7 +56,7 @@ public class PlanDao {
         values.put(DBOpenHelper.PlanTable.STATUS, status);
         int updatedCount = App.getInstance().getContentResolver().update(PlanProvider.URI_PLAN, values, DBOpenHelper.PlanTable._ID + "=?", new String[]{String.valueOf(id)});
         if (updatedCount > 0) {
-            Logger.i(TAG, "修改成功" + updatedCount);
+            Logger.i("修改成功" + updatedCount);
             return true;
         } else {
             return false;

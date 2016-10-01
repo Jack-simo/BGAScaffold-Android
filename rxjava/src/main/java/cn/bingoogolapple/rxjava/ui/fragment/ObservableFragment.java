@@ -5,6 +5,7 @@ import android.view.View;
 
 import cn.bingoogolapple.basenote.fragment.BaseFragment;
 import cn.bingoogolapple.basenote.util.RxBus;
+import cn.bingoogolapple.basenote.util.RxUtil;
 import cn.bingoogolapple.rxjava.R;
 import cn.bingoogolapple.rxjava.engine.RemoteServerEngine;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
@@ -41,6 +42,8 @@ public class ObservableFragment extends BaseFragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build().create(RemoteServerEngine.class);
+
+        mRemoteServerEngine.testNetResult1().compose(RxUtil.flatMapResultAndApplySchedulers()).compose(bindToLifecycle());
     }
 
     @Override

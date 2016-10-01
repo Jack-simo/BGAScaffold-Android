@@ -6,7 +6,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.trello.rxlifecycle.ActivityEvent;
+import com.orhanobut.logger.Logger;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
-import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.NetResult;
 import cn.bingoogolapple.basenote.util.RxUtil;
 import cn.bingoogolapple.basenote.util.SimpleSubscriber;
@@ -77,7 +77,7 @@ public class HelloworldActivity extends TitlebarActivity {
     private Observer mObserver = new Observer<String>() {
         @Override
         public void onNext(String s) {
-            Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onNext " + s + " ThreadName:" + Thread.currentThread().getName());
         }
 
         /**
@@ -86,7 +86,7 @@ public class HelloworldActivity extends TitlebarActivity {
          */
         @Override
         public void onCompleted() {
-            Logger.i(TAG, "onCompleted ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onCompleted ThreadName:" + Thread.currentThread().getName());
         }
 
         /**
@@ -95,7 +95,7 @@ public class HelloworldActivity extends TitlebarActivity {
          */
         @Override
         public void onError(Throwable e) {
-            Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onError ThreadName:" + Thread.currentThread().getName());
         }
     };
 
@@ -108,22 +108,22 @@ public class HelloworldActivity extends TitlebarActivity {
          */
         @Override
         public void onStart() {
-            Logger.i(TAG, "onStart ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onStart ThreadName:" + Thread.currentThread().getName());
         }
 
         @Override
         public void onNext(String s) {
-            Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onNext " + s + " ThreadName:" + Thread.currentThread().getName());
         }
 
         @Override
         public void onCompleted() {
-            Logger.i(TAG, "onCompleted ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onCompleted ThreadName:" + Thread.currentThread().getName());
         }
 
         @Override
         public void onError(Throwable e) {
-            Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onError ThreadName:" + Thread.currentThread().getName());
         }
     };
 
@@ -137,11 +137,11 @@ public class HelloworldActivity extends TitlebarActivity {
          * 这让人读起来有点别扭，不过如果把 API 设计成 observer.subscribe(observable) / subscriber.subscribe(observable) ，
          * 虽然更加符合思维逻辑，但对流式 API 的设计就造成影响了，比较起来明显是得不偿失的
          */
-        Logger.i(TAG, "method ThreadName:" + Thread.currentThread().getName());
+        Logger.i("method ThreadName:" + Thread.currentThread().getName());
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+                Logger.i("call ThreadName:" + Thread.currentThread().getName());
                 subscriber.onNext("Hello");
                 subscriber.onNext("World1");
                 subscriber.onNext("World2");
@@ -153,14 +153,14 @@ public class HelloworldActivity extends TitlebarActivity {
                 .doOnNext(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        Logger.i(TAG, "doOnNext ThreadName:" + Thread.currentThread().getName());
+                        Logger.i("doOnNext ThreadName:" + Thread.currentThread().getName());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Logger.i(TAG, "doOnError ThreadName:" + Thread.currentThread().getName());
+                        Logger.i("doOnError ThreadName:" + Thread.currentThread().getName());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 所运行在的线程。或者叫做事件消费的线程。
@@ -187,11 +187,11 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
     private void executeTest2() {
-        Logger.i(TAG, "method ThreadName:" + Thread.currentThread().getName());
+        Logger.i("method ThreadName:" + Thread.currentThread().getName());
         final Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+                Logger.i("call ThreadName:" + Thread.currentThread().getName());
                 subscriber.onNext("Hello");
                 subscriber.onCompleted();
             }
@@ -200,7 +200,7 @@ public class HelloworldActivity extends TitlebarActivity {
                 .doOnNext(new Action1() {
                     @Override
                     public void call(Object o) {
-                        Logger.i(TAG, "doOnNext call:" + Thread.currentThread().getName());
+                        Logger.i("doOnNext call:" + Thread.currentThread().getName());
                     }
                 })  // doOnNext中Action1的call方法所在线程受上一个observeOn影响,否则就是第一个subscribeOn指定的线程
                 .subscribeOn(Schedulers.io())
@@ -216,7 +216,7 @@ public class HelloworldActivity extends TitlebarActivity {
     }
 
     private void subscribeTest2(Observable observable) {
-        Logger.i(TAG, "subscribe ThreadName:" + Thread.currentThread().getName());
+        Logger.i("subscribe ThreadName:" + Thread.currentThread().getName());
         observable.subscribe(mSubscriber);
     }
 
@@ -235,21 +235,21 @@ public class HelloworldActivity extends TitlebarActivity {
             // onNext()
             @Override
             public void call(String s) {
-                Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName());
+                Logger.i("onNext " + s + " ThreadName:" + Thread.currentThread().getName());
             }
         };
         Action1<Throwable> onErrorAction = new Action1<Throwable>() {
             // onError()
             @Override
             public void call(Throwable throwable) {
-                Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName());
+                Logger.i("onError ThreadName:" + Thread.currentThread().getName());
             }
         };
         Action0 onCompletedAction = new Action0() {
             // onCompleted()
             @Override
             public void call() {
-                Logger.i(TAG, "onCompleted ThreadName:" + Thread.currentThread().getName());
+                Logger.i("onCompleted ThreadName:" + Thread.currentThread().getName());
             }
         };
         Observable observable = Observable.just("Hello", "RxJava", "RxAndroid").subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
@@ -259,13 +259,13 @@ public class HelloworldActivity extends TitlebarActivity {
 
 
         observable.subscribe(s -> {
-            Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName());
+            Logger.i("onNext " + s + " ThreadName:" + Thread.currentThread().getName());
         });
-        observable.subscribe(s -> Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName()));
+        observable.subscribe(s -> Logger.i("onNext " + s + " ThreadName:" + Thread.currentThread().getName()));
 
-        observable.subscribe(s -> Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName()), throwable -> Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName()));
+        observable.subscribe(s -> Logger.i("onNext " + s + " ThreadName:" + Thread.currentThread().getName()), throwable -> Logger.i("onError ThreadName:" + Thread.currentThread().getName()));
 
-        observable.subscribe(s -> Logger.i(TAG, "onNext " + s + " ThreadName:" + Thread.currentThread().getName()), throwable -> Logger.i(TAG, "onError ThreadName:" + Thread.currentThread().getName()), () -> Logger.i(TAG, "onCompleted ThreadName:" + Thread.currentThread().getName()));
+        observable.subscribe(s -> Logger.i("onNext " + s + " ThreadName:" + Thread.currentThread().getName()), throwable -> Logger.i("onError ThreadName:" + Thread.currentThread().getName()), () -> Logger.i("onCompleted ThreadName:" + Thread.currentThread().getName()));
     }
 
     public void test6(View v) {
@@ -305,7 +305,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void call() {
                         showLoadingDialog(R.string.loading);
-                        Logger.i(TAG, "doOnSubscribe call:" + Thread.currentThread().getName());
+                        Logger.i("doOnSubscribe call:" + Thread.currentThread().getName());
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())  // 用于指定前面那个doOnSubscribe中Action0的call方法在UI线程执行
@@ -313,14 +313,14 @@ public class HelloworldActivity extends TitlebarActivity {
                 .doOnNext(new Action1<List<RefreshModel>>() {
                     @Override
                     public void call(List<RefreshModel> refreshModels) {
-                        Logger.i(TAG, "doOnNext call:" + Thread.currentThread().getName());
+                        Logger.i("doOnNext call:" + Thread.currentThread().getName());
                     }
                 }) // doOnNext中Action1的call方法所在线程受上一个observeOn影响,否则就是第一个subscribeOn指定的线程
                 .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<RefreshModel>, Observable<RefreshModel>>() {
                     @Override
                     public Observable<RefreshModel> call(List<RefreshModel> refreshModels) {
-                        Logger.i(TAG, "flatMap call:" + Thread.currentThread().getName());
+                        Logger.i("flatMap call:" + Thread.currentThread().getName());
                         return Observable.from(refreshModels);
                     }
                 }) // flatMap中Func1的call方法所在线程受上一个observeOn影响,否则就是第一个subscribeOn指定的线程
@@ -347,7 +347,7 @@ public class HelloworldActivity extends TitlebarActivity {
 
                     @Override
                     public void onNext(RefreshModel refreshModel) {
-                        Logger.i(TAG, refreshModel.title);
+                        Logger.i(refreshModel.title);
                     }
                 });
     }
@@ -393,7 +393,7 @@ public class HelloworldActivity extends TitlebarActivity {
 //
 //                    @Override
 //                    public void onNext(RefreshModel refreshModel) {
-//                        Logger.i(TAG, refreshModel.title);
+//                        Logger.i(refreshModel.title);
 //                    }
 //                });
 
@@ -422,7 +422,7 @@ public class HelloworldActivity extends TitlebarActivity {
 
                     @Override
                     public void onNext(RefreshModel refreshModel) {
-                        Logger.i(TAG, refreshModel.title);
+                        Logger.i(refreshModel.title);
                     }
                 });
     }
@@ -438,7 +438,7 @@ public class HelloworldActivity extends TitlebarActivity {
                 .subscribe(new SimpleSubscriber<RefreshModel>() {
                     @Override
                     public void onNext(RefreshModel refreshModel) {
-                        Logger.i(TAG, refreshModel.title);
+                        Logger.i(refreshModel.title);
                     }
                 });
     }
@@ -564,7 +564,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");
+                        Logger.i("onCompleted");
                     }
                 });
     }
@@ -620,7 +620,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");
+                        Logger.i("onCompleted");
                     }
                 });
     }
@@ -662,7 +662,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");
+                        Logger.i("onCompleted");
                     }
                 });
     }
@@ -724,7 +724,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");
+                        Logger.i("onCompleted");
                     }
                 });
     }
@@ -766,7 +766,7 @@ public class HelloworldActivity extends TitlebarActivity {
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");
+                        Logger.i("onCompleted");
                     }
                 });
     }
@@ -775,7 +775,7 @@ public class HelloworldActivity extends TitlebarActivity {
     private Observable mModelOneObservable = Observable.create(new Observable.OnSubscribe<ModelOne>() {
         @Override
         public void call(Subscriber<? super ModelOne> subscriber) {
-            Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+            Logger.i("call ThreadName:" + Thread.currentThread().getName());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -808,7 +808,7 @@ public class HelloworldActivity extends TitlebarActivity {
     private Observable mModelTwoObservable = Observable.create(new Observable.OnSubscribe<ModelTwo>() {
         @Override
         public void call(Subscriber<? super ModelTwo> subscriber) {
-            Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+            Logger.i("call ThreadName:" + Thread.currentThread().getName());
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -850,18 +850,18 @@ public class HelloworldActivity extends TitlebarActivity {
 
                     @Override
                     public void onNext(ModelCombine modelCombine) {
-                        Logger.i(TAG, "onNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value);
+                        Logger.i("onNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value);
                     }
 
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");  // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
+                        Logger.i("onCompleted");  // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.i(TAG, "onError " + e.getLocalizedMessage());
+                        Logger.i("onError " + e.getLocalizedMessage());
                     }
                 });
     }
@@ -886,25 +886,25 @@ public class HelloworldActivity extends TitlebarActivity {
 
                     @Override
                     public void call(ModelCombine modelCombine) {
-                        Logger.i(TAG, "doOnNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value + " " + Thread.currentThread().getName());
+                        Logger.i("doOnNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value + " " + Thread.currentThread().getName());
                     }
                 })
                 .subscribe(new SimpleSubscriber<ModelCombine>() {
 
                     @Override
                     public void onNext(ModelCombine modelCombine) {
-                        Logger.i(TAG, "onNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value);
+                        Logger.i("onNext " + modelCombine.modelOne.value + " " + modelCombine.modelTwo.value);
                     }
 
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");   // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
+                        Logger.i("onCompleted");   // 设置compose(bindUntilEvent(ActivityEvent.DESTROY))时，如果在销毁Activity时工作线程里的任务还未执行完毕，onCompleted方法会被调用
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.i(TAG, "onError " + e.getLocalizedMessage());
+                        Logger.i("onError " + e.getLocalizedMessage());
                     }
 
                 });
@@ -914,7 +914,7 @@ public class HelloworldActivity extends TitlebarActivity {
         Observable.create(new Observable.OnSubscribe<NetResult<ModelOne>>() {
             @Override
             public void call(Subscriber<? super NetResult<ModelOne>> subscriber) {
-                Logger.i(TAG, "call ThreadName:" + Thread.currentThread().getName());
+                Logger.i("call ThreadName:" + Thread.currentThread().getName());
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -948,7 +948,7 @@ public class HelloworldActivity extends TitlebarActivity {
         Observable<String> memoryObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                Logger.i(TAG, "memoryObservable call ThreadName:" + Thread.currentThread().getName());
+                Logger.i("memoryObservable call ThreadName:" + Thread.currentThread().getName());
                 String result = null;
                 try {
                     Thread.sleep(3000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
@@ -964,7 +964,7 @@ public class HelloworldActivity extends TitlebarActivity {
         Observable<String> diskObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                Logger.i(TAG, "diskObservable call ThreadName:" + Thread.currentThread().getName());
+                Logger.i("diskObservable call ThreadName:" + Thread.currentThread().getName());
                 String result = null;
                 try {
                     Thread.sleep(2000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
@@ -986,7 +986,7 @@ public class HelloworldActivity extends TitlebarActivity {
         Observable<String> networkObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                Logger.i(TAG, "networkObservable call ThreadName:" + Thread.currentThread().getName());
+                Logger.i("networkObservable call ThreadName:" + Thread.currentThread().getName());
                 String result = null;
                 try {
                     Thread.sleep(1000); // 取消订阅时，如果刚好这里正在睡眠，会报InterruptedException
@@ -1019,24 +1019,24 @@ public class HelloworldActivity extends TitlebarActivity {
                 .subscribe(new SimpleSubscriber<String>() {
                     @Override
                     public void onNext(String result) {
-                        Logger.i(TAG, "请求成功:" + result);
+                        Logger.i("请求成功:" + result);
                     }
 
                     @Override
                     public void onCompleted() {
                         super.onCompleted();
-                        Logger.i(TAG, "onCompleted");
+                        Logger.i("onCompleted");
                     }
 
                     @Override
                     public void onError(String msg) {
-                        Logger.i(TAG, "onError:" + msg);
+                        Logger.i("onError:" + msg);
                     }
                 });
     }
 
     private void logWithThread(String methodName, String msg) {
-        Logger.i(TAG, "| " + Thread.currentThread().getName() + " | " + methodName + " | " + msg);
+        Logger.i("| " + Thread.currentThread().getName() + " | " + methodName + " | " + msg);
     }
 
 }

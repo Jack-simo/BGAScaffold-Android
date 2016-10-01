@@ -27,10 +27,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
-import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.NetUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.bottomnavigation.R;
@@ -203,7 +204,7 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 //                dismissLoadingDialog();
                 // 根据错误码展示具体的错误界面。展示原生的错误界面或加载本地的html错误界面
-                Logger.i(TAG, "errorCode =" + errorCode + " description = " + description + " failingUrl = " + failingUrl);
+                Logger.i("errorCode =" + errorCode + " description = " + description + " failingUrl = " + failingUrl);
             }
 
             @Override
@@ -221,7 +222,7 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
                 // 这里处理文件下载
-                Logger.i(TAG, "url = " + url + " userAgent = " + userAgent + " contentDisposition = " + contentDisposition + " mimetype = " + " contentLength = " + contentLength);
+                Logger.i("url = " + url + " userAgent = " + userAgent + " contentDisposition = " + contentDisposition + " mimetype = " + " contentLength = " + contentLength);
 
                 if (url.endsWith(".apk")) {
                     // 调用系统浏览器下载文件,也可以自己根据url来写下载的逻辑
@@ -324,7 +325,7 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            Logger.i(TAG, "progress:" + newProgress);
+            Logger.i("progress:" + newProgress);
         }
 
         @Override
@@ -384,7 +385,7 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
 
         @Override
         public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-            Logger.i(TAG, "onJsPrompt: url = " + url + " message = " + message + " defaultValue = " + defaultValue);
+            Logger.i("onJsPrompt: url = " + url + " message = " + message + " defaultValue = " + defaultValue);
 //            return super.onJsPrompt(view, url, message, defaultValue, result);
             // 返回true表示自己处理,如果这里不手动掉一次confirm/cancel方法的话界面上的按钮不会失去焦点,整个应用的webview都会出问题,接收不到触摸事件
             result.confirm();
@@ -393,7 +394,7 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
 
         @Override
         public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-            Logger.i(TAG, "onJsAlert: url = " + url + " message = " + message);
+            Logger.i("onJsAlert: url = " + url + " message = " + message);
 //            return super.onJsAlert(view, url, message, result);
             // 返回true表示自己处理,如果这里不手动掉一次confirm/cancel方法的话界面上的按钮不会失去焦点,整个应用的webview都会出问题,接收不到触摸事件
             result.confirm();
@@ -403,7 +404,7 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
         // Confirm方式基本上是耗时最短和最稳定的
         @Override
         public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
-            Logger.i(TAG, "onJsConfirm: url = " + url + " message = " + message);
+            Logger.i("onJsConfirm: url = " + url + " message = " + message);
 //            return super.onJsConfirm(view, url, message, result);
             // 返回true表示自己处理,如果这里不手动掉一次confirm/cancel方法的话界面上的按钮不会失去焦点,整个应用的webview都会出问题,接收不到触摸事件
             result.confirm();
@@ -412,7 +413,7 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
 
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-            Logger.i(TAG, "onConsoleMessage: message = " + consoleMessage.message() + " sourceId = " + consoleMessage.sourceId());
+            Logger.i("onConsoleMessage: message = " + consoleMessage.message() + " sourceId = " + consoleMessage.sourceId());
 //            return super.onConsoleMessage(consoleMessage);
             // 返回true表示自己处理,webview将不会再打印该日志
             return true;

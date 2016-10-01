@@ -5,10 +5,11 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
 
+import com.orhanobut.logger.Logger;
+
 import java.math.BigDecimal;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
-import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.widget.BGATimerTextView;
 import cn.bingoogolapple.bottomnavigation.R;
 
@@ -59,10 +60,10 @@ public class CountDownActivity extends TitlebarActivity {
                     public void onTick(long millisUntilFinished) {
                         mSendVcodeTv.setEnabled(true);
                         mSendVcodeTv.setText(millisUntilFinished / 1000 + "秒后可重新发送");
-                        Logger.i(TAG, String.valueOf(millisUntilFinished));
-                        Logger.i(TAG, String.valueOf(millisUntilFinished / 1000));
-                        Logger.i(TAG, String.valueOf(BigDecimal.valueOf(millisUntilFinished).divide(BigDecimal.valueOf(1000)).intValue()));
-                        Logger.i(TAG, String.valueOf((int) Math.ceil(millisUntilFinished / 1000.0)));
+                        Logger.i(String.valueOf(millisUntilFinished));
+                        Logger.i(String.valueOf(millisUntilFinished / 1000));
+                        Logger.i(String.valueOf(BigDecimal.valueOf(millisUntilFinished).divide(BigDecimal.valueOf(1000)).intValue()));
+                        Logger.i(String.valueOf((int) Math.ceil(millisUntilFinished / 1000.0)));
                     }
 
                     @Override

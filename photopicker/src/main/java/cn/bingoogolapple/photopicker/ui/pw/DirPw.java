@@ -24,13 +24,13 @@ import cn.bingoogolapple.photopicker.util.ImageLoader;
  * 创建时间:16/2/14 下午11:47
  * 描述:
  */
-public class DirPW extends PopupWindow implements AdapterView.OnItemClickListener {
+public class DirPw extends PopupWindow implements AdapterView.OnItemClickListener {
     private View mContentView;
     private ListView mContentLv;
     private DirAdapter mDirAdapter;
     private Delegate mDelegate;
 
-    public DirPW(Context context, List<FolderModel> datas) {
+    public DirPw(Context context, List<FolderModel> datas) {
         mContentView = LayoutInflater.from(context).inflate(R.layout.pw_dir, null);
         setContentView(mContentView);
 

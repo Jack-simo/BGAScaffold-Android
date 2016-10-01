@@ -6,7 +6,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import cn.bingoogolapple.basenote.util.Logger;
+import com.orhanobut.logger.Logger;
+
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -44,7 +45,7 @@ public class BGATimerTextView extends TextView implements Runnable {
             setEnabled(true);
         } else {
             postDelayed(this, 1000);
-            Logger.i(BGATimerTextView.class.getSimpleName(), String.valueOf(mTime));
+            Logger.i(String.valueOf(mTime));
             setText(mTime-- + "s");
             setEnabled(false);
         }

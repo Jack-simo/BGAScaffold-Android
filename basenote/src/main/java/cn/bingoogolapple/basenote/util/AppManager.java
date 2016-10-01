@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.orhanobut.logger.Logger;
 import com.zhy.changeskin.SkinManager;
 
 import java.util.Iterator;
@@ -200,10 +201,10 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     private void onEnterFrontStage() {
-        Logger.i(TAG, "进入前台状态");
+        Logger.i("进入前台状态");
     }
 
     private void onEnterBackStage() {
-        Logger.i(TAG, "进入后台状态");
+        Logger.i("进入后台状态");
     }
 }

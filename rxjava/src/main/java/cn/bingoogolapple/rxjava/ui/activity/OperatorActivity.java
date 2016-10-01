@@ -3,13 +3,13 @@ package cn.bingoogolapple.rxjava.ui.activity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
-import cn.bingoogolapple.basenote.util.Logger;
+import com.orhanobut.logger.Logger;
 import cn.bingoogolapple.rxjava.R;
 import rx.Observable;
 import rx.Observer;
@@ -45,13 +45,13 @@ public class OperatorActivity extends TitlebarActivity {
     }
 
     public void repeat(View v) {
-        Observable.just("one", "two", "three").repeat(3).subscribe(s -> Logger.i(TAG, s));
+        Observable.just("one", "two", "three").repeat(3).subscribe(s -> Logger.i(s));
     }
 
     public void defer1(View v) {
         Observable<String> deferred = Observable.defer(this::defer1);
         // 不订阅就不会打印defer1
-        deferred.subscribe(s -> Logger.i(TAG, s));
+        deferred.subscribe(s -> Logger.i(s));
     }
 
     private Observable<String> defer1() {
@@ -62,7 +62,7 @@ public class OperatorActivity extends TitlebarActivity {
                     return;
                 }
                 try {
-                    Logger.i(TAG, "defer1");
+                    Logger.i("defer1");
                     subscriber.onNext("defer1 value");
                     subscriber.onCompleted();
                 } catch (Exception e) {
@@ -75,7 +75,7 @@ public class OperatorActivity extends TitlebarActivity {
     public void defer2(View v) {
         Observable<String> deferred = defer2("defer2 value");
         // 不订阅就不会打印defer2
-        deferred.subscribe(s -> Logger.i(TAG, s));
+        deferred.subscribe(s -> Logger.i(s));
     }
 
     private Observable<String> defer2(final String s) {
@@ -83,7 +83,7 @@ public class OperatorActivity extends TitlebarActivity {
             @Override
             public Observable<String> call() {
                 try {
-                    Logger.i(TAG, "defer2");
+                    Logger.i("defer2");
                     return Observable.just(s);
                 } catch (Exception e) {
                     return Observable.error(e);
@@ -94,29 +94,29 @@ public class OperatorActivity extends TitlebarActivity {
 
     public void range(View v) {
         // 从10开始发射3个数字，重复发送三次
-        Observable.range(10, 3).repeat(3).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.range(10, 3).repeat(3).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void interval1(View v) {
         // 延时3秒开始发送，之后每隔3秒发送一次
-        Observable.interval(3, TimeUnit.SECONDS).compose(bindUntilEvent(ActivityEvent.PAUSE)).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.interval(3, TimeUnit.SECONDS).compose(bindUntilEvent(ActivityEvent.PAUSE)).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void interval2(View v) {
         /**
          * 延时0秒开始发送，之后每隔3秒发送一次
          */
-        Observable.interval(0, 3, TimeUnit.SECONDS).compose(bindUntilEvent(ActivityEvent.PAUSE)).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.interval(0, 3, TimeUnit.SECONDS).compose(bindUntilEvent(ActivityEvent.PAUSE)).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void timer(View v) {
         // 演示3秒发送
-        Observable.timer(3, TimeUnit.SECONDS).compose(bindUntilEvent(ActivityEvent.PAUSE)).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.timer(3, TimeUnit.SECONDS).compose(bindUntilEvent(ActivityEvent.PAUSE)).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void take(View v) {
         // 选取前3个，不足3个时有多少个就输出多少个
-        Observable.just(1, 2, 3, 4, 5).take(3).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 4, 5).take(3).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void takeFirst(View v) {
@@ -126,12 +126,12 @@ public class OperatorActivity extends TitlebarActivity {
             public Boolean call(Integer integer) {
                 return integer % 2 == 0;
             }
-        }).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        }).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void takeLast(View v) {
         // 选取最后3个，不足3个时有多少个就输出多少个
-        Observable.just(1, 2, 3, 4, 5).takeLast(7).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 4, 5).takeLast(7).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void takeLastBuffer(View v) {
@@ -139,7 +139,7 @@ public class OperatorActivity extends TitlebarActivity {
         Observable.just(1, 2, 3, 4, 5).takeLastBuffer(2).subscribe(new Action1<List<Integer>>() {
             @Override
             public void call(List<Integer> integers) {
-                Logger.i(TAG, integers.toString());
+                Logger.i(integers.toString());
             }
         });
     }
@@ -151,7 +151,7 @@ public class OperatorActivity extends TitlebarActivity {
             public Boolean call(Integer integer) {
                 return integer == 4;
             }
-        }).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        }).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void takeWhile(View v) {
@@ -161,27 +161,27 @@ public class OperatorActivity extends TitlebarActivity {
             public Boolean call(Integer integer) {
                 return integer < 4;
             }
-        }).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        }).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void distinct(View v) {
-        Observable.just(1, 2, 3, 2, 3, 5).distinct().subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 2, 3, 5).distinct().subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void first(View v) {
-        Observable.just(1, 2, 3, 2, 3, 5).first().subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 2, 3, 5).first().subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void last(View v) {
-        Observable.just(1, 2, 3, 2, 3, 5).last().subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 2, 3, 5).last().subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void skip(View v) {
-        Observable.just(1, 2, 3, 4, 5, 6).skip(2).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 4, 5, 6).skip(2).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void skipLast(View v) {
-        Observable.just(1, 2, 3, 2, 3, 5).skipLast(2).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 2, 3, 5).skipLast(2).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void skipWhile(View v) {
@@ -191,7 +191,7 @@ public class OperatorActivity extends TitlebarActivity {
             public Boolean call(Integer integer) {
                 return integer < 3;
             }
-        }).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        }).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void elementAt(View v) {
@@ -202,18 +202,18 @@ public class OperatorActivity extends TitlebarActivity {
 
             @Override
             public void onError(Throwable e) {
-                Logger.e(TAG, "错误" + e.getMessage());
+                Logger.e("错误" + e.getMessage());
             }
 
             @Override
             public void onNext(Integer integer) {
-                Logger.i(TAG, String.valueOf(integer));
+                Logger.i(String.valueOf(integer));
             }
         });
     }
 
     public void elementAtOrDefault(View v) {
-        Observable.just(1, 2, 3, 4, 5, 6).elementAtOrDefault(7, 10).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        Observable.just(1, 2, 3, 4, 5, 6).elementAtOrDefault(7, 10).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void switchMap(View v) {
@@ -223,7 +223,7 @@ public class OperatorActivity extends TitlebarActivity {
             public Observable<String> call(Integer integer) {
                 return Observable.just(String.valueOf(integer));
             }
-        }).subscribe(s -> Logger.i(TAG, s));
+        }).subscribe(s -> Logger.i(s));
     }
 
     public void scan(View v) {
@@ -232,11 +232,11 @@ public class OperatorActivity extends TitlebarActivity {
             public Integer call(Integer integer, Integer integer2) {
                 return integer + integer2;
             }
-        }).subscribe(integer -> Logger.i(TAG, String.valueOf(integer)));
+        }).subscribe(integer -> Logger.i(String.valueOf(integer)));
     }
 
     public void buffer(View v) {
-        Observable.just(1, 2, 3, 4, 5, 6).buffer(3).subscribe(list -> Logger.i(TAG, String.valueOf(list)));
+        Observable.just(1, 2, 3, 4, 5, 6).buffer(3).subscribe(list -> Logger.i(String.valueOf(list)));
     }
 
 }

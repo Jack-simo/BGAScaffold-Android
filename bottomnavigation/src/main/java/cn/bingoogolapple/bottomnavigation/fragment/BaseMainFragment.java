@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import cn.bingoogolapple.basenote.fragment.TitlebarFragment;
-import cn.bingoogolapple.basenote.util.Logger;
+import com.orhanobut.logger.Logger;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -21,18 +21,18 @@ public abstract class BaseMainFragment extends TitlebarFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Logger.i(TAG, "onAttach");
+        Logger.i("onAttach");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i(TAG, "onCreate");
+        Logger.i("onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Logger.i(TAG, "onCreateView");
+        Logger.i("onCreateView");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -45,68 +45,68 @@ public abstract class BaseMainFragment extends TitlebarFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Logger.i(TAG, "onActivityCreated");
+        Logger.i("onActivityCreated");
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        Logger.i(TAG, "setUserVisibleHint " + isVisibleToUser);
+        Logger.i("setUserVisibleHint " + isVisibleToUser);
     }
 
     @Override
     public void lazyLoadDataOnce() {
-        Logger.i(TAG, "lazyLoadDataOnce");
+        Logger.i("lazyLoadDataOnce");
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         // show/hidden方式和replace方式都会打印
-        Logger.i(TAG, "onViewStateRestored");
+        Logger.i("onViewStateRestored");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Logger.i(TAG, "onStart");
+        Logger.i("onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Logger.i(TAG, "onResume");
+        Logger.i("onResume");
     }
 
     @Override
     public void onPause() {
-        Logger.i(TAG, "onPause");
+        Logger.i("onPause");
         super.onPause();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // 按home键推到后台会打印
-        Logger.i(TAG, "onSaveInstanceState");
+        Logger.i("onSaveInstanceState");
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onStop() {
-        Logger.i(TAG, "onStop");
+        Logger.i("onStop");
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Logger.i(TAG, "onDestroy");
+        Logger.i("onDestroy");
         super.onDestroy();
     }
 
     @Override
     public void onDetach() {
-        Logger.i(TAG, "onDetach");
+        Logger.i("onDetach");
         super.onDetach();
     }
 }

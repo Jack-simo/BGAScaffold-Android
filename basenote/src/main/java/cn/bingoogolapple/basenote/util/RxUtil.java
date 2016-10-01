@@ -2,6 +2,8 @@ package cn.bingoogolapple.basenote.util;
 
 import android.content.Context;
 
+import com.trello.rxlifecycle.LifecycleProvider;
+
 import java.io.Serializable;
 
 import rx.Observable;
@@ -37,11 +39,42 @@ public class RxUtil {
         };
     }
 
+    public static <T> Observable.Transformer<NetResult<T>, T> flatMapResultAndApplySchedulersBindToLifecycle(LifecycleProvider lifecycleProvider) {
+        return new Observable.Transformer<NetResult<T>, T>() {
+            @Override
+            public Observable<T> call(Observable<NetResult<T>> observable) {
+                return observable.flatMap(new Func1<NetResult<T>, Observable<T>>() {
+                    @Override
+                    public Observable<T> call(NetResult<T> result) {
+                        if (result.code == 0) {
+                            return Observable.just(result.data);
+                        } else {
+                            return Observable.error(new ServerException(result.msg));
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(lifecycleProvider.bindToLifecycle());
+            }
+        };
+    }
+
     public static <T> Observable.Transformer<T, T> applySchedulers() {
         return new Observable.Transformer<T, T>() {
             @Override
             public Observable<T> call(Observable<T> observable) {
                 return observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    public static <T> Observable.Transformer<T, T> applySchedulersBindToLifecycle(LifecycleProvider lifecycleProvider) {
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> observable) {
+                return observable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(lifecycleProvider.bindToLifecycle());
             }
         };
     }

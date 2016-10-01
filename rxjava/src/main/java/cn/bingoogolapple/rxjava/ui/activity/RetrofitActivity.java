@@ -9,14 +9,14 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.io.File;
 import java.io.IOException;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.engine.ApiParams;
-import cn.bingoogolapple.basenote.util.Logger;
+import com.orhanobut.logger.Logger;
 import cn.bingoogolapple.basenote.util.Md5Util;
 import cn.bingoogolapple.basenote.util.PermissionUtil;
 import cn.bingoogolapple.basenote.util.RxUtil;
@@ -301,7 +301,7 @@ public class RetrofitActivity extends TitlebarActivity {
         RequestBody avatar1 = new ProgressRequestBody(imageFile, new ProgressRequestBody.UploadCallbacks() {
             @Override
             public void onProgressUpdate(int percentage) {
-                Logger.i(TAG, "当前进度:" + percentage);
+                Logger.i("当前进度:" + percentage);
             }
 
             @Override
@@ -368,7 +368,7 @@ public class RetrofitActivity extends TitlebarActivity {
 
                     @Override
                     public void onNext(RefreshModel refreshModel) {
-                        Logger.i(TAG, refreshModel.title);
+                        Logger.i(refreshModel.title);
                     }
                 });
     }

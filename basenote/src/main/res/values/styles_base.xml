@@ -146,10 +146,15 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <!--适用于欢迎界面避免第一次进来白屏或黑屏，或开启滑动返回功能的Activity的主题-->
+    <!-- 适用于开启滑动返回功能的Activity -->
     <style name="AppTheme.Transparent">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!-- 适用于欢迎界面避免第一次进来白屏或黑屏 -->
+    <style name="AppTheme.Transparent.Splash">
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="AppTheme.Transparent.Fullscreen">

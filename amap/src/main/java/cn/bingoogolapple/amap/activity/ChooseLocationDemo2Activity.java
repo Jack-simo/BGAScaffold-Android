@@ -77,7 +77,7 @@ public class ChooseLocationDemo2Activity extends TitlebarActivity implements AMa
         setUpMap();
 
         mContentRv.setLayoutManager(new LinearLayoutManager(this));
-        mContentRv.addItemDecoration(new Divider(this));
+        mContentRv.addItemDecoration(Divider.newBitmapDivider());
         mContentRv.setAdapter(mLocationAdapter);
     }
 

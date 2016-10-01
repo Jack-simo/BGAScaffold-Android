@@ -2,9 +2,10 @@ package cn.bingoogolapple.rxjava.util;
 
 import android.support.annotation.NonNull;
 
+import com.orhanobut.logger.Logger;
+
 import java.io.IOException;
 
-import cn.bingoogolapple.basenote.util.Logger;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -26,13 +27,13 @@ public class LoggingInterceptor implements Interceptor {
         Request request = chain.request();
 
         long startTime = System.nanoTime();
-        Logger.i(TAG, String.format("发送 %s on %s%n%s%n%s", request.url(), chain.connection(), request.headers(), getRequestBody(request)));
+        Logger.i(String.format("发送 %s on %s%n%s%n%s", request.url(), chain.connection(), request.headers(), getRequestBody(request)));
 
         Response response = chain.proceed(request);
 
         MediaType contentType = response.body().contentType();
         String content = response.body().string();
-        Logger.i(TAG, String.format("接收 %s in %.1fms%n%s%n%s", response.request().url(), (System.nanoTime() - startTime) / 1e6d, response.headers(), content));
+        Logger.i(String.format("接收 %s in %.1fms%n%s%n%s", response.request().url(), (System.nanoTime() - startTime) / 1e6d, response.headers(), content));
 
         return response.newBuilder().body(ResponseBody.create(contentType, content)).build();
     }

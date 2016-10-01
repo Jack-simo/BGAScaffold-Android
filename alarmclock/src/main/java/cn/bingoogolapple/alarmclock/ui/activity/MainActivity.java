@@ -67,7 +67,7 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
         setRightDrawable(R.mipmap.add_normal);
 
         mDataRv.setLayoutManager(new LinearLayoutManager(this));
-        mDataRv.addItemDecoration(new Divider(this));
+        mDataRv.addItemDecoration(Divider.newBitmapDivider().setColor(R.color.red_normal, true).setMargin(R.dimen.size_level3));
         mDataRv.setAdapter(mPlanAdapter);
 
         loadPlan();

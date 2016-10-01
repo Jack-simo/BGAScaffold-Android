@@ -19,11 +19,11 @@ import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
-import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.bottomnavigation.R;
 
@@ -59,7 +59,7 @@ public class BDMapActivity extends TitlebarActivity {
 
         mBaiduMap = mMapView.getMap();
 
-        Logger.i(TAG, "ZoomLevel = " + mBaiduMap.getMinZoomLevel() + " MaxZoomLevel = " + mBaiduMap.getMaxZoomLevel() + " zoom = " + mBaiduMap.getMapStatus().zoom);
+        Logger.i("ZoomLevel = " + mBaiduMap.getMinZoomLevel() + " MaxZoomLevel = " + mBaiduMap.getMaxZoomLevel() + " zoom = " + mBaiduMap.getMapStatus().zoom);
 //        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(new LatLng(30.67994285, 104.06792346)));
 //        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(new LatLng(30.67994285, 104.06792346), 16));
 

@@ -36,7 +36,7 @@ import cn.bingoogolapple.basenote.util.StorageUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.photopicker.R;
 import cn.bingoogolapple.photopicker.model.FolderModel;
-import cn.bingoogolapple.photopicker.ui.pw.DirPW;
+import cn.bingoogolapple.photopicker.ui.pw.DirPw;
 import cn.bingoogolapple.photopicker.util.ImageLoader;
 import cn.bingoogolapple.photopicker.util.ImgFilenameFilter;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -59,7 +59,7 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
     private ProgressDialog mProgressDialog;
     private ImgAdapter mImgAdapter;
 
-    private DirPW mDirPW;
+    private DirPw mDirPW;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -202,14 +202,14 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
 
     private void showDirPw() {
         if (mDirPW == null) {
-            mDirPW = new DirPW(this, mFolderModels);
+            mDirPW = new DirPw(this, mFolderModels);
             mDirPW.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
                     lightOn();
                 }
             });
-            mDirPW.setDelegate(new DirPW.Delegate() {
+            mDirPW.setDelegate(new DirPw.Delegate() {
                 @Override
                 public void onSelected(FolderModel folderModel) {
                     mCurrentDir = new File(folderModel.getDirPath());

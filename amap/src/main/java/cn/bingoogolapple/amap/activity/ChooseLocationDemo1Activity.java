@@ -18,6 +18,7 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.orhanobut.logger.Logger;
 
 import cn.bingoogolapple.amap.R;
 import cn.bingoogolapple.amap.util.LocationUtil;
@@ -25,7 +26,6 @@ import cn.bingoogolapple.amap.util.SimpleOnCameraChangeListener;
 import cn.bingoogolapple.amap.util.SimpleOnGeocodeSearchListener;
 import cn.bingoogolapple.amap.util.SimpleOnMarkerDragListener;
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
-import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.PermissionUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 
@@ -198,7 +198,7 @@ public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMa
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
-            Logger.i(TAG, "定位成功");
+            Logger.i("定位成功");
 
             mLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
 
