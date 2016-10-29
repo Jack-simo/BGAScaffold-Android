@@ -5,22 +5,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.mikepenz.materialize.util.UIUtils;
 
 import java.util.List;
 
-import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 import cn.bingoogolapple.basenote.pw.BasePopupWindow;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.basenote.util.UIUtil;
-import cn.bingoogolapple.bottomnavigation.widget.BGABadgeCheckedTextView;
 import cn.bingoogolapple.bottomnavigation.R;
 import cn.bingoogolapple.bottomnavigation.model.HomeCategory;
+import cn.bingoogolapple.bottomnavigation.widget.BGABadgeCheckedTextView;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -44,22 +42,22 @@ public class HomeCategoryPopupWindow extends BasePopupWindow {
 
     @Override
     protected void setListener() {
-        getViewById(R.id.btn_home_category_edit).setOnClickListener(this);
+        setOnClick(R.id.btn_home_category_edit, object -> {
+            ToastUtil.show("点击了编辑分组");
+            dismiss();
+        });
         mCategoryAdapter = new CategoryAdapter(mCategoryRv);
-        mCategoryAdapter.setOnItemChildClickListener(new BGAOnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(ViewGroup parent, View childView, int position) {
-                if (mDelegate != null && childView.getId() == R.id.bctv_item_home_category) {
-                    HomeCategory homeCategory = mCategoryAdapter.getItem(position);
-                    for (HomeCategory category : mHomeCategories) {
-                        category.selected = false;
-                    }
-                    homeCategory.selected = true;
-                    homeCategory.hasNewStatus = false;
-                    mDelegate.onSelectCategory(homeCategory);
+        mCategoryAdapter.setOnItemChildClickListener((parent, childView, position) -> {
+            if (mDelegate != null && childView.getId() == R.id.bctv_item_home_category) {
+                HomeCategory homeCategory = mCategoryAdapter.getItem(position);
+                for (HomeCategory category : mHomeCategories) {
+                    category.selected = false;
                 }
-                dismiss();
+                homeCategory.selected = true;
+                homeCategory.hasNewStatus = false;
+                mDelegate.onSelectCategory(homeCategory);
             }
+            dismiss();
         });
     }
 
@@ -67,14 +65,6 @@ public class HomeCategoryPopupWindow extends BasePopupWindow {
     protected void processLogic() {
         mCategoryRv.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
         mCategoryRv.setAdapter(mCategoryAdapter);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btn_home_category_edit) {
-            ToastUtil.show("点击了编辑分组");
-            dismiss();
-        }
     }
 
     public void setCategorys(List<HomeCategory> homeCategories) {

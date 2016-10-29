@@ -3,13 +3,13 @@ package cn.bingoogolapple.rxjava.ui.activity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
-import com.orhanobut.logger.Logger;
 import cn.bingoogolapple.rxjava.R;
 import rx.Observable;
 import rx.Observer;
@@ -38,10 +38,6 @@ public class OperatorActivity extends TitlebarActivity {
     @Override
     protected void processLogic(Bundle savedInstanceState) {
         setTitle("操作符学习笔记");
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 
     public void repeat(View v) {

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import cn.bingoogolapple.basenote.util.SkinUtil;
 import cn.bingoogolapple.materialdrawer.R;
@@ -24,8 +23,8 @@ public class Fragment11 extends BaseMainFragment {
 
     @Override
     protected void setListener() {
-        setOnClickListener(R.id.testToolbarActivity);
-        setOnClickListener(R.id.changeToOrange);
+        setOnClick(R.id.testToolbarActivity, object -> mActivity.forward(TestToolbarActivity.class));
+        setOnClick(R.id.changeToOrange, object -> SkinUtil.changeToOrange(mActivity));
     }
 
     @Override
@@ -52,14 +51,5 @@ public class Fragment11 extends BaseMainFragment {
         super.onStart();
         mMainActivity.changeNavIconToMenu(mToolbar);
         setTitle(R.string.menu_11);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.testToolbarActivity) {
-            mActivity.forward(TestToolbarActivity.class);
-        } else if (v.getId() == R.id.changeToOrange) {
-            SkinUtil.changeToOrange(mActivity);
-        }
     }
 }

@@ -1,7 +1,6 @@
 package cn.bingoogolapple.materialdrawer.fragment;
 
 import android.os.Bundle;
-import android.view.View;
 
 import cn.bingoogolapple.basenote.util.SkinUtil;
 import cn.bingoogolapple.materialdrawer.R;
@@ -20,21 +19,12 @@ public class Fragment12 extends BaseMainFragment {
 
     @Override
     protected void setListener() {
-        setOnClickListener(R.id.changetoback2);
-        setOnClickListener(R.id.changeToGreen);
+        setOnClick(R.id.changetoback2, object -> mMainActivity.putBackFragment(new FragmentBack2()));
+        setOnClick(R.id.changeToGreen, object -> SkinUtil.changeToGreen(mActivity));
     }
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.changetoback2) {
-            mMainActivity.putBackFragment(new FragmentBack2());
-        } else if (v.getId() == R.id.changeToGreen) {
-            SkinUtil.changeToGreen(mActivity);
-        }
     }
 
     @Override

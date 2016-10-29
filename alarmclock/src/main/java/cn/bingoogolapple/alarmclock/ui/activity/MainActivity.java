@@ -79,10 +79,6 @@ public class MainActivity extends TitlebarActivity implements BGAOnItemChildClic
     }
 
     @Override
-    public void onClick(View v) {
-    }
-
-    @Override
     public void onItemChildClick(ViewGroup parent, View childView, int position) {
         mCurrentViewPosition = position;
         if (childView.getId() == R.id.tv_item_plan_delete) {

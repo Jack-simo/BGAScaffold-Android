@@ -7,7 +7,10 @@ import android.support.annotation.StringRes;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+
+import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
@@ -15,13 +18,15 @@ import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.widget.BGASwipeBackLayout;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity extends RxAppCompatActivity implements View.OnClickListener, BGASwipeBackLayout.PanelSlideListener {
+public abstract class BaseActivity extends RxAppCompatActivity implements BGASwipeBackLayout.PanelSlideListener {
     protected String TAG;
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected App mApp;
@@ -85,12 +90,23 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
     }
 
     /**
-     * 设置点击事件
+     * 设置点击事件，并防止重复点击
      *
-     * @param id 控件的id
+     * @param id
+     * @param action
      */
-    protected void setOnClickListener(@IdRes int id) {
-        getViewById(id).setOnClickListener(this);
+    protected void setOnClick(@IdRes int id, Action1 action) {
+        setOnClick(getViewById(id), action);
+    }
+
+    /**
+     * 设置点击事件，并防止重复点击
+     *
+     * @param view
+     * @param action
+     */
+    protected void setOnClick(View view, Action1 action) {
+        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(action);
     }
 
     /**
@@ -120,14 +136,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements View.O
      * @param savedInstanceState
      */
     protected abstract void processLogic(Bundle savedInstanceState);
-
-    /**
-     * 需要处理点击事件时，重写该方法
-     *
-     * @param v
-     */
-    public void onClick(View v) {
-    }
 
     @Override
     public void onBackPressed() {

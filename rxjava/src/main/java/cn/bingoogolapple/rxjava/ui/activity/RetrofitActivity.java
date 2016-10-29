@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.io.File;
@@ -16,7 +17,6 @@ import java.io.IOException;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.engine.ApiParams;
-import com.orhanobut.logger.Logger;
 import cn.bingoogolapple.basenote.util.Md5Util;
 import cn.bingoogolapple.basenote.util.PermissionUtil;
 import cn.bingoogolapple.basenote.util.RxUtil;
@@ -111,10 +111,6 @@ public class RetrofitActivity extends TitlebarActivity {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
                 .create(RemoteServerEngine.class);
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 
     private Observer<JsonResp> mMsgObserver = new Observer<JsonResp>() {

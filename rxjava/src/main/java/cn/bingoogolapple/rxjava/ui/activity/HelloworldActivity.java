@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle.android.ActivityEvent;
@@ -14,8 +15,10 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
+import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.NetResult;
 import cn.bingoogolapple.basenote.util.RxUtil;
 import cn.bingoogolapple.basenote.util.SimpleSubscriber;
@@ -64,10 +67,6 @@ public class HelloworldActivity extends TitlebarActivity {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
                 .create(RemoteServerEngine.class);
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 
     /**
@@ -424,6 +423,15 @@ public class HelloworldActivity extends TitlebarActivity {
                     public void onNext(RefreshModel refreshModel) {
                         Logger.i(refreshModel.title);
                     }
+                });
+    }
+
+    public void interval(View v) {
+        Observable.interval(0, 1, TimeUnit.SECONDS)
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(number -> {
+                    ((TextView) v).setText(CalendarUtil.formatYearMonthDayHourMinute(CalendarUtil.getCalendar().getTime()));
                 });
     }
 
@@ -1046,6 +1054,10 @@ public class HelloworldActivity extends TitlebarActivity {
  * <p>
  * switchMap操作符 和 flatMap操作符 差不多，区别是switchMap操作符只会发射[emit]最近的Observables。
  * 也就是说，当400毫秒后，发出第一个搜索请求，当这个请求的过程中，用户又去搜索了，发出第二个请求，不管怎样，switchMap操作符只会发射第二次请求的Observable
+ * <p>
+ * RxJava retryWhen操作符实现错误重试机制    http://blog.csdn.net/johnny901114/article/details/51539708
+ * <p>
+ * RxJava onErrorResumeNext操作符实现app与服务器间token机制    http://blog.csdn.net/johnny901114/article/details/51533586
  */
 
 /**

@@ -53,6 +53,11 @@
 
         <Button
             style="@style/DemoBtn"
+            android:onClick="interval"
+            android:text="interval" />
+
+        <Button
+            style="@style/DemoBtn"
             android:onClick="defer"
             android:text="defer" />
 

@@ -1,7 +1,6 @@
 package cn.bingoogolapple.rxjava.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle.android.ActivityEvent;
@@ -46,10 +45,6 @@ public class LifecycleActivity extends TitlebarActivity {
                         Logger.i("Started in onCreate(), running until onPause(): " + num);
                     }
                 });
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 
     @Override

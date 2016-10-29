@@ -4,9 +4,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
+
+import com.jakewharton.rxbinding.widget.RxRadioGroup;
 
 import cn.bingoogolapple.badgeview.BGABadgeRadioButton;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
@@ -50,26 +51,23 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void setListener() {
-        mPlusIb.setOnClickListener(this);
-        mTabRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.brb_main_home:
-                        mContentVp.setCurrentItem(0, false);
-                        break;
-                    case R.id.brb_main_message:
-                        mContentVp.setCurrentItem(1, false);
-                        break;
-                    case R.id.brb_main_discover:
-                        mContentVp.setCurrentItem(2, false);
-                        break;
-                    case R.id.brb_main_me:
-                        mContentVp.setCurrentItem(3, false);
-                        break;
-                    default:
-                        break;
-                }
+        setOnClick(mPlusIb, object -> ToastUtil.show("点击了加号按钮"));
+        RxRadioGroup.checkedChanges(mTabRg).subscribe(checkedId -> {
+            switch (checkedId) {
+                case R.id.brb_main_home:
+                    mContentVp.setCurrentItem(0, false);
+                    break;
+                case R.id.brb_main_message:
+                    mContentVp.setCurrentItem(1, false);
+                    break;
+                case R.id.brb_main_discover:
+                    mContentVp.setCurrentItem(2, false);
+                    break;
+                case R.id.brb_main_me:
+                    mContentVp.setCurrentItem(3, false);
+                    break;
+                default:
+                    break;
             }
         });
     }
@@ -87,13 +85,6 @@ public class MainActivity extends BaseActivity {
         mMessageBrb.showTextBadge("1");
         mDiscoverBrb.showTextBadge("...");
         mMeBrb.showTextBadge("2");
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.ib_main_plus) {
-            ToastUtil.show("点击了加号按钮");
-        }
     }
 
     @Override

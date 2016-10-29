@@ -1,7 +1,6 @@
 package cn.bingoogolapple.rxjava.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -31,8 +30,7 @@ public class BindingActivity extends TitlebarActivity {
 
     @Override
     protected void setListener() {
-        RxView
-                .clicks(getViewById(R.id.btn_binding_throttle))
+        RxView.clicks(getViewById(R.id.btn_binding_throttle))
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -76,9 +74,4 @@ public class BindingActivity extends TitlebarActivity {
     protected void processLogic(Bundle savedInstanceState) {
         setTitle("RxBinding学习笔记");
     }
-
-    @Override
-    public void onClick(View v) {
-    }
-
 }

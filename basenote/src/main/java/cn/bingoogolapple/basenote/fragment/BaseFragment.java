@@ -9,18 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.components.support.RxFragment;
 import com.zhy.changeskin.SkinManager;
 
+import java.util.concurrent.TimeUnit;
+
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseFragment extends RxFragment implements View.OnClickListener {
+public abstract class BaseFragment extends RxFragment {
     protected String TAG;
     protected App mApp;
     protected View mContentView;
@@ -106,12 +111,23 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
     }
 
     /**
-     * 设置点击事件
+     * 设置点击事件，并防止重复点击
      *
-     * @param id 控件的id
+     * @param id
+     * @param action
      */
-    protected void setOnClickListener(@IdRes int id) {
-        getViewById(id).setOnClickListener(this);
+    protected void setOnClick(@IdRes int id, Action1 action) {
+        setOnClick(getViewById(id), action);
+    }
+
+    /**
+     * 设置点击事件，并防止重复点击
+     *
+     * @param view
+     * @param action
+     */
+    protected void setOnClick(View view, Action1 action) {
+        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(action);
     }
 
     /**
@@ -123,14 +139,6 @@ public abstract class BaseFragment extends RxFragment implements View.OnClickLis
      */
     protected <VT extends View> VT getViewById(@IdRes int id) {
         return (VT) mContentView.findViewById(id);
-    }
-
-    /**
-     * 需要处理点击事件时，重写该方法
-     *
-     * @param v
-     */
-    public void onClick(View v) {
     }
 
     @Override

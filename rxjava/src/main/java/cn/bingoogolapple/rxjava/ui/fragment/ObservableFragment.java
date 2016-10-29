@@ -1,7 +1,6 @@
 package cn.bingoogolapple.rxjava.ui.fragment;
 
 import android.os.Bundle;
-import android.view.View;
 
 import cn.bingoogolapple.basenote.fragment.BaseFragment;
 import cn.bingoogolapple.basenote.util.RxBus;
@@ -31,28 +30,12 @@ public class ObservableFragment extends BaseFragment {
 
     @Override
     protected void setListener() {
-        getViewById(R.id.btn_obdervable_test1).setOnClickListener(this);
-        getViewById(R.id.btn_obdervable_test2).setOnClickListener(this);
-    }
-
-    @Override
-    protected void processLogic(Bundle savedInstanceState) {
-        mRemoteServerEngine = new Retrofit.Builder()
-                .baseUrl("http://7xk9dj.com1.z0.glb.clouddn.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build().create(RemoteServerEngine.class);
-
-        mRemoteServerEngine.testNetResult1().compose(RxUtil.flatMapResultAndApplySchedulers()).compose(bindToLifecycle());
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btn_obdervable_test1) {
+        setOnClick(R.id.btn_obdervable_test1, object -> {
             if (RxBus.hasObservers()) {
                 RxBus.send(new TapEvent());
             }
-        } else if (v.getId() == R.id.btn_obdervable_test2) {
+        });
+        setOnClick(R.id.btn_obdervable_test2, object -> {
             if (RxBus.hasObservers()) {
                 mRemoteServerEngine.loadMoreDataRx(1)
                         .subscribeOn(Schedulers.io())
@@ -67,7 +50,18 @@ public class ObservableFragment extends BaseFragment {
                             }
                         });
             }
-        }
+        });
+    }
+
+    @Override
+    protected void processLogic(Bundle savedInstanceState) {
+        mRemoteServerEngine = new Retrofit.Builder()
+                .baseUrl("http://7xk9dj.com1.z0.glb.clouddn.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build().create(RemoteServerEngine.class);
+
+        mRemoteServerEngine.testNetResult1().compose(RxUtil.flatMapResultAndApplySchedulers()).compose(bindToLifecycle());
     }
 
     public static class RefreshModelEvent {

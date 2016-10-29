@@ -2,7 +2,6 @@ package cn.bingoogolapple.bottomnavigation.activity;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.View;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
@@ -37,19 +36,7 @@ public class CountDownActivity extends TitlebarActivity {
 
     @Override
     protected void setListener() {
-        mSendVcodeTv.setOnClickListener(this);
-        mTimerTextView.setOnClickListener(this);
-        setOnClickListener(R.id.stop_send);
-    }
-
-    @Override
-    protected void processLogic(Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.send_vcode) {
+        setOnClick(mSendVcodeTv, object -> {
             if (mCountDownTimer != null) {
                 mCountDownTimer.cancel();
             }
@@ -75,14 +62,18 @@ public class CountDownActivity extends TitlebarActivity {
             }
 
             mCountDownTimer.start();
-        } else if (v.getId() == R.id.send_vcode_custom) {
-            mTimerTextView.start();
-        } else if (v.getId() == R.id.stop_send) {
+        });
+        setOnClick(mTimerTextView, object -> mTimerTextView.start());
+        setOnClick(R.id.stop_send, object -> {
             if (mCountDownTimer != null) {
                 mSendVcodeTv.setEnabled(true);
                 mCountDownTimer.cancel();
             }
-        }
+        });
+    }
+
+    @Override
+    protected void processLogic(Bundle savedInstanceState) {
     }
 
     @Override

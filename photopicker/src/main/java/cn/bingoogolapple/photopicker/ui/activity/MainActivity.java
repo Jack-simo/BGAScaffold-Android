@@ -11,13 +11,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import cn.bingoogolapple.androidcommon.adapter.BGAAdapterViewAdapter;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.StorageUtil;
@@ -84,14 +80,9 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
     @Override
     protected void setListener() {
         mImgAdapter = new ImgAdapter(this);
-        mImgAdapter.setOnItemChildClickListener(new BGAOnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(ViewGroup viewGroup, View view, int position) {
-                mImgAdapter.handleSelect(position);
-            }
-        });
+        mImgAdapter.setOnItemChildClickListener((viewGroup, view, position) -> mImgAdapter.handleSelect(position));
 
-        mDirRl.setOnClickListener(this);
+        setOnClick(mDirRl, object -> showDirPw());
     }
 
     @Override
@@ -193,29 +184,14 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.rl_main_dir) {
-            showDirPw();
-        }
-    }
-
     private void showDirPw() {
         if (mDirPW == null) {
             mDirPW = new DirPw(this, mFolderModels);
-            mDirPW.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    lightOn();
-                }
-            });
-            mDirPW.setDelegate(new DirPw.Delegate() {
-                @Override
-                public void onSelected(FolderModel folderModel) {
-                    mCurrentDir = new File(folderModel.getDirPath());
-                    mMaxCount = folderModel.getCount();
-                    dataToView();
-                }
+            mDirPW.setOnDismissListener(() -> lightOn());
+            mDirPW.setDelegate(folderModel -> {
+                mCurrentDir = new File(folderModel.getDirPath());
+                mMaxCount = folderModel.getCount();
+                dataToView();
             });
         }
         mDirPW.showAsDropDown(mDirRl);

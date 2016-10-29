@@ -180,10 +180,6 @@ public class ChooseLocationDemo2Activity extends TitlebarActivity implements AMa
     }
 
     @Override
-    public void onClick(View v) {
-    }
-
-    @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
             LocationUtil.stopLocation();

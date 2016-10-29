@@ -37,19 +37,10 @@ public class FragmentBack2 extends BaseMainFragment {
         MenuItem menuItem = menu.findItem(R.id.back2);
         View actionView = menuItem.getActionView();
         mTitleTv = (TextView) actionView.findViewById(R.id.tv_custom_toolbar_menu_title);
-        mTitleTv.setOnClickListener(this);
         mTitleTv.setText("改变前的标题");
-        actionView.findViewById(R.id.iv_custom_toolbar_menu_more).setOnClickListener(this);
+        setOnClick(mTitleTv, object -> mTitleTv.setText("改变后的标题"));
+        setOnClick(actionView.findViewById(R.id.iv_custom_toolbar_menu_more), object -> ToastUtil.show("点击了更多按钮"));
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.tv_custom_toolbar_menu_title) {
-            mTitleTv.setText("改变后的标题");
-        } else if (v.getId() == R.id.iv_custom_toolbar_menu_more) {
-            ToastUtil.show("点击了更多按钮");
-        }
     }
 
     @Override

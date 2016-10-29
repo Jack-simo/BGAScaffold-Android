@@ -3,7 +3,6 @@ package cn.bingoogolapple.rxjava.ui.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.widget.CheckBox;
 
 import com.f2prateek.rx.preferences.Preference;
@@ -14,7 +13,6 @@ import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.rxjava.R;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 public class PreferencesActivity extends TitlebarActivity {
@@ -43,14 +41,10 @@ public class PreferencesActivity extends TitlebarActivity {
         mFooPreference = rxPreferences.getBoolean("foo");
 
         Preference<Boolean> checked = rxPreferences.getBoolean("checked", true);
-        RxCompoundButton
-                .checkedChanges((CheckBox) getViewById(R.id.cb_preference_checked))
+        RxCompoundButton.checkedChanges(getViewById(R.id.cb_preference_checked))
                 .subscribe(checked.asAction());
-        checked.asObservable().subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean isChecked) {
-                ToastUtil.show(isChecked ? "选中" : "取消选中");
-            }
+        checked.asObservable().subscribe(isChecked -> {
+            ToastUtil.show(isChecked ? "选中" : "取消选中");
         });
     }
 
@@ -85,9 +79,5 @@ public class PreferencesActivity extends TitlebarActivity {
     protected void onPause() {
         super.onPause();
         mSubscriptions.unsubscribe();
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 }

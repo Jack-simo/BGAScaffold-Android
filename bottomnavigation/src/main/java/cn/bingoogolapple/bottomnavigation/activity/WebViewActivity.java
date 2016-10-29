@@ -66,12 +66,12 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
 
     @Override
     protected void setListener() {
-        setOnClickListener(R.id.load_from_assets);
-        setOnClickListener(R.id.load_from_sdcard);
-        setOnClickListener(R.id.load_from_remote);
-        setOnClickListener(R.id.java_call_js);
-        setOnClickListener(R.id.get_string_from_js);
-        setOnClickListener(R.id.load_video);
+        setOnClick(R.id.load_from_assets, object -> mWebView.loadUrl("file:///android_asset/index.html"));
+        setOnClick(R.id.load_from_sdcard, object -> loadSDCardHtml());
+        setOnClick(R.id.load_from_remote, object -> mWebView.loadUrl("http://shouji.baidu.com/software/9782214.html"));
+        setOnClick(R.id.java_call_js, object -> mWebAppInterface.javaCallJs("来自java的消息"));
+        setOnClick(R.id.get_string_from_js, object -> mWebAppInterface.getStringFromJs());
+        setOnClick(R.id.load_video, object -> mWebView.loadUrl("http://gank.io"));
     }
 
     @Override
@@ -232,23 +232,6 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.load_from_assets) {
-            mWebView.loadUrl("file:///android_asset/index.html");
-        } else if (v.getId() == R.id.load_from_sdcard) {
-            loadSDCardHtml();
-        } else if (v.getId() == R.id.load_from_remote) {
-            mWebView.loadUrl("http://shouji.baidu.com/software/9782214.html");
-        } else if (v.getId() == R.id.java_call_js) {
-            mWebAppInterface.javaCallJs("来自java的消息");
-        } else if (v.getId() == R.id.get_string_from_js) {
-            mWebAppInterface.getStringFromJs();
-        } else if (v.getId() == R.id.load_video) {
-            mWebView.loadUrl("http://gank.io");
-        }
     }
 
     @Override

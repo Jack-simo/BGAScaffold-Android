@@ -2,7 +2,6 @@ package cn.bingoogolapple.amap.activity;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.view.View;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -103,10 +102,6 @@ public class ChooseLocationDemo1Activity extends TitlebarActivity implements AMa
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 
     @Override

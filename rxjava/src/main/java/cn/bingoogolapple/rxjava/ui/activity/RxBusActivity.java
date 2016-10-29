@@ -1,7 +1,6 @@
 package cn.bingoogolapple.rxjava.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.rxjava.R;
@@ -21,9 +20,4 @@ public class RxBusActivity extends TitlebarActivity {
     protected void processLogic(Bundle savedInstanceState) {
         setTitle("RxBus学习笔记");
     }
-
-    @Override
-    public void onClick(View v) {
-    }
-
 }
