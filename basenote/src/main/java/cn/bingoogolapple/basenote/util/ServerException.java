@@ -6,8 +6,14 @@ package cn.bingoogolapple.basenote.util;
  * 描述:
  */
 public class ServerException extends Exception {
+    private int mCode;
 
-    public ServerException(String msg) {
+    public ServerException(String msg, int code) {
         super(msg);
+        mCode = code;
+    }
+
+    public int getCode() {
+        return mCode;
     }
 }

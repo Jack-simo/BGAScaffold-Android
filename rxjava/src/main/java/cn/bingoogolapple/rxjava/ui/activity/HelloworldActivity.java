@@ -934,7 +934,7 @@ public class HelloworldActivity extends TitlebarActivity {
                 subscriber.onNext(netResult);
                 subscriber.onCompleted();
             }
-        }).compose(RxUtil.flatMapResultAndApplySchedulers())
+        }).compose(RxUtil.applySchedulersAndFlatMapResult())
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new SimpleSubscriber<ModelOne>(this, false) {
                     @Override

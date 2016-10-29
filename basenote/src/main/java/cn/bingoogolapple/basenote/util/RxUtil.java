@@ -21,62 +21,38 @@ public class RxUtil {
     private RxUtil() {
     }
 
-    public static <T> Observable.Transformer<NetResult<T>, T> flatMapResultAndApplySchedulers() {
-        return new Observable.Transformer<NetResult<T>, T>() {
-            @Override
-            public Observable<T> call(Observable<NetResult<T>> observable) {
-                return observable.flatMap(new Func1<NetResult<T>, Observable<T>>() {
-                    @Override
-                    public Observable<T> call(NetResult<T> result) {
-                        if (result.code == 0) {
-                            return Observable.just(result.data);
-                        } else {
-                            return Observable.error(new ServerException(result.msg));
-                        }
-                    }
-                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-            }
-        };
-    }
-
-    public static <T> Observable.Transformer<NetResult<T>, T> flatMapResultAndApplySchedulersBindToLifecycle(LifecycleProvider lifecycleProvider) {
-        return new Observable.Transformer<NetResult<T>, T>() {
-            @Override
-            public Observable<T> call(Observable<NetResult<T>> observable) {
-                return observable.flatMap(new Func1<NetResult<T>, Observable<T>>() {
-                    @Override
-                    public Observable<T> call(NetResult<T> result) {
-                        if (result.code == 0) {
-                            return Observable.just(result.data);
-                        } else {
-                            return Observable.error(new ServerException(result.msg));
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .compose(lifecycleProvider.bindToLifecycle());
-            }
-        };
-    }
-
     public static <T> Observable.Transformer<T, T> applySchedulers() {
-        return new Observable.Transformer<T, T>() {
-            @Override
-            public Observable<T> call(Observable<T> observable) {
-                return observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-            }
-        };
+        return observable -> observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public static <T> Observable.Transformer<T, T> applySchedulersBindToLifecycle(LifecycleProvider lifecycleProvider) {
-        return new Observable.Transformer<T, T>() {
+        return observable -> observable.compose(RxUtil.applySchedulers()).compose(lifecycleProvider.bindToLifecycle());
+    }
+
+    public static <T> Observable.Transformer<NetResult<T>, T> applySchedulersAndFlatMapResult() {
+        return observable -> observable.compose(RxUtil.applySchedulers()).flatMap(new Func1<NetResult<T>, Observable<T>>() {
             @Override
-            public Observable<T> call(Observable<T> observable) {
-                return observable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .compose(lifecycleProvider.bindToLifecycle());
+            public Observable<T> call(NetResult<T> result) {
+                return handleCode(result);
             }
-        };
+        });
+    }
+
+    public static <T> Observable.Transformer<NetResult<T>, T> applySchedulersBindToLifecycleAndFlatMapResult(LifecycleProvider lifecycleProvider) {
+        return observable -> observable.compose(RxUtil.applySchedulersBindToLifecycle(lifecycleProvider)).flatMap(new Func1<NetResult<T>, Observable<T>>() {
+            @Override
+            public Observable<T> call(NetResult<T> result) {
+                return handleCode(result);
+            }
+        });
+    }
+
+    private static <T> Observable<T> handleCode(NetResult<T> result) {
+        if (result.code == 0) {
+            return Observable.just(result.data);
+        } else {
+            return Observable.error(new ServerException(result.msg, result.code));
+        }
     }
 
     public static <T> Observable<T> load(final Context context, final String cacheKey, final long expireTime, Observable<T> fromNetworkObservable, boolean forceRefresh) {

@@ -61,7 +61,7 @@ public class BindingActivity extends TitlebarActivity {
 //                        return mApi.search(new ApiParams("Keyword", charSequence));
                     }
                 })
-                .compose(RxUtil.flatMapResultAndApplySchedulersBindToLifecycle(this))
+                .compose(RxUtil.applySchedulersBindToLifecycleAndFlatMapResult(this))
                 .subscribe(new SimpleSubscriber<ArrayList<RefreshModel>>() {
                     @Override
                     public void onNext(ArrayList<RefreshModel> customerGroupModels) {

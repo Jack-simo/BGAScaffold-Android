@@ -7,6 +7,8 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
+import com.orhanobut.logger.Logger;
+
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -89,8 +91,16 @@ public abstract class SimpleSubscriber<T> extends Subscriber<T> {
             onError(App.getInstance().getString(R.string.network_unavailable));
         } else if (e instanceof ServerException) {
             onError(e.getMessage());
+            switch (((ServerException) e).getCode()) {
+                default:
+                    break;
+            }
         } else {
             onError(App.getInstance().getString(R.string.try_again_later));
+
+            if (StringUtil.isNotEmpty(e.getMessage())) {
+                Logger.e(e.getMessage());
+            }
         }
     }
 
