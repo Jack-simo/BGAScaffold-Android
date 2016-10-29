@@ -10,7 +10,6 @@ import com.orhanobut.logger.Logger;
 import cn.bingoogolapple.basenote.fragment.BaseFragment;
 import cn.bingoogolapple.basenote.util.RxBus;
 import cn.bingoogolapple.rxjava.R;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -39,22 +38,12 @@ public class ObserverOneFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        RxBus.toObserverable()
-                .compose(this.bindToLifecycle())
-                .ofType(ObservableFragment.TapEvent.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> {
-                    mTipTv.setVisibility(View.VISIBLE);
-                    mTipTv.setAlpha(1f);
-                    ViewCompat.animate(mTipTv).alphaBy(-1f).setDuration(400);
-                });
+        RxBus.toObservableAndBindToLifecycle(ObservableFragment.TapEvent.class, this).subscribe(tapEvent -> {
+            mTipTv.setVisibility(View.VISIBLE);
+            mTipTv.setAlpha(1f);
+            ViewCompat.animate(mTipTv).alphaBy(-1f).setDuration(400);
+        });
 
-        RxBus.toObserverable()
-                .compose(bindToLifecycle())
-                .ofType(ObservableFragment.RefreshModelEvent.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> {
-                    Logger.i(event.getRefreshModel().title);
-                });
+        RxBus.toObservableAndBindToLifecycle(ObservableFragment.RefreshModelEvent.class, this).subscribe(event -> Logger.i(event.getRefreshModel().title));
     }
 }

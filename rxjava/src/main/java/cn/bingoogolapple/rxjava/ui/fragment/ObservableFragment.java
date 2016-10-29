@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import cn.bingoogolapple.basenote.fragment.BaseFragment;
 import cn.bingoogolapple.basenote.util.RxBus;
-import cn.bingoogolapple.basenote.util.RxUtil;
 import cn.bingoogolapple.rxjava.R;
 import cn.bingoogolapple.rxjava.engine.RemoteServerEngine;
 import cn.bingoogolapple.rxjava.model.RefreshModel;
@@ -30,11 +29,7 @@ public class ObservableFragment extends BaseFragment {
 
     @Override
     protected void setListener() {
-        setOnClick(R.id.btn_obdervable_test1, object -> {
-            if (RxBus.hasObservers()) {
-                RxBus.send(new TapEvent());
-            }
-        });
+        setOnClick(R.id.btn_obdervable_test1, object -> RxBus.send(new TapEvent()));
         setOnClick(R.id.btn_obdervable_test2, object -> {
             if (RxBus.hasObservers()) {
                 mRemoteServerEngine.loadMoreDataRx(1)
@@ -44,11 +39,7 @@ public class ObservableFragment extends BaseFragment {
                         .filter(refreshModel -> !refreshModel.title.contains("4"))
                         .take(3)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(refreshModel -> {
-                            if (RxBus.hasObservers()) {
-                                RxBus.send(new RefreshModelEvent(refreshModel));
-                            }
-                        });
+                        .subscribe(refreshModel -> RxBus.send(new RefreshModelEvent(refreshModel)));
             }
         });
     }
@@ -61,7 +52,12 @@ public class ObservableFragment extends BaseFragment {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build().create(RemoteServerEngine.class);
 
-        mRemoteServerEngine.testNetResult1().compose(RxUtil.flatMapResultAndApplySchedulers()).compose(bindToLifecycle());
+//        mRemoteServerEngine.testNetResult1().compose(RxUtil.flatMapResultAndApplySchedulersBindToLifecycle(this)).subscribe(new Action1<List<RefreshModel>>() {
+//            @Override
+//            public void call(List<RefreshModel> refreshModels) {
+//
+//            }
+//        });
     }
 
     public static class RefreshModelEvent {
