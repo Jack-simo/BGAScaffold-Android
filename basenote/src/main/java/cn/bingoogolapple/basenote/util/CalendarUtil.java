@@ -10,13 +10,15 @@ import java.util.TimeZone;
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/10/11 下午12:55
- * 描述:
+ * 描述:时间工具类
  */
 public class CalendarUtil {
     private static final SimpleDateFormat sHourMinuteSdf = new SimpleDateFormat("HH:mm", Locale.CHINESE);
+    private static final SimpleDateFormat sMonthDayHourMinuteSdf = new SimpleDateFormat("MM/dd HH:mm", Locale.CHINESE);
     private static final SimpleDateFormat sYearMonthDayHourMinuteSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
     private static final SimpleDateFormat sYearMonthDaySdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
-    private static final SimpleDateFormat sYearMonthDayWeekSdf = new SimpleDateFormat("yyyy-MM-dd E", Locale.CHINESE);
+    private static final SimpleDateFormat sYearMonthDayWeekSlashSdf = new SimpleDateFormat("yyyy-MM-dd E", Locale.CHINESE);
+    private static final SimpleDateFormat sYearMonthDayWeekSdf = new SimpleDateFormat("yyyy/MM/dd E", Locale.CHINESE);
     private static final SimpleDateFormat sChineseYearMonthDaySdf = new SimpleDateFormat("yyyy年MM月dd", Locale.CHINESE);
     private static final SimpleDateFormat sChineseYearMonthDayWeekSdf = new SimpleDateFormat("yyyy年MM月dd E", Locale.CHINESE);
     private static final long MINUTE_MILLISECONDS = 60 * 1000;
@@ -45,8 +47,7 @@ public class CalendarUtil {
      * @return
      */
     public static Calendar zeroFromHour(long milliseconds) {
-        Calendar calendar = getCalendar();
-        calendar.setTimeInMillis(milliseconds);
+        Calendar calendar = getCalendar(milliseconds);
         zeroFromHour(calendar);
         return calendar;
     }
@@ -198,15 +199,25 @@ public class CalendarUtil {
     }
 
     public static String formatHourMinute(long milliseconds) {
-        return sHourMinuteSdf.format(new Date(milliseconds));
+        return formatHourMinute(new Date(milliseconds));
     }
+
+
+    public static String formatMonthDayHourMinute(Date date) {
+        return sMonthDayHourMinuteSdf.format(date);
+    }
+
+    public static String formatMonthDayHourMinute(long milliseconds) {
+        return formatMonthDayHourMinute(new Date(milliseconds));
+    }
+
 
     public static String formatYearMonthDayHourMinute(Date date) {
         return sYearMonthDayHourMinuteSdf.format(date);
     }
 
     public static String formatYearMonthDayHourMinute(long milliseconds) {
-        return sYearMonthDayHourMinuteSdf.format(new Date(milliseconds));
+        return formatYearMonthDayHourMinute(new Date(milliseconds));
     }
 
     public static String formatYearMonthDay(Date date) {
@@ -225,9 +236,27 @@ public class CalendarUtil {
         return formatYearMonthDayWeek(new Date(milliseconds));
     }
 
+    public static String formatYearMonthDayWeekSlash(Date date) {
+        return sYearMonthDayWeekSlashSdf.format(date);
+    }
+
+    public static String formatYearMonthDayWeekSlash(long milliseconds) {
+        return formatYearMonthDayWeekSlash(new Date(milliseconds));
+    }
+
+
     public static long parseYearMonthDay(String date) {
         try {
             return sYearMonthDaySdf.parse(date).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static long parseYearMonthDayHourMinute(String time) {
+        try {
+            return sYearMonthDayHourMinuteSdf.parse(time).getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
