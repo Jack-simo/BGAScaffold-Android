@@ -65,6 +65,7 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.wdullaer:materialdatetimepicker:2.3.0'
     compile 'com.zhy:changeskin:4.0.2'
+    compile 'com.umeng.analytics:analytics:latest.integration'
 
     compile 'com.orhanobut:logger:1.15'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'

@@ -70,10 +70,12 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     public void onActivityResumed(Activity activity) {
         // 做换肤功能时才打开该选项
 //        SkinUtil.initStatusbarSkin(activity);
+        UmengUtil.onActivityResumed(activity);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
+        UmengUtil.onActivityPaused(activity);
     }
 
     @Override
@@ -149,12 +151,22 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      * 退出应用程序
      */
     public void exit() {
-        while (true) {
-            Activity activity = currentActivity();
-            if (activity == null) {
-                break;
+        try {
+            while (true) {
+                Activity activity = currentActivity();
+                if (activity == null) {
+                    break;
+                }
+                popOneActivity(activity);
             }
-            popOneActivity(activity);
+
+            // 如果开发者调用Process.kill或者System.exit之类的方法杀死进程，请务必在此之前调用MobclickAgent.onKillProcess(Context context)方法，用来保存统计数据
+            UmengUtil.onKillProcess();
+
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+        } catch (Exception e) {
+            Logger.e("退出错误");
         }
     }
 

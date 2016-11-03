@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
+import cn.bingoogolapple.basenote.util.UmengUtil;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -62,6 +63,7 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        UmengUtil.setFragmentUserVisibleHint(this, isVisibleToUser);
 
         handleLazyLoadDataOnce();
     }
@@ -78,6 +80,18 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
             mIsLoadedData = true;
             lazyLoadDataOnce();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        UmengUtil.onFragmentResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        UmengUtil.onFragmentPause(this);
     }
 
     /**

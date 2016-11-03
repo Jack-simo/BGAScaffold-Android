@@ -37,8 +37,11 @@
         <receiver android:name=".receiver.AlarmReceiver"/>
 
         <!--<meta-data
+            android:name="UMENG_APPKEY"
+            android:value="581b52a8c62dca2f370004f9"></meta-data>
+        <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}" />-->
+            android:value="${UMENG_CHANNEL_VALUE}"/>-->
     </application>
 
 </manifest>
