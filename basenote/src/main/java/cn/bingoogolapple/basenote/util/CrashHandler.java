@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 
+import com.orhanobut.logger.Logger;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -16,7 +18,6 @@ import java.lang.reflect.Field;
  * 描述:
  */
 public class CrashHandler implements UncaughtExceptionHandler {
-    private static final String TAG = CrashHandler.class.getSimpleName();
     private static CrashHandler sInstance;
     private Context mContext;
     private UncaughtExceptionHandler mDefaultUncaughtExceptionHandler;
@@ -82,7 +83,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
 
     private void collectionException(Throwable ex) {
-        Logger.e(TAG, "【deviceInfo】\n" + getDeviceInfo() + "【errorInfo】\n" + getErrorInfo(ex));
+        Logger.e("【deviceInfo】\n" + getDeviceInfo() + "【errorInfo】\n" + getErrorInfo(ex));
     }
 
     private String getErrorInfo(Throwable ex) {
@@ -92,7 +93,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             printWriter = new PrintWriter(writer);
             ex.printStackTrace(printWriter);
         } catch (Exception e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(e.getMessage());
         } finally {
             if (printWriter != null) {
                 printWriter.close();
@@ -113,7 +114,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 sb.append("\n");
             }
         } catch (Exception e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(e.getMessage());
         }
         return sb.toString();
     }

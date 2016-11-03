@@ -7,12 +7,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.jakewharton.rxbinding.view.RxView;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/8/13 上午12:07
  * 描述:自定义组合控件基类
  */
-public abstract class BaseCustomCompositeView extends RelativeLayout implements View.OnClickListener {
+public abstract class BaseCustomCompositeView extends RelativeLayout {
 
     public BaseCustomCompositeView(Context context) {
         this(context, null);
@@ -55,8 +62,24 @@ public abstract class BaseCustomCompositeView extends RelativeLayout implements 
 
     protected abstract void processLogic();
 
-    @Override
-    public void onClick(View view) {
+    /**
+     * 设置点击事件，并防止重复点击
+     *
+     * @param id
+     * @param action
+     */
+    protected void setOnClick(@IdRes int id, Action1 action) {
+        setOnClick(getViewById(id), action);
+    }
+
+    /**
+     * 设置点击事件，并防止重复点击
+     *
+     * @param view
+     * @param action
+     */
+    protected void setOnClick(View view, Action1 action) {
+        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(action);
     }
 
     /**

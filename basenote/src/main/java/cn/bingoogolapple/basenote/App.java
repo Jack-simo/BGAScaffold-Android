@@ -6,6 +6,8 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.orhanobut.logger.LogLevel;
+import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -25,11 +27,19 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sInstance = this;
+        // 开发环境相关 START
+        Logger.init("BGANote").logLevel(LogLevel.FULL);
 
-        registerActivityLifecycleCallbacks(AppManager.getInstance().init(this));
-
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            Logger.d("In LeakCanary Analyzer Process");
+//            return;
+//        }
         mRefWatcher = LeakCanary.install(this);
+        // 开发环境相关 END
+
+
+        sInstance = this;
+        registerActivityLifecycleCallbacks(AppManager.getInstance().init(this));
         mNotificationManager = NotificationManagerCompat.from(this);
     }
 

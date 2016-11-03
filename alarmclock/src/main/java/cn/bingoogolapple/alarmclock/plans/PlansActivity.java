@@ -69,7 +69,7 @@ public class PlansActivity extends TitlebarActivity<PlansPresenter> implements P
         setRightDrawable(R.mipmap.add_normal);
 
         mPlanRv.setLayoutManager(new LinearLayoutManager(this));
-        mPlanRv.addItemDecoration(new Divider(this));
+        mPlanRv.addItemDecoration(Divider.newBitmapDivider());
         mPlanRv.setAdapter(mPlanAdapter);
 
         mPresenter = new PlansPresenterImpl(this);

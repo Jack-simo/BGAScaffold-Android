@@ -10,12 +10,10 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class BasePresenterImpl<T extends BaseView> implements BasePresenter {
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-    protected String TAG;
     protected T mView;
 
     public BasePresenterImpl(T view) {
         mView = view;
-        TAG = this.getClass().getSimpleName();
     }
 
     @Override

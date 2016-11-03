@@ -36,7 +36,6 @@ import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -197,14 +196,14 @@ public class BGASwipeBackLayout extends ViewGroup {
 
         mLeftView = new View(activity);
         setIsNeedShowShadow(mIsNeedShowShadow);
-        addView(mLeftView, 0, new SlidingPaneLayout.LayoutParams(SlidingPaneLayout.LayoutParams.MATCH_PARENT, SlidingPaneLayout.LayoutParams.MATCH_PARENT));
+        addView(mLeftView, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
         ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
         mRightView = decorView.getChildAt(0);
         mRightView.setBackgroundColor(Color.WHITE);
         decorView.removeView(mRightView);
         decorView.addView(this);
-        addView(mRightView, 1, new SlidingPaneLayout.LayoutParams(SlidingPaneLayout.LayoutParams.MATCH_PARENT, SlidingPaneLayout.LayoutParams.MATCH_PARENT));
+        addView(mRightView, 1, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     /**

@@ -1,14 +1,13 @@
 package cn.bingoogolapple.basenote.util;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.support.annotation.CallSuper;
 import android.support.annotation.StringRes;
-import android.text.TextUtils;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Subscriber;
 
 /**
@@ -17,7 +16,7 @@ import rx.Subscriber;
  * 描述:
  */
 public abstract class LocalSubscriber<T> extends Subscriber<T> {
-    protected SweetAlertDialog mLoadingDialog;
+    protected MaterialDialog mLoadingDialog;
     protected Activity mActivity;
     protected String mMsg;
     protected boolean mCancelable;
@@ -53,24 +52,21 @@ public abstract class LocalSubscriber<T> extends Subscriber<T> {
 
     @Override
     public void onStart() {
-        if (mActivity != null && !TextUtils.isEmpty(mMsg)) {
-            mLoadingDialog = new SweetAlertDialog(mActivity, SweetAlertDialog.PROGRESS_TYPE);
-            mLoadingDialog.getProgressHelper().setBarColor(mActivity.getResources().getColor(R.color.colorPrimary));
-            mLoadingDialog.setTitleText(mMsg);
-            mLoadingDialog.setCancelable(mCancelable);
-            mLoadingDialog.setCanceledOnTouchOutside(mCancelable);
+        if (mActivity != null && StringUtil.isNotEmpty(mMsg)) {
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity)
+                    .content(mMsg)
+                    .progress(true, 0);
+
             if (mCancelable) {
                 // 点击取消的时候取消订阅
-                mLoadingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        if (!isUnsubscribed()) {
-                            unsubscribe();
-                        }
+                builder.cancelListener(dialog -> {
+                    if (!isUnsubscribed()) {
+                        unsubscribe();
                     }
                 });
             }
-            mLoadingDialog.show();
+
+            mLoadingDialog = builder.show();
         }
     }
 
@@ -82,6 +78,10 @@ public abstract class LocalSubscriber<T> extends Subscriber<T> {
 
     @Override
     public void onError(Throwable e) {
+        if (EnvironmentUtil.isBuildDebug()) {
+            e.printStackTrace();
+        }
+
         dismissLoadingDialog();
 
         onError(App.getInstance().getString(R.string.try_again_later));

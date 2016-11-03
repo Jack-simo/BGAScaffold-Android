@@ -6,7 +6,14 @@ import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.jakewharton.rxbinding.view.RxView;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
@@ -15,18 +22,20 @@ import cn.bingoogolapple.basenote.presenter.BasePresenter;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.basenote.widget.BGASwipeBackLayout;
-import cn.pedant.SweetAlert.SweetAlertDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView, View.OnClickListener, BGASwipeBackLayout.PanelSlideListener {
+public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView, EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
     protected String TAG;
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected App mApp;
-    protected SweetAlertDialog mLoadingDialog;
+    protected MaterialDialog mLoadingDialog;
     protected BGAAlertController mMoreMenu;
 
     protected P mPresenter;
@@ -88,12 +97,23 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     }
 
     /**
-     * 设置点击事件
+     * 设置点击事件，并防止重复点击
      *
-     * @param id 控件的id
+     * @param id
+     * @param action
      */
-    protected void setOnClickListener(@IdRes int id) {
-        getViewById(id).setOnClickListener(this);
+    protected void setOnClick(@IdRes int id, Action1 action) {
+        setOnClick(getViewById(id), action);
+    }
+
+    /**
+     * 设置点击事件，并防止重复点击
+     *
+     * @param view
+     * @param action
+     */
+    protected void setOnClick(View view, Action1 action) {
+        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(action);
     }
 
     /**
@@ -249,11 +269,12 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     public void showLoadingDialog(String msg) {
         if (mLoadingDialog == null) {
-            mLoadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-            mLoadingDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimary));
-            mLoadingDialog.setCancelable(false);
+            mLoadingDialog = new MaterialDialog.Builder(this)
+                    .progress(true, 0)
+                    .cancelable(false)
+                    .build();
         }
-        mLoadingDialog.setTitleText(msg);
+        mLoadingDialog.setContent(msg);
         mLoadingDialog.show();
     }
 
@@ -294,5 +315,34 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     public BaseActivity getBaseActivity() {
         return this;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        KeyboardUtil.handleAutoCloseKeyboard(isAutoCloseKeyboard(), getCurrentFocus(), ev, this);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 点击非 EditText 时，是否自动关闭键盘
+     *
+     * @return
+     */
+    protected boolean isAutoCloseKeyboard() {
+        return true;
     }
 }

@@ -9,8 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.orhanobut.logger.Logger;
+
 import cn.bingoogolapple.alarmclock.data.dao.DBOpenHelper;
-import cn.bingoogolapple.basenote.util.Logger;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -18,7 +19,6 @@ import cn.bingoogolapple.basenote.util.Logger;
  * 描述:
  */
 public class PlanProvider extends ContentProvider {
-    private static final String TAG = PlanProvider.class.getSimpleName();
     public static final String AUTHORITIES = PlanProvider.class.getCanonicalName();
     // 给内容观察者用的
     public static final String PATH_PREFIX = "content://" + AUTHORITIES;
@@ -57,7 +57,7 @@ public class PlanProvider extends ContentProvider {
                 SQLiteDatabase db = mDBOpenHelper.getWritableDatabase();
                 long newlyId = db.insert(mDBOpenHelper.T_PLAN, "", values);
                 if (newlyId != -1) {
-                    Logger.i(TAG, "添加计划成功");
+                    Logger.i("添加计划成功");
                     // 拼接最新的Uri
                     uri = ContentUris.withAppendedId(uri, newlyId);
 

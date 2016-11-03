@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -67,7 +66,10 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
 
     @Override
     protected void setListener() {
-        mTimeTv.setOnClickListener(this);
+        setOnClick(mTimeTv, object -> {
+            KeyboardUtil.closeKeyboard(this);
+            showDatePickerDialog();
+        });
     }
 
     @Override
@@ -98,14 +100,6 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
             case OPERATE_TYPE_EDIT:
                 editPlan();
                 break;
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.tv_edit_plan_time) {
-            KeyboardUtil.closeKeyboard(this);
-            showDatePickerDialog();
         }
     }
 

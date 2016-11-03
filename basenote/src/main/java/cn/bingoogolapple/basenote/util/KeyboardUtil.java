@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -65,6 +66,21 @@ public class KeyboardUtil {
     }
 
     /**
+     * 拷贝文档到黏贴板
+     *
+     * @param text
+     */
+    public static void clip(Context context, String text) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setText(text);
+        } else {
+            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setPrimaryClip(ClipData.newPlainText("content", text));
+        }
+    }
+
+    /**
      * 切换键盘的显示与隐藏
      *
      * @param activity
@@ -77,17 +93,28 @@ public class KeyboardUtil {
     }
 
     /**
-     * 拷贝文档到黏贴板
+     * 处理点击非 EditText 区域时，自动关闭键盘
      *
-     * @param text
+     * @param isAutoCloseKeyboard 是否自动关闭键盘
+     * @param currentFocusView    当前获取焦点的控件
+     * @param motionEvent         触摸事件
+     * @param dialogOrActivity    Dialog 或 Activity
      */
-    public static void clip(Context context, String text) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            clipboardManager.setText(text);
-        } else {
-            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            clipboardManager.setPrimaryClip(ClipData.newPlainText("content", text));
+    public static void handleAutoCloseKeyboard(boolean isAutoCloseKeyboard, View currentFocusView, MotionEvent motionEvent, Object dialogOrActivity) {
+        if (isAutoCloseKeyboard && motionEvent.getAction() == MotionEvent.ACTION_DOWN && currentFocusView != null && (currentFocusView instanceof EditText) && dialogOrActivity != null) {
+            int[] leftTop = {0, 0};
+            currentFocusView.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + currentFocusView.getHeight();
+            int right = left + currentFocusView.getWidth();
+            if (!(motionEvent.getX() > left && motionEvent.getX() < right && motionEvent.getY() > top && motionEvent.getY() < bottom)) {
+                if (dialogOrActivity instanceof Dialog) {
+                    KeyboardUtil.closeKeyboard((Dialog) dialogOrActivity);
+                } else if (dialogOrActivity instanceof Activity) {
+                    KeyboardUtil.closeKeyboard((Activity) dialogOrActivity);
+                }
+            }
         }
     }
 }

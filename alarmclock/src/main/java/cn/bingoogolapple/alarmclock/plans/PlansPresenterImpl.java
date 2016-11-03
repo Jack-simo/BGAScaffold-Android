@@ -1,15 +1,16 @@
 package cn.bingoogolapple.alarmclock.plans;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.List;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.data.Plan;
+import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.basenote.presenter.BasePresenterImpl;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.LocalSubscriber;
-import cn.bingoogolapple.basenote.util.Logger;
 import cn.bingoogolapple.basenote.util.RxUtil;
 import rx.Observable;
 import rx.Subscriber;
@@ -51,7 +52,7 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                         subscriber.onCompleted();
                     }
                 } catch (Exception e) {
-                    Logger.e(TAG, e.getMessage());
+                    Logger.e(e.getMessage());
                     if (!subscriber.isUnsubscribed()) {
                         subscriber.onError(e);
                     }

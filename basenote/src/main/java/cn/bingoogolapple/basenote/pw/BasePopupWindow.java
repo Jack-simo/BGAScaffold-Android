@@ -9,12 +9,19 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.PopupWindow;
 
+import com.jakewharton.rxbinding.view.RxView;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/8/13 上午12:09
  * 描述:PopupWindow基类
  */
-public abstract class BasePopupWindow extends PopupWindow implements View.OnClickListener {
+public abstract class BasePopupWindow extends PopupWindow {
     protected Activity mActivity;
     protected View mWindowRootView;
     protected View mAnchorView;
@@ -55,8 +62,24 @@ public abstract class BasePopupWindow extends PopupWindow implements View.OnClic
 
     public abstract void show();
 
-    @Override
-    public void onClick(View view) {
+    /**
+     * 设置点击事件，并防止重复点击
+     *
+     * @param id
+     * @param action
+     */
+    protected void setOnClick(@IdRes int id, Action1 action) {
+        setOnClick(getViewById(id), action);
+    }
+
+    /**
+     * 设置点击事件，并防止重复点击
+     *
+     * @param view
+     * @param action
+     */
+    protected void setOnClick(View view, Action1 action) {
+        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(action);
     }
 
     /**

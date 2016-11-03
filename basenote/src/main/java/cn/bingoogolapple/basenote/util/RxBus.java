@@ -1,6 +1,9 @@
 package cn.bingoogolapple.basenote.util;
 
+import com.trello.rxlifecycle.LifecycleProvider;
+
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
@@ -35,16 +38,25 @@ public class RxBus {
         return mBus;
     }
 
-    public static Observable<Object> toObserverable() {
-        return getInstance().getBus();
-    }
-
-    public static void send(Object obj) {
-        getInstance().getBus().onNext(obj);
-    }
-
     public static boolean hasObservers() {
         return getInstance().getBus().hasObservers();
     }
 
+    public static void send(Object obj) {
+        if (getInstance().hasObservers()) {
+            getInstance().getBus().onNext(obj);
+        }
+    }
+
+    public static Observable<Object> toObservable() {
+        return getInstance().getBus();
+    }
+
+    public static <T> Observable<T> toObservable(Class<T> clazz) {
+        return getInstance().toObservable().ofType(clazz).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public static <T> Observable<T> toObservableAndBindToLifecycle(Class<T> clazz, LifecycleProvider lifecycleProvider) {
+        return getInstance().toObservable(clazz).compose(lifecycleProvider.bindToLifecycle());
+    }
 }

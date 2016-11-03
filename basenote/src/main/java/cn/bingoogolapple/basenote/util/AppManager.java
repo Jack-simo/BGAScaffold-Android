@@ -7,6 +7,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -62,10 +64,12 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
+        UmengUtil.onActivityResumed(activity);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
+        UmengUtil.onActivityPaused(activity);
     }
 
     @Override
@@ -124,7 +128,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     /**
-     * 1500毫秒内，连续点击两次按返回键时退出应用程序
+     * 双击后 全退出应用程序
      */
     public void exitWithDoubleClick() {
         if (System.currentTimeMillis() - mLastPressBackKeyTime <= 1500) {
@@ -139,12 +143,22 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      * 退出应用程序
      */
     public void exit() {
-        while (true) {
-            Activity activity = currentActivity();
-            if (activity == null) {
-                break;
+        try {
+            while (true) {
+                Activity activity = currentActivity();
+                if (activity == null) {
+                    break;
+                }
+                popOneActivity(activity);
             }
-            popOneActivity(activity);
+
+            // 如果开发者调用Process.kill或者System.exit之类的方法杀死进程，请务必在此之前调用MobclickAgent.onKillProcess(Context context)方法，用来保存统计数据
+            UmengUtil.onKillProcess();
+
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+        } catch (Exception e) {
+            Logger.e("退出错误");
         }
     }
 
@@ -191,10 +205,10 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     private void onEnterFrontStage() {
-        Logger.i(TAG, "进入前台状态");
+        Logger.i("进入前台状态");
     }
 
     private void onEnterBackStage() {
-        Logger.i(TAG, "进入后台状态");
+        Logger.i("进入后台状态");
     }
 }
