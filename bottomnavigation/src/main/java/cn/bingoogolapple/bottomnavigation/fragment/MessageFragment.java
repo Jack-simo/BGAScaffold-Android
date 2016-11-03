@@ -3,7 +3,6 @@ package cn.bingoogolapple.bottomnavigation.fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.baidu.mapapi.SDKInitializer;
 
@@ -57,16 +56,6 @@ public class MessageFragment extends BaseMainFragment implements EasyPermissions
     @Override
     protected void onClickTitle() {
         mActivity.forward(CountDownActivity.class);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        ToastUtil.show("权限被同意");
     }
 
     @Override

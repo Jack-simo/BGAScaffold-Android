@@ -13,10 +13,12 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.components.support.RxFragment;
 import com.zhy.changeskin.SkinManager;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.activity.BaseActivity;
+import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -25,7 +27,7 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseFragment extends RxFragment {
+public abstract class BaseFragment extends RxFragment implements EasyPermissions.PermissionCallbacks {
     protected String TAG;
     protected App mApp;
     protected View mContentView;
@@ -151,5 +153,19 @@ public abstract class BaseFragment extends RxFragment {
     public void onDestroy() {
         super.onDestroy();
         mApp.getRefWatcher().watch(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
     }
 }

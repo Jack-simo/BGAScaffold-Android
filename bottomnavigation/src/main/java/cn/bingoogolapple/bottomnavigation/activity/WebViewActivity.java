@@ -29,8 +29,6 @@ import android.widget.FrameLayout;
 
 import com.orhanobut.logger.Logger;
 
-import java.util.List;
-
 import cn.bingoogolapple.basenote.activity.TitlebarActivity;
 import cn.bingoogolapple.basenote.util.NetUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
@@ -232,20 +230,6 @@ public class WebViewActivity extends TitlebarActivity implements EasyPermissions
                 }
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
     }
 
     @AfterPermissionGranted(REQUEST_CODE_PERMISSIONS)

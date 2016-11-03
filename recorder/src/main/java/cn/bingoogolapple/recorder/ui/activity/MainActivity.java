@@ -66,15 +66,6 @@ public class MainActivity extends TitlebarActivity implements EasyPermissions.Pe
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-    }
-
-    @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         finish();
     }

@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
@@ -17,7 +20,7 @@ import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.widget.BGASwipeBackLayout;
-import cn.pedant.SweetAlert.SweetAlertDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -26,11 +29,11 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity extends RxAppCompatActivity implements BGASwipeBackLayout.PanelSlideListener {
+public abstract class BaseActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
     protected String TAG;
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected App mApp;
-    protected SweetAlertDialog mLoadingDialog;
+    protected MaterialDialog mLoadingDialog;
     protected BGAAlertController mMoreMenu;
 
     @Override
@@ -246,11 +249,12 @@ public abstract class BaseActivity extends RxAppCompatActivity implements BGASwi
 
     public void showLoadingDialog(String msg) {
         if (mLoadingDialog == null) {
-            mLoadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-            mLoadingDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimary));
-            mLoadingDialog.setCancelable(false);
+            mLoadingDialog = new MaterialDialog.Builder(this)
+                    .progress(true, 0)
+                    .cancelable(false)
+                    .build();
         }
-        mLoadingDialog.setTitleText(msg);
+        mLoadingDialog.setContent(msg);
         mLoadingDialog.show();
     }
 
@@ -276,5 +280,34 @@ public abstract class BaseActivity extends RxAppCompatActivity implements BGASwi
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        KeyboardUtil.handleAutoCloseKeyboard(isAutoCloseKeyboard(), getCurrentFocus(), ev, this);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 点击非 EditText 时，是否自动关闭键盘
+     *
+     * @return
+     */
+    protected boolean isAutoCloseKeyboard() {
+        return true;
     }
 }
