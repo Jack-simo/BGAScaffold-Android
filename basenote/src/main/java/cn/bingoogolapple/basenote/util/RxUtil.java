@@ -26,7 +26,11 @@ public class RxUtil {
     }
 
     public static <T> Observable.Transformer<T, T> applySchedulersBindToLifecycle(LifecycleProvider lifecycleProvider) {
-        return observable -> observable.compose(RxUtil.applySchedulers()).compose(lifecycleProvider.bindToLifecycle());
+        if (lifecycleProvider == null) {
+            return observable -> observable.compose(RxUtil.applySchedulers());
+        } else {
+            return observable -> observable.compose(RxUtil.applySchedulers()).compose(lifecycleProvider.bindToLifecycle());
+        }
     }
 
     public static <T> Observable.Transformer<NetResult<T>, T> applySchedulersAndFlatMapResult() {

@@ -6,12 +6,13 @@ import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +30,7 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BaseView, EasyPermissions.PermissionCallbacks {
-    protected String TAG;
+public abstract class BaseFragment<P extends BasePresenter> extends RxFragment implements BaseView, EasyPermissions.PermissionCallbacks {
     protected App mApp;
     protected View mContentView;
     protected BaseActivity mActivity;
@@ -42,7 +42,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
         mActivity = (BaseActivity) getActivity();
     }
@@ -166,9 +165,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
     @Override
     public void onDestroy() {
-        if (mPresenter != null) {
-            mPresenter.onDestroy();
-        }
         super.onDestroy();
         mApp.getRefWatcher().watch(this);
     }
@@ -186,6 +182,11 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public BaseActivity getBaseActivity() {
         return mActivity;
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
     }
 
     @Override

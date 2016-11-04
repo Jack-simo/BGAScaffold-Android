@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.view.RxView;
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -31,8 +32,7 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView, EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
-    protected String TAG;
+public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatActivity implements BaseView, EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected App mApp;
     protected MaterialDialog mLoadingDialog;
@@ -44,7 +44,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     protected void onCreate(Bundle savedInstanceState) {
         initSwipeBackFinish();
         super.onCreate(savedInstanceState);
-        TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
 
         initView(savedInstanceState);
@@ -155,14 +154,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     public void onBackPressed() {
         backward();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mPresenter != null) {
-            mPresenter.onDestroy();
-        }
-        super.onDestroy();
     }
 
     /**
@@ -314,6 +305,11 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     @Override
     public BaseActivity getBaseActivity() {
+        return this;
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
         return this;
     }
 

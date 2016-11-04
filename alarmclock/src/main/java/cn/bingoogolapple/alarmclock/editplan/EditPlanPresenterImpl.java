@@ -23,7 +23,7 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
 
     @Override
     public void addPlan(Plan plan) {
-        mCompositeSubscription.add(Observable.defer(new Func0<Observable<Boolean>>() {
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 try {
@@ -32,7 +32,7 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
                     return Observable.error(e);
                 }
             }
-        }).compose(RxUtil.applySchedulers())
+        }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean result) {
@@ -43,12 +43,12 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
                             mView.showMsg(R.string.toast_add_plan_failure);
                         }
                     }
-                }));
+                });
     }
 
     @Override
     public void updatePlan(Plan plan, long time, String content) {
-        mCompositeSubscription.add(Observable.defer(new Func0<Observable<Boolean>>() {
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 try {
@@ -57,7 +57,7 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
                     return Observable.error(e);
                 }
             }
-        }).compose(RxUtil.applySchedulers())
+        }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean result) {
@@ -72,12 +72,12 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
                             mView.showMsg(R.string.toast_update_plan_failure);
                         }
                     }
-                }));
+                });
     }
 
     @Override
     public void deletePlan(Plan plan) {
-        mCompositeSubscription.add(Observable.defer(new Func0<Observable<Boolean>>() {
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 try {
@@ -86,7 +86,7 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
                     return Observable.error(e);
                 }
             }
-        }).compose(RxUtil.applySchedulers())
+        }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean result) {
@@ -97,6 +97,6 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
                             mView.showMsg(R.string.toast_delete_plan_failure);
                         }
                     }
-                }));
+                });
     }
 }

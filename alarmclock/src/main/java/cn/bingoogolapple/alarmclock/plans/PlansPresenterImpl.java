@@ -29,7 +29,7 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
 
     @Override
     public void loadPlans() {
-        mCompositeSubscription.add(Observable.create(new Observable.OnSubscribe<List<Plan>>() {
+        Observable.create(new Observable.OnSubscribe<List<Plan>>() {
             @Override
             public void call(Subscriber<? super List<Plan>> subscriber) {
                 try {
@@ -58,20 +58,20 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                     }
                 }
             }
-        }).compose(RxUtil.applySchedulers())
+        }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<List<Plan>>(mView.getBaseActivity()) {
                     @Override
                     public void onNext(List<Plan> plans) {
                         mView.showPlans(plans);
                     }
-                }));
+                });
     }
 
     @Override
     public void updatePlanStatus(int position, Plan plan) {
         final int newStatus = plan.status == Plan.STATUS_ALREADY_HANDLE ? Plan.STATUS_NOT_HANDLE : Plan.STATUS_ALREADY_HANDLE;
 
-        mCompositeSubscription.add(Observable.defer(new Func0<Observable<Boolean>>() {
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 try {
@@ -80,7 +80,7 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                     return Observable.error(e);
                 }
             }
-        }).compose(RxUtil.applySchedulers())
+        }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean result) {
@@ -98,12 +98,12 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                         // 不管修改成功还是修改失败都要更新下item来保证开关的状态
                         mView.notifyItemChanged(position);
                     }
-                }));
+                });
     }
 
     @Override
     public void deletePlan(Plan plan) {
-        mCompositeSubscription.add(Observable.defer(new Func0<Observable<Boolean>>() {
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 try {
@@ -112,7 +112,7 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                     return Observable.error(e);
                 }
             }
-        }).compose(RxUtil.applySchedulers())
+        }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean result) {
@@ -123,6 +123,6 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
                             mView.showMsg(R.string.toast_delete_plan_failure);
                         }
                     }
-                }));
+                });
     }
 }

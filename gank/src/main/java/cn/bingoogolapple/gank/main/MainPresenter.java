@@ -9,9 +9,9 @@ import cn.bingoogolapple.basenote.view.BaseView;
  * 描述:
  */
 public interface MainPresenter extends BasePresenter {
+
     interface View extends BaseView {
 
     }
-
 
 }
