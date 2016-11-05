@@ -1,1 +1,1 @@
-include ':basenote', ':alarmclock', ':gank'
+include ':basenote', ':alarmclock'
