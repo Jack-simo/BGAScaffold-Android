@@ -1,6 +1,7 @@
 package cn.bingoogolapple.basenote.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.App;
+import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.util.UmengUtil;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
@@ -122,6 +124,69 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
      */
     protected void setContentView(@LayoutRes int layoutResID) {
         mContentView = LayoutInflater.from(getActivity()).inflate(layoutResID, null);
+    }
+
+    /**
+     * 跳转到下一个Activity，并且销毁当前Activity
+     *
+     * @param cls 下一个Activity的Class
+     */
+    public void forwardAndFinish(Class<?> cls) {
+        forward(cls);
+        mActivity.finish();
+    }
+
+    /**
+     * 跳转到下一个Activity，不销毁当前Activity
+     *
+     * @param cls 下一个Activity的Class
+     */
+    public void forward(Class<?> cls) {
+        KeyboardUtil.closeKeyboard(mActivity);
+        startActivity(new Intent(mActivity, cls));
+        mActivity.executeForwardAnim();
+    }
+
+    public void forward(Class<?> cls, int requestCode) {
+        forward(new Intent(mActivity, cls), requestCode);
+    }
+
+    public void forwardAndFinish(Intent intent) {
+        forward(intent);
+        mActivity.finish();
+    }
+
+    public void forward(Intent intent) {
+        KeyboardUtil.closeKeyboard(mActivity);
+        startActivity(intent);
+        mActivity.executeForwardAnim();
+    }
+
+    public void forward(Intent intent, int requestCode) {
+        KeyboardUtil.closeKeyboard(mActivity);
+        startActivityForResult(intent, requestCode);
+        mActivity.executeForwardAnim();
+    }
+
+    /**
+     * 回到上一个Activity，并销毁当前Activity
+     */
+    public void backward() {
+        KeyboardUtil.closeKeyboard(mActivity);
+        mActivity.finish();
+        mActivity.executeBackwardAnim();
+    }
+
+    /**
+     * 回到上一个Activity，并销毁当前Activity（应用场景：欢迎、登录、注册这三个界面）
+     *
+     * @param cls 上一个Activity的Class
+     */
+    public void backwardAndFinish(Class<?> cls) {
+        KeyboardUtil.closeKeyboard(mActivity);
+        startActivity(new Intent(mActivity, cls));
+        mActivity.executeBackwardAnim();
+        mActivity.finish();
     }
 
     /**

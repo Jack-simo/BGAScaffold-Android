@@ -2,7 +2,6 @@ package cn.bingoogolapple.alarmclock.editplan;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -57,8 +56,8 @@ public class EditPlanActivity extends BaseMvvmActivity<ActivityEditPlanBinding, 
     }
 
     @Override
-    protected void initView(Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_plan);
+    protected int getRootLayoutResID() {
+        return R.layout.activity_edit_plan;
     }
 
     @Override
@@ -170,18 +169,8 @@ public class EditPlanActivity extends BaseMvvmActivity<ActivityEditPlanBinding, 
     protected void showMoreMenu() {
         if (mMoreMenu == null) {
             mMoreMenu = new BGAAlertController(this, null, null, BGAAlertController.AlertControllerStyle.ActionSheet);
-            mMoreMenu.addAction(new BGAAlertAction(R.string.edit, BGAAlertAction.AlertActionStyle.Default, new BGAAlertAction.Delegate() {
-                @Override
-                public void onClick() {
-                    changeToEdit();
-                }
-            }));
-            mMoreMenu.addAction(new BGAAlertAction(R.string.delete, BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
-                @Override
-                public void onClick() {
-                    showDeleteAlert();
-                }
-            }));
+            mMoreMenu.addAction(new BGAAlertAction(R.string.edit, BGAAlertAction.AlertActionStyle.Default, () -> changeToEdit()));
+            mMoreMenu.addAction(new BGAAlertAction(R.string.delete, BGAAlertAction.AlertActionStyle.Destructive, () -> showDeleteAlert()));
             mMoreMenu.addAction(new BGAAlertAction(R.string.cancel, BGAAlertAction.AlertActionStyle.Cancel, null));
         }
         mMoreMenu.show();
@@ -190,12 +179,7 @@ public class EditPlanActivity extends BaseMvvmActivity<ActivityEditPlanBinding, 
     private void showDeleteAlert() {
         if (mDeleteAlert == null) {
             mDeleteAlert = new BGAAlertController(this, R.string.tip, R.string.tip_confirm_delete_plan, BGAAlertController.AlertControllerStyle.Alert);
-            mDeleteAlert.addAction(new BGAAlertAction(R.string.confirm, BGAAlertAction.AlertActionStyle.Destructive, new BGAAlertAction.Delegate() {
-                @Override
-                public void onClick() {
-                    mPresenter.deletePlan(mPlan);
-                }
-            }));
+            mDeleteAlert.addAction(new BGAAlertAction(R.string.confirm, BGAAlertAction.AlertActionStyle.Destructive, () -> mPresenter.deletePlan(mPlan)));
             mDeleteAlert.addAction(new BGAAlertAction(R.string.cancel, BGAAlertAction.AlertActionStyle.Cancel, null));
         }
         mDeleteAlert.show();

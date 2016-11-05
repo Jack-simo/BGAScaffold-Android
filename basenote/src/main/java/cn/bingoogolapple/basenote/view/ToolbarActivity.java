@@ -16,11 +16,11 @@ public abstract class ToolbarActivity extends BaseActivity {
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.viewstub_linearlayout, layoutResID);
+        initViewStubContentView(R.layout.rootlayout_linear, layoutResID);
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.viewstub_merge, layoutResID);
+        initViewStubContentView(R.layout.rootlayout_merge, layoutResID);
     }
 
     private void initViewStubContentView(@LayoutRes int rootLayoutResID, @LayoutRes int layoutResID) {

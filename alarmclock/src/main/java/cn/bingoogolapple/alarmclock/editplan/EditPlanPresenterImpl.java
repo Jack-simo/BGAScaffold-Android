@@ -1,14 +1,13 @@
 package cn.bingoogolapple.alarmclock.editplan;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.data.Plan;
+import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
 import cn.bingoogolapple.basenote.presenter.BasePresenterImpl;
 import cn.bingoogolapple.basenote.util.LocalSubscriber;
 import cn.bingoogolapple.basenote.util.RxUtil;
 import rx.Observable;
-import rx.functions.Func0;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -23,14 +22,11 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
 
     @Override
     public void addPlan(Plan plan) {
-        Observable.defer(new Func0<Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call() {
-                try {
-                    return Observable.just(PlanDao.insertPlan(plan));
-                } catch (Exception e) {
-                    return Observable.error(e);
-                }
+        Observable.defer(() -> {
+            try {
+                return Observable.just(PlanDao.insertPlan(plan));
+            } catch (Exception e) {
+                return Observable.error(e);
             }
         }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
@@ -48,14 +44,11 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
 
     @Override
     public void updatePlan(Plan plan, long time, String content) {
-        Observable.defer(new Func0<Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call() {
-                try {
-                    return Observable.just(PlanDao.updatePlan(plan.id, time, content, Plan.STATUS_NOT_HANDLE));
-                } catch (Exception e) {
-                    return Observable.error(e);
-                }
+        Observable.defer(() -> {
+            try {
+                return Observable.just(PlanDao.updatePlan(plan.id, time, content, Plan.STATUS_NOT_HANDLE));
+            } catch (Exception e) {
+                return Observable.error(e);
             }
         }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
@@ -77,14 +70,11 @@ public class EditPlanPresenterImpl extends BasePresenterImpl<EditPlanPresenter.V
 
     @Override
     public void deletePlan(Plan plan) {
-        Observable.defer(new Func0<Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call() {
-                try {
-                    return Observable.just(PlanDao.deletePlan(plan.id));
-                } catch (Exception e) {
-                    return Observable.error(e);
-                }
+        Observable.defer(() -> {
+            try {
+                return Observable.just(PlanDao.deletePlan(plan.id));
+            } catch (Exception e) {
+                return Observable.error(e);
             }
         }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {

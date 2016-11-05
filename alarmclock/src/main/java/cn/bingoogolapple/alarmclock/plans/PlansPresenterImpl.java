@@ -14,7 +14,6 @@ import cn.bingoogolapple.basenote.util.LocalSubscriber;
 import cn.bingoogolapple.basenote.util.RxUtil;
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func0;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -71,14 +70,11 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
     public void updatePlanStatus(int position, Plan plan) {
         final int newStatus = plan.status == Plan.STATUS_ALREADY_HANDLE ? Plan.STATUS_NOT_HANDLE : Plan.STATUS_ALREADY_HANDLE;
 
-        Observable.defer(new Func0<Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call() {
-                try {
-                    return Observable.just(PlanDao.updatePlan(plan.id, plan.time, plan.content, newStatus));
-                } catch (Exception e) {
-                    return Observable.error(e);
-                }
+        Observable.defer(() -> {
+            try {
+                return Observable.just(PlanDao.updatePlan(plan.id, plan.time, plan.content, newStatus));
+            } catch (Exception e) {
+                return Observable.error(e);
             }
         }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {
@@ -103,14 +99,11 @@ public class PlansPresenterImpl extends BasePresenterImpl<PlansPresenter.View> i
 
     @Override
     public void deletePlan(Plan plan) {
-        Observable.defer(new Func0<Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call() {
-                try {
-                    return Observable.just(PlanDao.deletePlan(plan.id));
-                } catch (Exception e) {
-                    return Observable.error(e);
-                }
+        Observable.defer(() -> {
+            try {
+                return Observable.just(PlanDao.deletePlan(plan.id));
+            } catch (Exception e) {
+                return Observable.error(e);
             }
         }).compose(RxUtil.applySchedulersBindToLifecycle(mView.getLifecycleProvider()))
                 .subscribe(new LocalSubscriber<Boolean>() {

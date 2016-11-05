@@ -18,11 +18,11 @@ public abstract class MvpToolbarFragment<P extends BasePresenter> extends BaseMv
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.viewstub_linearlayout, layoutResID);
+        initViewStubContentView(R.layout.rootlayout_linear, layoutResID);
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.viewstub_framelayout, layoutResID);
+        initViewStubContentView(R.layout.rootlayout_frame, layoutResID);
     }
 
     private void initViewStubContentView(@LayoutRes int rootLayoutResID, @LayoutRes int layoutResID) {

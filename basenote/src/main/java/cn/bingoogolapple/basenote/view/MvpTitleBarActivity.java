@@ -3,7 +3,6 @@ package cn.bingoogolapple.basenote.view;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.ViewStubCompat;
-import android.view.ViewStub;
 
 import cn.bingoogolapple.basenote.R;
 import cn.bingoogolapple.basenote.presenter.BasePresenter;
@@ -19,11 +18,11 @@ public abstract class MvpTitleBarActivity<P extends BasePresenter> extends BaseM
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.viewstub_linearlayout, layoutResID);
+        initViewStubContentView(R.layout.rootlayout_linear, layoutResID);
     }
 
     public void setNoLinearContentView(@LayoutRes int layoutResID) {
-        initViewStubContentView(R.layout.viewstub_merge, layoutResID);
+        initViewStubContentView(R.layout.rootlayout_merge, layoutResID);
     }
 
     private void initViewStubContentView(@LayoutRes int rootLayoutResID, @LayoutRes int layoutResID) {
@@ -52,7 +51,7 @@ public abstract class MvpTitleBarActivity<P extends BasePresenter> extends BaseM
             }
         });
 
-        ViewStub viewStub = getViewById(R.id.contentVs);
+        ViewStubCompat viewStub = getViewById(R.id.contentVs);
         viewStub.setLayoutResource(layoutResID);
         viewStub.inflate();
     }

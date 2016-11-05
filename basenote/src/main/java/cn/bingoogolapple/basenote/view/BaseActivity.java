@@ -138,14 +138,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements EasyPe
      */
     protected abstract void processLogic(Bundle savedInstanceState);
 
-    /**
-     * 需要处理点击事件时，重写该方法
-     *
-     * @param v
-     */
-    public void onClick(View v) {
-    }
-
     @Override
     public void onBackPressed() {
         backward();

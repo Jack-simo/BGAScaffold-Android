@@ -2,7 +2,6 @@ package cn.bingoogolapple.alarmclock.alarm;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 
 import cn.bingoogolapple.alarmclock.R;
@@ -27,9 +26,8 @@ public class AlarmActivity extends BaseMvvmActivity<ActivityEditPlanBinding, Bas
     }
 
     @Override
-    protected void initView(Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_plan);
-        setContentView(R.layout.activity_edit_plan);
+    protected int getRootLayoutResID() {
+        return R.layout.activity_edit_plan;
     }
 
     @Override

@@ -183,7 +183,7 @@
 
     <style name="TitleBar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/titlebar_height</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="bgatitlebar_leftAndRightTextColor">@color/white</item>
         <item name="bgatitlebar_leftAndRightTextSize">@dimen/textSize_16</item>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/MatchMatch.Vertical"
+              android:background="@color/white"
+              android:gravity="center">
+
+    <Button
+        android:id="@+id/activity_tv"
+        style="@style/DemoBtn"
+        android:text="Activity实现"/>
+
+    <Button
+        android:id="@+id/fragment_tv"
+        style="@style/DemoBtn"
+        android:text="Fragment实现"/>
+</LinearLayout>
