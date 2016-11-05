@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       style="@style/MatchMatch">
+
+    <android.support.v7.widget.ViewStubCompat
+        android:id="@+id/contentVs"
+        style="@style/MatchMatch"/>
+
+    <android.support.v7.widget.ViewStubCompat
+        android:id="@+id/toolbarVs"
+        style="@style/MatchWrap"/>
+</merge>

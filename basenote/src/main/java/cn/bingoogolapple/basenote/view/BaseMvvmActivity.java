@@ -9,6 +9,6 @@ import cn.bingoogolapple.basenote.presenter.BasePresenter;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseBindingActivity<B extends ViewDataBinding, P extends BasePresenter> extends BaseMvpActivity<P> {
+public abstract class BaseMvvmActivity<B extends ViewDataBinding, P extends BasePresenter> extends BaseMvpActivity<P> {
     protected B mBinding;
 }

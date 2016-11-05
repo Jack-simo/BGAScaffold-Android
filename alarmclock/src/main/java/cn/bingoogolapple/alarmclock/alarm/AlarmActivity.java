@@ -10,14 +10,14 @@ import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.databinding.ActivityEditPlanBinding;
 import cn.bingoogolapple.basenote.presenter.BasePresenter;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
-import cn.bingoogolapple.basenote.view.BaseBindingActivity;
+import cn.bingoogolapple.basenote.view.BaseMvvmActivity;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/8/19 上午12:27
  * 描述:闹钟提示界面
  */
-public class AlarmActivity extends BaseBindingActivity<ActivityEditPlanBinding, BasePresenter> {
+public class AlarmActivity extends BaseMvvmActivity<ActivityEditPlanBinding, BasePresenter> {
     public static final String EXTRA_PLAN = "EXTRA_PLAN";
 
     public static Intent newIntent(Context context, Plan plan) {

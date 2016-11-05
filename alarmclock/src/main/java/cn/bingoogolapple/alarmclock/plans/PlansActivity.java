@@ -24,7 +24,7 @@ import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 import cn.bingoogolapple.basenote.util.AppManager;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
-import cn.bingoogolapple.basenote.view.BaseBindingActivity;
+import cn.bingoogolapple.basenote.view.BaseMvvmActivity;
 import cn.bingoogolapple.basenote.widget.Divider;
 import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
 import cn.bingoogolapple.titlebar.BGATitlebar;
@@ -34,7 +34,7 @@ import cn.bingoogolapple.titlebar.BGATitlebar;
  * 创建时间:15/10/11 上午11:55
  * 描述:计划列表界面
  */
-public class PlansActivity extends BaseBindingActivity<ActivityPlansBinding, PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
+public class PlansActivity extends BaseMvvmActivity<ActivityPlansBinding, PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
     private static final int REQUEST_CODE_ADD = 1;
     private static final int REQUEST_CODE_VIEW = 2;
     private PlanAdapter mPlanAdapter;
@@ -77,7 +77,7 @@ public class PlansActivity extends BaseBindingActivity<ActivityPlansBinding, Pla
         mBinding.planRv.setLayoutManager(new LinearLayoutManager(this));
         mBinding.planRv.addItemDecoration(Divider.newBitmapDivider());
         mBinding.planRv.setAdapter(mPlanAdapter);
-        
+
         mPresenter = new PlansPresenterImpl(this);
         mPresenter.loadPlans();
     }

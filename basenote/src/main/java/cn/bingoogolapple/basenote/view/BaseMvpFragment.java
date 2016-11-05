@@ -9,10 +9,10 @@ import cn.bingoogolapple.basenote.util.ToastUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:15/9/2 下午5:07
+ * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseMvpActivity<P extends BasePresenter> extends BaseActivity implements BaseView {
+public abstract class BaseMvpFragment<P extends BasePresenter> extends BaseFragment implements BaseView {
     protected P mPresenter;
 
     @Override
@@ -27,7 +27,7 @@ public abstract class BaseMvpActivity<P extends BasePresenter> extends BaseActiv
 
     @Override
     public BaseActivity getBaseActivity() {
-        return this;
+        return mActivity;
     }
 
     @Override

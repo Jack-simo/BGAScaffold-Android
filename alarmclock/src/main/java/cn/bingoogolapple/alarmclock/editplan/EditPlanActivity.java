@@ -20,7 +20,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
-import cn.bingoogolapple.basenote.view.BaseBindingActivity;
+import cn.bingoogolapple.basenote.view.BaseMvvmActivity;
 import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**
@@ -28,7 +28,7 @@ import cn.bingoogolapple.titlebar.BGATitlebar;
  * 创建时间:15/10/11 上午11:57
  * 描述:查看/添加/编辑界面
  */
-public class EditPlanActivity extends BaseBindingActivity<ActivityEditPlanBinding, EditPlanPresenter> implements EditPlanPresenter.View, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class EditPlanActivity extends BaseMvvmActivity<ActivityEditPlanBinding, EditPlanPresenter> implements EditPlanPresenter.View, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     public static final String EXTRA_PLAN = "EXTRA_PLAN";
     public static final int OPERATE_TYPE_ADD = 0;
     public static final int OPERATE_TYPE_VIEW = 1;
@@ -63,7 +63,12 @@ public class EditPlanActivity extends BaseBindingActivity<ActivityEditPlanBindin
 
     @Override
     protected void setListener() {
-        mBinding.titleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate(){
+        mBinding.titleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
+            @Override
+            public void onClickLeftCtv() {
+                onBackPressed();
+            }
+
             @Override
             public void onClickRightCtv() {
                 switch (mOperateType) {
@@ -87,6 +92,7 @@ public class EditPlanActivity extends BaseBindingActivity<ActivityEditPlanBindin
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
+        mBinding.titleBar.setLeftDrawable(getResources().getDrawable(R.mipmap.back_normal));
         mUltimateCalendar = CalendarUtil.getZeroSecondCalendar();
 
         mPlan = getIntent().getParcelableExtra(EXTRA_PLAN);

@@ -5,21 +5,17 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.trello.rxlifecycle.LifecycleProvider;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.basenote.App;
-import cn.bingoogolapple.basenote.presenter.BasePresenter;
-import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.basenote.util.UmengUtil;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,20 +26,20 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseFragment<P extends BasePresenter> extends RxFragment implements BaseView, EasyPermissions.PermissionCallbacks {
+public abstract class BaseFragment extends RxFragment implements EasyPermissions.PermissionCallbacks {
+    protected String TAG;
     protected App mApp;
     protected View mContentView;
-    protected BaseBindingActivity mActivity;
+    protected BaseActivity mActivity;
 
     protected boolean mIsLoadedData = false;
-
-    protected P mPresenter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        TAG = this.getClass().getSimpleName();
         mApp = App.getInstance();
-        mActivity = (BaseBindingActivity) getActivity();
+        mActivity = (BaseActivity) getActivity();
     }
 
     @Override
@@ -53,17 +49,13 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment i
             initView(savedInstanceState);
             setListener();
             processLogic(savedInstanceState);
+        } else {
+            ViewGroup parent = (ViewGroup) mContentView.getParent();
+            if (parent != null) {
+                parent.removeView(mContentView);
+            }
         }
         return mContentView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parent = (ViewGroup) mContentView.getParent();
-        if (parent != null) {
-            parent.removeView(mContentView);
-        }
     }
 
     @Override
@@ -167,26 +159,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment i
     public void onDestroy() {
         super.onDestroy();
         mApp.getRefWatcher().watch(this);
-    }
-
-    @Override
-    public void showMsg(@StringRes int resId) {
-        ToastUtil.show(resId);
-    }
-
-    @Override
-    public void showMsg(String msg) {
-        ToastUtil.show(msg);
-    }
-
-    @Override
-    public BaseBindingActivity getBaseActivity() {
-        return mActivity;
-    }
-
-    @Override
-    public LifecycleProvider getLifecycleProvider() {
-        return this;
     }
 
     @Override

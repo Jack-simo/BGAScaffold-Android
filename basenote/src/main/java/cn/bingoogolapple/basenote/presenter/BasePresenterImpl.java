@@ -8,11 +8,11 @@ import cn.bingoogolapple.basenote.view.BaseView;
  * 创建时间:16/8/18 下午8:41
  * 描述:
  */
-public class BasePresenterImpl<T extends BaseView> implements BasePresenter {
-    protected T mView;
+public class BasePresenterImpl<V extends BaseView> implements BasePresenter {
+    protected V mView;
     protected App mApp;
 
-    public BasePresenterImpl(T view) {
+    public BasePresenterImpl(V view) {
         mView = view;
         mApp = App.getInstance();
     }
