@@ -33,7 +33,7 @@ import rx.functions.Action1;
 public abstract class BaseFragment<P extends BasePresenter> extends RxFragment implements BaseView, EasyPermissions.PermissionCallbacks {
     protected App mApp;
     protected View mContentView;
-    protected BaseActivity mActivity;
+    protected BaseBindingActivity mActivity;
 
     protected boolean mIsLoadedData = false;
 
@@ -43,7 +43,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment i
     public void onAttach(Context context) {
         super.onAttach(context);
         mApp = App.getInstance();
-        mActivity = (BaseActivity) getActivity();
+        mActivity = (BaseBindingActivity) getActivity();
     }
 
     @Override
@@ -180,7 +180,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment i
     }
 
     @Override
-    public BaseActivity getBaseActivity() {
+    public BaseBindingActivity getBaseActivity() {
         return mActivity;
     }
 

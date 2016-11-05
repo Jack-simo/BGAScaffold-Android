@@ -1,6 +1,7 @@
 package cn.bingoogolapple.alarmclock.plans;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.data.Plan;
+import cn.bingoogolapple.alarmclock.databinding.ActivityPlansBinding;
 import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
 import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
@@ -22,19 +24,19 @@ import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 import cn.bingoogolapple.basenote.util.AppManager;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
-import cn.bingoogolapple.basenote.view.TitlebarActivity;
+import cn.bingoogolapple.basenote.view.BaseBindingActivity;
 import cn.bingoogolapple.basenote.widget.Divider;
 import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
+import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/10/11 上午11:55
  * 描述:计划列表界面
  */
-public class PlansActivity extends TitlebarActivity<PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
+public class PlansActivity extends BaseBindingActivity<ActivityPlansBinding, PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
     private static final int REQUEST_CODE_ADD = 1;
     private static final int REQUEST_CODE_VIEW = 2;
-    private RecyclerView mPlanRv;
     private PlanAdapter mPlanAdapter;
     private int mCurrentSelectedPosition;
 
@@ -42,17 +44,22 @@ public class PlansActivity extends TitlebarActivity<PlansPresenter> implements P
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_plans);
-        mPlanRv = getViewById(R.id.rv_plans_plan);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_plans);
     }
 
     @Override
     protected void setListener() {
-        mPlanAdapter = new PlanAdapter(mPlanRv);
+        mBinding.titleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
+            @Override
+            public void onClickRightCtv() {
+                forward(EditPlanActivity.newIntent(PlansActivity.this, null), REQUEST_CODE_ADD);
+            }
+        });
+        mPlanAdapter = new PlanAdapter(mBinding.planRv);
         mPlanAdapter.setOnItemChildClickListener(this);
         mPlanAdapter.setOnItemChildCheckedChangeListener(this);
 
-        mPlanRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mBinding.planRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (RecyclerView.SCROLL_STATE_DRAGGING == newState) {
@@ -64,21 +71,15 @@ public class PlansActivity extends TitlebarActivity<PlansPresenter> implements P
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        hiddenLeftCtv();
-        setTitle(R.string.app_name);
-        setRightDrawable(R.mipmap.add_normal);
+        mBinding.titleBar.setTitleText(R.string.app_name);
+        mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.add_normal));
 
-        mPlanRv.setLayoutManager(new LinearLayoutManager(this));
-        mPlanRv.addItemDecoration(Divider.newBitmapDivider());
-        mPlanRv.setAdapter(mPlanAdapter);
-
+        mBinding.planRv.setLayoutManager(new LinearLayoutManager(this));
+        mBinding.planRv.addItemDecoration(Divider.newBitmapDivider());
+        mBinding.planRv.setAdapter(mPlanAdapter);
+        
         mPresenter = new PlansPresenterImpl(this);
         mPresenter.loadPlans();
-    }
-
-    @Override
-    protected void onClickRight() {
-        forward(EditPlanActivity.newIntent(this, null), REQUEST_CODE_ADD);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class PlansActivity extends TitlebarActivity<PlansPresenter> implements P
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_ADD) {
                 mPlanAdapter.addFirstItem(EditPlanActivity.getPlan(data));
-                mPlanRv.smoothScrollToPosition(0);
+                mBinding.planRv.smoothScrollToPosition(0);
             } else if (requestCode == REQUEST_CODE_VIEW) {
                 if (data == null) {
                     mPlanAdapter.removeItem(mCurrentSelectedPosition);

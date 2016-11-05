@@ -2,25 +2,23 @@ package cn.bingoogolapple.alarmclock.alarm;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatTextView;
 
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.data.Plan;
+import cn.bingoogolapple.alarmclock.databinding.ActivityEditPlanBinding;
 import cn.bingoogolapple.basenote.presenter.BasePresenter;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
-import cn.bingoogolapple.basenote.view.TitlebarActivity;
+import cn.bingoogolapple.basenote.view.BaseBindingActivity;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/8/19 上午12:27
  * 描述:闹钟提示界面
  */
-public class AlarmActivity extends TitlebarActivity<BasePresenter> {
+public class AlarmActivity extends BaseBindingActivity<ActivityEditPlanBinding, BasePresenter> {
     public static final String EXTRA_PLAN = "EXTRA_PLAN";
-    private AppCompatTextView mTimeTv;
-    private AppCompatEditText mContentEt;
 
     public static Intent newIntent(Context context, Plan plan) {
         Intent intent = new Intent(context, AlarmActivity.class);
@@ -30,9 +28,8 @@ public class AlarmActivity extends TitlebarActivity<BasePresenter> {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_plan);
         setContentView(R.layout.activity_edit_plan);
-        mTimeTv = getViewById(R.id.tv_edit_plan_time);
-        mContentEt = getViewById(R.id.et_edit_plan_content);
     }
 
     @Override
@@ -41,8 +38,7 @@ public class AlarmActivity extends TitlebarActivity<BasePresenter> {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        hiddenLeftCtv();
-        setTitle(R.string.view_plan);
+        mBinding.titleBar.setTitleText(R.string.view_plan);
 
         onNewIntent(getIntent());
     }
@@ -52,11 +48,11 @@ public class AlarmActivity extends TitlebarActivity<BasePresenter> {
         super.onNewIntent(intent);
 
         Plan plan = getIntent().getParcelableExtra(EXTRA_PLAN);
-        mTimeTv.setEnabled(false);
-        mContentEt.setEnabled(false);
+        mBinding.timeTv.setEnabled(false);
+        mBinding.timeTv.setEnabled(false);
 
-        mContentEt.setText(plan.content);
-        mTimeTv.setText(CalendarUtil.formatDetailDisplayTime(plan.time));
+        mBinding.timeTv.setText(plan.content);
+        mBinding.timeTv.setText(CalendarUtil.formatDetailDisplayTime(plan.time));
     }
 
     @Override

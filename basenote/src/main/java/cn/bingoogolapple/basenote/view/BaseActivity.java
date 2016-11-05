@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.App;
 import cn.bingoogolapple.basenote.R;
-import cn.bingoogolapple.basenote.presenter.BasePresenter;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
 import cn.bingoogolapple.basenote.widget.BGASwipeBackLayout;
@@ -32,13 +31,11 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatActivity implements BaseView, EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
+public abstract class BaseActivity extends RxAppCompatActivity implements BaseView, EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected App mApp;
     protected MaterialDialog mLoadingDialog;
     protected BGAAlertController mMoreMenu;
-
-    protected P mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,11 +298,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
     @Override
     public void showMsg(String msg) {
         ToastUtil.show(msg);
-    }
-
-    @Override
-    public BaseActivity getBaseActivity() {
-        return this;
     }
 
     @Override

@@ -2,9 +2,8 @@ package cn.bingoogolapple.alarmclock.editplan;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -15,26 +14,26 @@ import java.util.Calendar;
 
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.data.Plan;
+import cn.bingoogolapple.alarmclock.databinding.ActivityEditPlanBinding;
 import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.basenote.util.CalendarUtil;
 import cn.bingoogolapple.basenote.util.KeyboardUtil;
 import cn.bingoogolapple.basenote.util.ToastUtil;
-import cn.bingoogolapple.basenote.view.TitlebarActivity;
+import cn.bingoogolapple.basenote.view.BaseBindingActivity;
+import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/10/11 上午11:57
  * 描述:查看/添加/编辑界面
  */
-public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implements EditPlanPresenter.View, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class EditPlanActivity extends BaseBindingActivity<ActivityEditPlanBinding, EditPlanPresenter> implements EditPlanPresenter.View, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     public static final String EXTRA_PLAN = "EXTRA_PLAN";
     public static final int OPERATE_TYPE_ADD = 0;
     public static final int OPERATE_TYPE_VIEW = 1;
     public static final int OPERATE_TYPE_EDIT = 2;
 
-    private AppCompatTextView mTimeTv;
-    private AppCompatEditText mContentEt;
     private int mOperateType = OPERATE_TYPE_ADD;
     private Plan mPlan;
     private Calendar mUltimateCalendar;
@@ -59,14 +58,28 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_edit_plan);
-        mTimeTv = getViewById(R.id.tv_edit_plan_time);
-        mContentEt = getViewById(R.id.et_edit_plan_content);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_plan);
     }
 
     @Override
     protected void setListener() {
-        setOnClick(mTimeTv, object -> {
+        mBinding.titleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate(){
+            @Override
+            public void onClickRightCtv() {
+                switch (mOperateType) {
+                    case OPERATE_TYPE_ADD:
+                        addPlan();
+                        break;
+                    case OPERATE_TYPE_VIEW:
+                        showMoreMenu();
+                        break;
+                    case OPERATE_TYPE_EDIT:
+                        editPlan();
+                        break;
+                }
+            }
+        });
+        setOnClick(mBinding.timeTv, object -> {
             KeyboardUtil.closeKeyboard(this);
             showDatePickerDialog();
         });
@@ -79,28 +92,13 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
         mPlan = getIntent().getParcelableExtra(EXTRA_PLAN);
         if (mPlan == null) {
             mOperateType = OPERATE_TYPE_ADD;
-            setTitle(R.string.add_plan);
-            setRightDrawable(R.mipmap.confirm_normal);
+            mBinding.titleBar.setTitleText(R.string.add_plan);
+            mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.confirm_normal));
         } else {
             changeToView();
         }
 
         mPresenter = new EditPlanPresenterImpl(this);
-    }
-
-    @Override
-    protected void onClickRight() {
-        switch (mOperateType) {
-            case OPERATE_TYPE_ADD:
-                addPlan();
-                break;
-            case OPERATE_TYPE_VIEW:
-                showMoreMenu();
-                break;
-            case OPERATE_TYPE_EDIT:
-                editPlan();
-                break;
-        }
     }
 
     private void showDatePickerDialog() {
@@ -137,28 +135,29 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
 
     private void changeToView() {
         mOperateType = OPERATE_TYPE_VIEW;
-        setTitle(R.string.view_plan);
-        setRightDrawable(R.mipmap.more_normal);
-        mTimeTv.setEnabled(false);
-        mContentEt.setEnabled(false);
+        mBinding.titleBar.setTitleText(R.string.view_plan);
+        mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.more_normal));
+        mBinding.timeTv.setEnabled(false);
+        mBinding.contentEt.setEnabled(false);
 
         mUltimateCalendar.setTimeInMillis(mPlan.time);
 
         setTimeText();
-        mContentEt.setText(mPlan.content);
+        mBinding.contentEt.setText(mPlan.content);
     }
 
     private void setTimeText() {
-        mTimeTv.setText(CalendarUtil.formatDetailDisplayTime(mUltimateCalendar.getTimeInMillis()));
+        mBinding.timeTv.setText(CalendarUtil.formatDetailDisplayTime(mUltimateCalendar.getTimeInMillis()));
     }
 
     private void changeToEdit() {
         mOperateType = OPERATE_TYPE_EDIT;
-        setTitle(R.string.edit_plan);
-        setRightDrawable(R.mipmap.confirm_normal);
-        mTimeTv.setEnabled(true);
-        mContentEt.setEnabled(true);
-        mContentEt.setSelection(mContentEt.getText().toString().length());
+        mBinding.titleBar.setTitleText(R.string.edit_plan);
+
+        mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.confirm_normal));
+        mBinding.timeTv.setEnabled(true);
+        mBinding.contentEt.setEnabled(true);
+        mBinding.contentEt.setSelection(mBinding.contentEt.getText().toString().length());
     }
 
     @Override
@@ -197,7 +196,7 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
     }
 
     private void addPlan() {
-        final String content = mContentEt.getText().toString().trim();
+        final String content = mBinding.contentEt.getText().toString().trim();
         if (validationPlain(content)) {
             KeyboardUtil.closeKeyboard(this);
             mPlan = new Plan();
@@ -210,7 +209,7 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
     }
 
     private void editPlan() {
-        final String content = mContentEt.getText().toString().trim();
+        final String content = mBinding.contentEt.getText().toString().trim();
         if (validationPlain(content)) {
             KeyboardUtil.closeKeyboard(this);
 
@@ -219,7 +218,7 @@ public class EditPlanActivity extends TitlebarActivity<EditPlanPresenter> implem
     }
 
     private boolean validationPlain(String content) {
-        if (TextUtils.isEmpty(mTimeTv.getText().toString().trim())) {
+        if (TextUtils.isEmpty(mBinding.timeTv.getText().toString().trim())) {
             ToastUtil.show(R.string.toast_plan_time_invalid_empty);
             return false;
         }

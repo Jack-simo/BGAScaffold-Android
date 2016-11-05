@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rv_plans_plan"
-    style="@style/MatchMatch"
-    android:background="@color/white"
-    android:overScrollMode="never"
-    android:scrollbars="none"
-    tools:listitem="@layout/item_plan" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+    </data>
+
+    <LinearLayout
+        style="@style/MatchMatch.Vertical">
+
+        <cn.bingoogolapple.titlebar.BGATitlebar
+            android:id="@+id/titleBar"
+            style="@style/TitleBar"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/plan_rv"
+            style="@style/MatchMatch"
+            android:background="@color/white"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            tools:listitem="@layout/item_plan"/>
+    </LinearLayout>
+
+</layout>
