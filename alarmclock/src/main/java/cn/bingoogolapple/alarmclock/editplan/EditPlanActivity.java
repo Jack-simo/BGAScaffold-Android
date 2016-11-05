@@ -16,10 +16,10 @@ import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.databinding.ActivityEditPlanBinding;
 import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
-import cn.bingoogolapple.basenote.util.CalendarUtil;
-import cn.bingoogolapple.basenote.util.KeyboardUtil;
-import cn.bingoogolapple.basenote.util.ToastUtil;
-import cn.bingoogolapple.basenote.view.BaseMvvmActivity;
+import cn.bingoogolapple.scaffolding.util.CalendarUtil;
+import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
+import cn.bingoogolapple.scaffolding.util.ToastUtil;
+import cn.bingoogolapple.scaffolding.view.BaseMvvmActivity;
 import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**

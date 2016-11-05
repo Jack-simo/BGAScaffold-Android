@@ -1,4 +1,4 @@
-AndroidNote-PartTwo
+BGAScaffolding-Android
 ===========
 
-Android学习笔记
+Android MVC、MVP、MVVM 项目开发脚手架

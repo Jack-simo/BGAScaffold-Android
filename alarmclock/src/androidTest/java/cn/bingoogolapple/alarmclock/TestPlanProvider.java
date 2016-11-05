@@ -9,7 +9,7 @@ import java.util.List;
 
 import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
-import cn.bingoogolapple.basenote.util.CalendarUtil;
+import cn.bingoogolapple.scaffolding.util.CalendarUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

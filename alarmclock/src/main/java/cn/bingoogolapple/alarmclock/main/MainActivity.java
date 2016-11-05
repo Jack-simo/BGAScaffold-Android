@@ -5,8 +5,8 @@ import android.os.Bundle;
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.plans.PlansActivity;
 import cn.bingoogolapple.alarmclock.plans.PlansFragmentActivity;
-import cn.bingoogolapple.basenote.util.AppManager;
-import cn.bingoogolapple.basenote.view.TitleBarActivity;
+import cn.bingoogolapple.scaffolding.util.AppManager;
+import cn.bingoogolapple.scaffolding.view.TitleBarActivity;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

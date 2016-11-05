@@ -3,7 +3,7 @@ package cn.bingoogolapple.alarmclock.plans;
 import android.os.Bundle;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.basenote.view.BaseActivity;
+import cn.bingoogolapple.scaffolding.view.BaseActivity;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

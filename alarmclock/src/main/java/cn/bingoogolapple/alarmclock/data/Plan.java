@@ -3,7 +3,7 @@ package cn.bingoogolapple.alarmclock.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import cn.bingoogolapple.basenote.util.CalendarUtil;
+import cn.bingoogolapple.scaffolding.util.CalendarUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

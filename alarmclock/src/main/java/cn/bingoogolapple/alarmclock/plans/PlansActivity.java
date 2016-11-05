@@ -18,8 +18,8 @@ import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListener;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
-import cn.bingoogolapple.basenote.view.BaseMvvmActivity;
-import cn.bingoogolapple.basenote.widget.Divider;
+import cn.bingoogolapple.scaffolding.view.BaseMvvmActivity;
+import cn.bingoogolapple.scaffolding.widget.Divider;
 import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**

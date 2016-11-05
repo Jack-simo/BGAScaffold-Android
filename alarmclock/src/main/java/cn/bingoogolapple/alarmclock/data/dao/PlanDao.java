@@ -12,7 +12,7 @@ import java.util.List;
 
 import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.provider.PlanProvider;
-import cn.bingoogolapple.basenote.App;
+import cn.bingoogolapple.scaffolding.App;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

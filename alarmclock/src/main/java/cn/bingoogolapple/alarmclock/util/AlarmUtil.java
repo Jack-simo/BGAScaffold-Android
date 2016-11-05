@@ -8,7 +8,7 @@ import android.content.Intent;
 import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.receiver.AlarmReceiver;
 import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
-import cn.bingoogolapple.basenote.App;
+import cn.bingoogolapple.scaffolding.App;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

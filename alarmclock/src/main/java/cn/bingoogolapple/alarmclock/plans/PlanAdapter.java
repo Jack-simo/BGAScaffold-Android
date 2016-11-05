@@ -15,7 +15,7 @@ import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
-import cn.bingoogolapple.basenote.util.CalendarUtil;
+import cn.bingoogolapple.scaffolding.util.CalendarUtil;
 import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
 
 public class PlanAdapter extends BGARecyclerViewAdapter<Plan> {

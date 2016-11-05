@@ -8,10 +8,10 @@ import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.data.dao.PlanDao;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
-import cn.bingoogolapple.basenote.presenter.BasePresenterImpl;
-import cn.bingoogolapple.basenote.util.CalendarUtil;
-import cn.bingoogolapple.basenote.util.LocalSubscriber;
-import cn.bingoogolapple.basenote.util.RxUtil;
+import cn.bingoogolapple.scaffolding.presenter.BasePresenterImpl;
+import cn.bingoogolapple.scaffolding.util.CalendarUtil;
+import cn.bingoogolapple.scaffolding.util.LocalSubscriber;
+import cn.bingoogolapple.scaffolding.util.RxUtil;
 import rx.Observable;
 import rx.Subscriber;
 

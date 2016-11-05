@@ -7,9 +7,9 @@ import android.os.Bundle;
 import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.databinding.ActivityEditPlanBinding;
-import cn.bingoogolapple.basenote.presenter.BasePresenter;
-import cn.bingoogolapple.basenote.util.CalendarUtil;
-import cn.bingoogolapple.basenote.view.BaseMvvmActivity;
+import cn.bingoogolapple.scaffolding.presenter.BasePresenter;
+import cn.bingoogolapple.scaffolding.util.CalendarUtil;
+import cn.bingoogolapple.scaffolding.view.BaseMvvmActivity;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

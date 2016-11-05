@@ -13,7 +13,7 @@ import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.alarm.AlarmActivity;
 import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
-import cn.bingoogolapple.basenote.App;
+import cn.bingoogolapple.scaffolding.App;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

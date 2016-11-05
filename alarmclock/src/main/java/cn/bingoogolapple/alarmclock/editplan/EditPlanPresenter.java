@@ -1,8 +1,8 @@
 package cn.bingoogolapple.alarmclock.editplan;
 
 import cn.bingoogolapple.alarmclock.data.Plan;
-import cn.bingoogolapple.basenote.presenter.BasePresenter;
-import cn.bingoogolapple.basenote.view.BaseView;
+import cn.bingoogolapple.scaffolding.presenter.BasePresenter;
+import cn.bingoogolapple.scaffolding.view.BaseView;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
