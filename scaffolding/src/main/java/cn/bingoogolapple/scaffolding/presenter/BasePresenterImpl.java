@@ -1,6 +1,5 @@
 package cn.bingoogolapple.scaffolding.presenter;
 
-import cn.bingoogolapple.scaffolding.App;
 import cn.bingoogolapple.scaffolding.view.BaseView;
 
 /**
@@ -10,10 +9,8 @@ import cn.bingoogolapple.scaffolding.view.BaseView;
  */
 public class BasePresenterImpl<V extends BaseView> implements BasePresenter {
     protected V mView;
-    protected App mApp;
 
     public BasePresenterImpl(V view) {
         mView = view;
-        mApp = App.getInstance();
     }
 }

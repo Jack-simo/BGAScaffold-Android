@@ -12,8 +12,6 @@ import android.view.WindowManager;
 
 import java.lang.reflect.Method;
 
-import cn.bingoogolapple.scaffolding.App;
-
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/13 下午11:16
@@ -24,19 +22,19 @@ public class UIUtil {
     }
 
     public static int dp2px(float dpValue) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, App.getInstance().getResources().getDisplayMetrics());
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, AppManager.getApp().getResources().getDisplayMetrics());
     }
 
     public static int sp2px(float spValue) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, App.getInstance().getResources().getDisplayMetrics());
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, AppManager.getApp().getResources().getDisplayMetrics());
     }
 
     public static int getColor(@ColorRes int id) {
-        return App.getInstance().getResources().getColor(id);
+        return AppManager.getApp().getResources().getColor(id);
     }
 
     public static int getStatusBarHeight() {
-        Resources resources = App.getInstance().getResources();
+        Resources resources = AppManager.getApp().getResources();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         return resources.getDimensionPixelSize(resourceId);
     }
@@ -49,7 +47,7 @@ public class UIUtil {
 
     public static int getNavigationBarHeight() {
         int navigationBarHeight = 0;
-        Resources resources = App.getInstance().getResources();
+        Resources resources = AppManager.getApp().getResources();
         int resourceId = resources.getIdentifier(resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape", "dimen", "android");
         if (resourceId > 0 && checkDeviceHasNavigationBar()) {
             navigationBarHeight = resources.getDimensionPixelSize(resourceId);
@@ -59,7 +57,7 @@ public class UIUtil {
 
     public static boolean checkDeviceHasNavigationBar() {
         boolean hasNavigationBar = false;
-        Resources rs = App.getInstance().getResources();
+        Resources rs = AppManager.getApp().getResources();
         int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
         if (id > 0) {
             hasNavigationBar = rs.getBoolean(id);
@@ -79,14 +77,14 @@ public class UIUtil {
     }
 
     public static int getScreenWidth() {
-        WindowManager windowManager = (WindowManager) App.getInstance().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) AppManager.getApp().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
     }
 
     public static int getScreenHeight() {
-        WindowManager windowManager = (WindowManager) App.getInstance().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) AppManager.getApp().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(dm);
         return dm.heightPixels;

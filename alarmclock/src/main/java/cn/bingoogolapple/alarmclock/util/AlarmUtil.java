@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import cn.bingoogolapple.alarmclock.data.Plan;
-import cn.bingoogolapple.alarmclock.receiver.AlarmReceiver;
 import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
-import cn.bingoogolapple.scaffolding.App;
+import cn.bingoogolapple.alarmclock.receiver.AlarmReceiver;
+import cn.bingoogolapple.scaffolding.util.AppManager;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -25,7 +25,7 @@ public class AlarmUtil {
         if (sAlarmManager == null) {
             synchronized (AlarmUtil.class) {
                 if (sAlarmManager == null) {
-                    sAlarmManager = (AlarmManager) App.getInstance().getSystemService(Context.ALARM_SERVICE);
+                    sAlarmManager = (AlarmManager) AppManager.getApp().getSystemService(Context.ALARM_SERVICE);
                 }
             }
         }
@@ -33,12 +33,12 @@ public class AlarmUtil {
     }
 
     public static void addAlarm(Plan plan) {
-        Intent intent = new Intent(App.getInstance(), AlarmReceiver.class);
+        Intent intent = new Intent(AppManager.getApp(), AlarmReceiver.class);
         intent.putExtra(EditPlanActivity.EXTRA_PLAN, plan);
-        getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, plan.time, 5 * 60 * 1000, PendingIntent.getBroadcast(App.getInstance(), (int) plan.id, intent, 0));
+        getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, plan.time, 5 * 60 * 1000, PendingIntent.getBroadcast(AppManager.getApp(), (int) plan.id, intent, 0));
     }
 
     public static void cancelAlarm(Plan plan) {
-        getAlarmManager().cancel(PendingIntent.getBroadcast(App.getInstance(), (int) plan.id, new Intent(App.getInstance(), AlarmReceiver.class), 0));
+        getAlarmManager().cancel(PendingIntent.getBroadcast(AppManager.getApp(), (int) plan.id, new Intent(AppManager.getApp(), AlarmReceiver.class), 0));
     }
 }

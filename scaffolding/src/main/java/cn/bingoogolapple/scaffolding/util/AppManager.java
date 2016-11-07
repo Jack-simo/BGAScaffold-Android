@@ -2,12 +2,21 @@ package cn.bingoogolapple.scaffolding.util;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 
+import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -20,33 +29,93 @@ import cn.bingoogolapple.scaffolding.R;
  * 描述:
  */
 public class AppManager implements Application.ActivityLifecycleCallbacks {
-    private static final String TAG = AppManager.class.getSimpleName();
-    private static AppManager sInstance;
+    private static final AppManager sInstance;
+    private static final Application sApp;
+    private static boolean sIsBuildDebug;
+
     private int mActivityStartedCount = 0;
     private long mLastPressBackKeyTime;
     private Stack<Activity> mActivityStack = new Stack<>();
-    private Context mContext;
+    private RefWatcher mRefWatcher;
 
-    private AppManager() {
+    static {
+        Application app = null;
+        try {
+            app = (Application) Class.forName("android.app.AppGlobals").getMethod("getInitialApplication").invoke(null);
+            if (app == null)
+                throw new IllegalStateException("Static initialization of Applications must be on main thread.");
+        } catch (final Exception e) {
+            Log.e(AppManager.class.getSimpleName(), "Failed to get current application from AppGlobals." + e.getMessage());
+            try {
+                app = (Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null);
+            } catch (final Exception ex) {
+                Log.e(AppManager.class.getSimpleName(), "Failed to get current application from ActivityThread." + e.getMessage());
+            }
+        } finally {
+            sApp = app;
+
+            sInstance = new AppManager();
+            sApp.registerActivityLifecycleCallbacks(sInstance);
+        }
     }
 
-    public static final AppManager getInstance() {
-        if (sInstance == null) {
-            synchronized (AppManager.class) {
-                if (sInstance == null) {
-                    sInstance = new AppManager();
+    private AppManager() {
+        // 初始化内存泄露检测库
+        mRefWatcher = LeakCanary.install(sApp);
+        // 初始化崩溃日志统计
+        CrashHandler.getInstance().init();
+
+        sApp.registerReceiver(new BroadcastReceiver() {
+            private boolean mIsFirstReceiveBroadcast = true;
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                    if (!mIsFirstReceiveBroadcast) {
+                        if (NetUtil.isNetworkAvailable()) {
+                            RxBus.send(new RxEvent.NetworkConnectedEvent());
+                        } else {
+                            RxBus.send(new RxEvent.NetworkDisconnectedEvent());
+                        }
+                    } else {
+                        mIsFirstReceiveBroadcast = false;
+                    }
                 }
             }
-        }
+        }, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    /**
+     * 必须在 Application 的 onCreate 方法中调用
+     *
+     * @param isBuildDebug 是否构建的是 debug
+     */
+    public static void init(boolean isBuildDebug) {
+        sIsBuildDebug = isBuildDebug;
+
+        // 初始化日志打印库
+        Logger.init(getInstance().getAppName()).logLevel(sIsBuildDebug ? LogLevel.FULL : LogLevel.NONE);
+    }
+
+    public static AppManager getInstance() {
         return sInstance;
     }
 
-    public AppManager init(Context context) {
-        mContext = context.getApplicationContext();
+    public static Application getApp() {
+        return sApp;
+    }
 
-        CrashHandler.getInstance().init(mContext);
+    /**
+     * 是否构建的是 debug
+     *
+     * @return
+     */
+    public static boolean isBuildDebug() {
+        return sIsBuildDebug;
+    }
 
-        return this;
+    public void refWatcherWatchFragment(Fragment fragment) {
+        mRefWatcher.watch(fragment);
     }
 
     @Override
@@ -57,7 +126,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStarted(Activity activity) {
         if (mActivityStartedCount == 0) {
-            onEnterFrontStage();
+            RxBus.send(new RxEvent.AppEnterForegroundEvent());
         }
         mActivityStartedCount++;
     }
@@ -76,7 +145,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     public void onActivityStopped(Activity activity) {
         mActivityStartedCount--;
         if (mActivityStartedCount == 0) {
-            onEnterBackStage();
+            RxBus.send(new RxEvent.AppEnterBackgroundEvent());
         }
     }
 
@@ -163,13 +232,27 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     /**
+     * 获取应用名称
+     *
+     * @return
+     */
+    public String getAppName() {
+        try {
+            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).applicationInfo.loadLabel(sApp.getPackageManager()).toString();
+        } catch (Exception e) {
+            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
+            return "";
+        }
+    }
+
+    /**
      * 获取当前版本名称
      *
      * @return
      */
     public String getCurrentVersionName() {
         try {
-            return mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName;
+            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).versionName;
         } catch (Exception e) {
             // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
             return "";
@@ -183,7 +266,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      */
     public int getCurrentVersionCode() {
         try {
-            return mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionCode;
+            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).versionCode;
         } catch (Exception e) {
             // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
             return 0;
@@ -197,18 +280,10 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      */
     private String getChannel() {
         try {
-            ApplicationInfo appInfo = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(), PackageManager.GET_META_DATA);
+            ApplicationInfo appInfo = sApp.getPackageManager().getApplicationInfo(sApp.getPackageName(), PackageManager.GET_META_DATA);
             return appInfo.metaData.getString("UMENG_CHANNEL");
         } catch (Exception e) {
             return "";
         }
-    }
-
-    private void onEnterFrontStage() {
-        Logger.i("进入前台状态");
-    }
-
-    private void onEnterBackStage() {
-        Logger.i("进入后台状态");
     }
 }

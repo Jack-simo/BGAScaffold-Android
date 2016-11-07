@@ -3,7 +3,6 @@ package cn.bingoogolapple.scaffolding.util;
 import android.app.Activity;
 import android.support.annotation.StringRes;
 
-import cn.bingoogolapple.scaffolding.App;
 import cn.bingoogolapple.scaffolding.R;
 
 /**
@@ -42,18 +41,18 @@ public abstract class SimpleSubscriber<T> extends LocalSubscriber<T> {
 
     @Override
     public void onError(Throwable e) {
-        if (EnvironmentUtil.isBuildDebug()) {
+        if (AppManager.isBuildDebug()) {
             e.printStackTrace();
         }
 
         dismissLoadingDialog();
 
         if (!NetUtil.isNetworkAvailable()) {
-            onError(App.getInstance().getString(R.string.network_unavailable));
+            onError(AppManager.getApp().getString(R.string.network_unavailable));
         } else if (e instanceof ServerException) {
             onError(e.getMessage());
         } else {
-            onError(App.getInstance().getString(R.string.try_again_later));
+            onError(AppManager.getApp().getString(R.string.try_again_later));
         }
     }
 }

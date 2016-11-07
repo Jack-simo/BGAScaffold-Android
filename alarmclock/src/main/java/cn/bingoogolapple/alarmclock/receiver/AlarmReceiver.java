@@ -6,14 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import cn.bingoogolapple.alarmclock.R;
-import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.alarm.AlarmActivity;
+import cn.bingoogolapple.alarmclock.data.Plan;
 import cn.bingoogolapple.alarmclock.editplan.EditPlanActivity;
 import cn.bingoogolapple.alarmclock.util.AlarmUtil;
-import cn.bingoogolapple.scaffolding.App;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -43,6 +43,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setAutoCancel(true);
         builder.setContentIntent(pendingIntent);
         builder.setWhen(System.currentTimeMillis());
-        App.getInstance().addNotification((int) plan.id, builder.build());
+        NotificationManagerCompat.from(context).notify((int) plan.id, builder.build());
     }
 }

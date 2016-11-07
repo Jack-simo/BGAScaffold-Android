@@ -4,8 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import cn.bingoogolapple.scaffolding.App;
-
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/3/27 下午4:36
@@ -27,6 +25,6 @@ public class NetUtil {
     }
 
     private static ConnectivityManager getConnectivityManager() {
-        return (ConnectivityManager) App.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (ConnectivityManager) AppManager.getApp().getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 }

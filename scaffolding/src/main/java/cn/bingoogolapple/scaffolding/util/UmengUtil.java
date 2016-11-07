@@ -5,8 +5,6 @@ import android.support.v4.app.Fragment;
 
 import com.umeng.analytics.MobclickAgent;
 
-import cn.bingoogolapple.scaffolding.App;
-
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/11/3 下午11:13
@@ -20,17 +18,17 @@ public class UmengUtil {
      * 初始化友盟 SDK，在 Application 的 onCreate 方法里调用
      */
     public static void initSdk() {
-        MobclickAgent.setDebugMode(EnvironmentUtil.isBuildDebug());
+        MobclickAgent.setDebugMode(AppManager.isBuildDebug());
         // 禁止默认的页面统计方式，这样将不会再自动统计Activity
         MobclickAgent.openActivityDurationTrack(false);
-        MobclickAgent.setSessionContinueMillis(EnvironmentUtil.isBuildDebug() ? 3000 : 30000);
+        MobclickAgent.setSessionContinueMillis(AppManager.isBuildDebug() ? 3000 : 30000);
     }
 
     /**
      * 如果开发者调用Process.kill或者System.exit之类的方法杀死进程，请务必在此之前调用MobclickAgent.onKillProcess(Context context)方法，用来保存统计数据
      */
     public static void onKillProcess() {
-        MobclickAgent.onKillProcess(App.getInstance());
+        MobclickAgent.onKillProcess(AppManager.getApp());
     }
 
     // ======================== 页面路径统计 START ========================

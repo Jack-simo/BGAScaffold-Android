@@ -11,8 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import cn.bingoogolapple.scaffolding.App;
 import cn.bingoogolapple.scaffolding.R;
+import cn.bingoogolapple.scaffolding.util.AppManager;
 
 public class Divider extends RecyclerView.ItemDecoration {
     private Drawable mDividerDrawable;
@@ -20,7 +20,7 @@ public class Divider extends RecyclerView.ItemDecoration {
     private int mRightMargin;
 
     public Divider(@DrawableRes int resId) {
-        mDividerDrawable = ContextCompat.getDrawable(App.getInstance(), resId);
+        mDividerDrawable = ContextCompat.getDrawable(AppManager.getApp(), resId);
     }
 
     public static Divider newShapeDivider() {
@@ -38,7 +38,7 @@ public class Divider extends RecyclerView.ItemDecoration {
      * @return
      */
     public Divider setMargin(@DimenRes int resId) {
-        mLeftMargin = App.getInstance().getResources().getDimensionPixelOffset(resId);
+        mLeftMargin = AppManager.getApp().getResources().getDimensionPixelOffset(resId);
         mRightMargin = mLeftMargin;
         return this;
     }
@@ -50,7 +50,7 @@ public class Divider extends RecyclerView.ItemDecoration {
      * @return
      */
     public Divider setLeftMargin(@DimenRes int resId) {
-        mLeftMargin = App.getInstance().getResources().getDimensionPixelOffset(resId);
+        mLeftMargin = AppManager.getApp().getResources().getDimensionPixelOffset(resId);
         return this;
     }
 
@@ -61,7 +61,7 @@ public class Divider extends RecyclerView.ItemDecoration {
      * @return
      */
     public Divider setRightMargin(@DimenRes int resId) {
-        mRightMargin = App.getInstance().getResources().getDimensionPixelOffset(resId);
+        mRightMargin = AppManager.getApp().getResources().getDimensionPixelOffset(resId);
         return this;
     }
 
@@ -73,7 +73,7 @@ public class Divider extends RecyclerView.ItemDecoration {
      * @return
      */
     public Divider setColor(@ColorRes int resId, boolean isSrcTop) {
-        mDividerDrawable.setColorFilter(App.getInstance().getResources().getColor(resId), isSrcTop ? PorterDuff.Mode.SRC_ATOP : PorterDuff.Mode.SRC);
+        mDividerDrawable.setColorFilter(AppManager.getApp().getResources().getColor(resId), isSrcTop ? PorterDuff.Mode.SRC_ATOP : PorterDuff.Mode.SRC);
         return this;
     }
 

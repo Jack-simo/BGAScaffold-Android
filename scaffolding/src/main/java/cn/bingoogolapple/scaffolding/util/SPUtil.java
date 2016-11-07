@@ -3,8 +3,6 @@ package cn.bingoogolapple.scaffolding.util;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import cn.bingoogolapple.scaffolding.App;
-
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/20 下午11:30
@@ -20,7 +18,7 @@ public class SPUtil {
         if (mSharedPreferences == null) {
             synchronized (SPUtil.class) {
                 if (mSharedPreferences == null) {
-                    mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+                    mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(AppManager.getApp());
                 }
             }
         }

@@ -16,7 +16,7 @@ import com.trello.rxlifecycle.components.support.RxFragment;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import cn.bingoogolapple.scaffolding.App;
+import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.UmengUtil;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -30,7 +30,6 @@ import rx.functions.Action1;
  */
 public abstract class BaseFragment extends RxFragment implements EasyPermissions.PermissionCallbacks {
     protected String TAG;
-    protected App mApp;
     protected View mContentView;
     protected BaseActivity mActivity;
 
@@ -40,7 +39,6 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
     public void onAttach(Context context) {
         super.onAttach(context);
         TAG = this.getClass().getSimpleName();
-        mApp = App.getInstance();
         mActivity = (BaseActivity) getActivity();
     }
 
@@ -223,7 +221,7 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mApp.getRefWatcher().watch(this);
+        AppManager.getInstance().refWatcherWatchFragment(this);
     }
 
     @Override

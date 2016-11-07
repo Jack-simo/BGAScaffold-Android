@@ -1,6 +1,5 @@
 package cn.bingoogolapple.scaffolding.util;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 
@@ -19,7 +18,6 @@ import java.lang.reflect.Field;
  */
 public class CrashHandler implements UncaughtExceptionHandler {
     private static CrashHandler sInstance;
-    private Context mContext;
     private UncaughtExceptionHandler mDefaultUncaughtExceptionHandler;
 
     private CrashHandler() {
@@ -36,8 +34,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         return sInstance;
     }
 
-    public void init(Context context) {
-        mContext = context.getApplicationContext();
+    public void init() {
         mDefaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
     }

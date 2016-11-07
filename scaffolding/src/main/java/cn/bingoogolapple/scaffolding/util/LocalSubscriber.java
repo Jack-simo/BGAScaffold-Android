@@ -6,7 +6,6 @@ import android.support.annotation.StringRes;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import cn.bingoogolapple.scaffolding.App;
 import cn.bingoogolapple.scaffolding.R;
 import rx.Subscriber;
 
@@ -78,13 +77,13 @@ public abstract class LocalSubscriber<T> extends Subscriber<T> {
 
     @Override
     public void onError(Throwable e) {
-        if (EnvironmentUtil.isBuildDebug()) {
+        if (AppManager.isBuildDebug()) {
             e.printStackTrace();
         }
 
         dismissLoadingDialog();
 
-        onError(App.getInstance().getString(R.string.try_again_later));
+        onError(AppManager.getApp().getString(R.string.try_again_later));
     }
 
     /**

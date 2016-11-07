@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
-import cn.bingoogolapple.scaffolding.App;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.widget.BGASwipeBackLayout;
@@ -31,7 +30,6 @@ import rx.functions.Action1;
  */
 public abstract class BaseActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
     protected BGASwipeBackLayout mSwipeBackLayout;
-    protected App mApp;
     protected MaterialDialog mLoadingDialog;
     protected BGAAlertController mMoreMenu;
 
@@ -39,7 +37,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements EasyPe
     protected void onCreate(Bundle savedInstanceState) {
         initSwipeBackFinish();
         super.onCreate(savedInstanceState);
-        mApp = App.getInstance();
 
         initView(savedInstanceState);
         setListener();
