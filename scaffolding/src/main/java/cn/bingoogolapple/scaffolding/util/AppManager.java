@@ -15,8 +15,6 @@ import android.util.Log;
 
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -31,12 +29,13 @@ import cn.bingoogolapple.scaffolding.R;
 public class AppManager implements Application.ActivityLifecycleCallbacks {
     private static final AppManager sInstance;
     private static final Application sApp;
-    private static boolean sIsBuildDebug;
 
     private int mActivityStartedCount = 0;
     private long mLastPressBackKeyTime;
     private Stack<Activity> mActivityStack = new Stack<>();
-    private RefWatcher mRefWatcher;
+
+    private boolean mIsBuildDebug;
+    private Delegate mDelegate;
 
     static {
         Application app = null;
@@ -60,8 +59,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     private AppManager() {
-        // 初始化内存泄露检测库
-        mRefWatcher = LeakCanary.install(sApp);
         // 初始化崩溃日志统计
         CrashHandler.getInstance().init();
 
@@ -90,11 +87,12 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      *
      * @param isBuildDebug 是否构建的是 debug
      */
-    public static void init(boolean isBuildDebug) {
-        sIsBuildDebug = isBuildDebug;
+    public void init(boolean isBuildDebug, Delegate delegate) {
+        mIsBuildDebug = isBuildDebug;
+        mDelegate = delegate;
 
         // 初始化日志打印库
-        Logger.init(getInstance().getAppName()).logLevel(sIsBuildDebug ? LogLevel.FULL : LogLevel.NONE);
+        Logger.init(getInstance().getAppName()).logLevel(mIsBuildDebug ? LogLevel.FULL : LogLevel.NONE);
     }
 
     public static AppManager getInstance() {
@@ -110,12 +108,20 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      *
      * @return
      */
-    public static boolean isBuildDebug() {
-        return sIsBuildDebug;
+    public boolean isBuildDebug() {
+        return mIsBuildDebug;
     }
 
     public void refWatcherWatchFragment(Fragment fragment) {
-        mRefWatcher.watch(fragment);
+        if (mDelegate != null) {
+            mDelegate.refWatcherWatchFragment(fragment);
+        }
+    }
+
+    public void handleServerException(HttpRequestException httpRequestException) {
+        if (mDelegate != null) {
+            mDelegate.handleServerException(httpRequestException);
+        }
     }
 
     @Override
@@ -285,5 +291,11 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public interface Delegate {
+        void refWatcherWatchFragment(Fragment fragment);
+
+        void handleServerException(HttpRequestException httpRequestException);
     }
 }

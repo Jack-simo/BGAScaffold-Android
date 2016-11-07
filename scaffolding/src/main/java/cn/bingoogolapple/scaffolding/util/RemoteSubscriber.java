@@ -10,38 +10,38 @@ import cn.bingoogolapple.scaffolding.R;
  * 创建时间:16/8/14 上午1:15
  * 描述:
  */
-public abstract class SimpleSubscriber<T> extends LocalSubscriber<T> {
+public abstract class RemoteSubscriber<T> extends LocalSubscriber<T> {
 
-    public SimpleSubscriber() {
+    public RemoteSubscriber() {
     }
 
-    public SimpleSubscriber(Activity activity) {
+    public RemoteSubscriber(Activity activity) {
         super(activity);
     }
 
-    public SimpleSubscriber(Activity activity, boolean cancelable) {
+    public RemoteSubscriber(Activity activity, boolean cancelable) {
         super(activity, cancelable);
     }
 
-    public SimpleSubscriber(Activity activity, @StringRes int resId) {
+    public RemoteSubscriber(Activity activity, @StringRes int resId) {
         super(activity, resId);
     }
 
-    public SimpleSubscriber(Activity activity, @StringRes int resId, boolean cancelable) {
+    public RemoteSubscriber(Activity activity, @StringRes int resId, boolean cancelable) {
         super(activity, resId, cancelable);
     }
 
-    public SimpleSubscriber(Activity activity, String msg) {
+    public RemoteSubscriber(Activity activity, String msg) {
         super(activity, msg);
     }
 
-    public SimpleSubscriber(Activity activity, String msg, boolean cancelable) {
+    public RemoteSubscriber(Activity activity, String msg, boolean cancelable) {
         super(activity, msg, cancelable);
     }
 
     @Override
     public void onError(Throwable e) {
-        if (AppManager.isBuildDebug()) {
+        if (AppManager.getInstance().isBuildDebug()) {
             e.printStackTrace();
         }
 
@@ -49,8 +49,10 @@ public abstract class SimpleSubscriber<T> extends LocalSubscriber<T> {
 
         if (!NetUtil.isNetworkAvailable()) {
             onError(AppManager.getApp().getString(R.string.network_unavailable));
-        } else if (e instanceof ServerException) {
+        } else if (e instanceof HttpRequestException) {
             onError(e.getMessage());
+
+            AppManager.getInstance().handleServerException((HttpRequestException) e);
         } else {
             onError(AppManager.getApp().getString(R.string.try_again_later));
         }

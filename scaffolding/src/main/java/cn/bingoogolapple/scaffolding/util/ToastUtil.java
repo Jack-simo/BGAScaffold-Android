@@ -1,7 +1,6 @@
 package cn.bingoogolapple.scaffolding.util;
 
 import android.support.annotation.StringRes;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 /**
@@ -15,7 +14,7 @@ public class ToastUtil {
     }
 
     public static void show(CharSequence text) {
-        if (!TextUtils.isEmpty(text)) {
+        if (StringUtil.isNotEmpty(text)) {
             if (text.length() < 10) {
                 Toast.makeText(AppManager.getApp(), text, Toast.LENGTH_SHORT).show();
             } else {
@@ -29,12 +28,7 @@ public class ToastUtil {
     }
 
     public static void showSafe(final CharSequence text) {
-        ThreadUtil.runInUIThread(new Runnable() {
-            @Override
-            public void run() {
-                show(text);
-            }
-        });
+        ThreadUtil.runInUIThread(() -> show(text));
     }
 
     public static void showSafe(@StringRes int resId) {

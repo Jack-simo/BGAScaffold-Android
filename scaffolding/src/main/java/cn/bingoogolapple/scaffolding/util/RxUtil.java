@@ -55,7 +55,7 @@ public class RxUtil {
         if (result.code == 0) {
             return Observable.just(result.data);
         } else {
-            return Observable.error(new ServerException(result.msg, result.code));
+            return Observable.error(new HttpRequestException(result.msg, result.code));
         }
     }
 

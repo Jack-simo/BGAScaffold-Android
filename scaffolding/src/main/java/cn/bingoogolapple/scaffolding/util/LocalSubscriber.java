@@ -77,7 +77,7 @@ public abstract class LocalSubscriber<T> extends Subscriber<T> {
 
     @Override
     public void onError(Throwable e) {
-        if (AppManager.isBuildDebug()) {
+        if (AppManager.getInstance().isBuildDebug()) {
             e.printStackTrace();
         }
 

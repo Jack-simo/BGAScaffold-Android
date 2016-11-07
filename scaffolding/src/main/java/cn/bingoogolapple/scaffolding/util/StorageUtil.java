@@ -16,11 +16,9 @@ import java.io.OutputStream;
  * 描述:
  */
 public class StorageUtil {
-    public static final String DIR_ROOT = "BGANote";
-    public static final String DIR_FILE = DIR_ROOT + File.separator + "file";
-    public static final String DIR_IMAGE = DIR_ROOT + File.separator + "image";
-    public static final String DIR_CACHE = DIR_ROOT + File.separator + "cache";
-    public static final String DIR_AUDIO = DIR_ROOT + File.separator + "audio";
+
+    private StorageUtil() {
+    }
 
     /**
      * 判断外存储是否可写
@@ -31,40 +29,30 @@ public class StorageUtil {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
+    private static File getAppDir() {
+        File rootDir;
+        if (isExternalStorageWritable()) {
+            rootDir = new File(Environment.getExternalStorageDirectory(), AppManager.getInstance().getAppName());
+        } else {
+            rootDir = AppManager.getApp().getFilesDir();
+        }
+        if (!rootDir.exists()) {
+            rootDir.mkdirs();
+        }
+        return rootDir;
+    }
+
     /**
      * 获取当前app文件存储目录
      *
      * @return
      */
     public static File getFileDir() {
-        File fileDir = null;
-        if (isExternalStorageWritable()) {
-            fileDir = new File(Environment.getExternalStorageDirectory() + File.separator + DIR_FILE);
-            if (!fileDir.exists()) {
-                fileDir.mkdirs();
-            }
-        } else {
-            throw new RuntimeException("外部存储不可写");
+        File fileDir = new File(getAppDir(), "file");
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
         }
         return fileDir;
-    }
-
-    /**
-     * 获取当前app外部存储根目录
-     *
-     * @return
-     */
-    public static File getAppDir() {
-        File appDir = null;
-        if (isExternalStorageWritable()) {
-            appDir = new File(Environment.getExternalStorageDirectory() + File.separator + DIR_ROOT);
-            if (!appDir.exists()) {
-                appDir.mkdirs();
-            }
-        } else {
-            throw new RuntimeException("外部存储不可写");
-        }
-        return appDir;
     }
 
     /**
@@ -73,14 +61,9 @@ public class StorageUtil {
      * @return
      */
     public static File getImageDir() {
-        File imageDir = null;
-        if (isExternalStorageWritable()) {
-            imageDir = new File(Environment.getExternalStorageDirectory() + File.separator + DIR_IMAGE);
-            if (!imageDir.exists()) {
-                imageDir.mkdirs();
-            }
-        } else {
-            throw new RuntimeException("外部存储不可写");
+        File imageDir = new File(getAppDir(), "image");
+        if (!imageDir.exists()) {
+            imageDir.mkdirs();
         }
         return imageDir;
     }
@@ -91,14 +74,9 @@ public class StorageUtil {
      * @return
      */
     public static File getCacheDir() {
-        File cacheDir = null;
-        if (isExternalStorageWritable()) {
-            cacheDir = new File(Environment.getExternalStorageDirectory() + File.separator + DIR_CACHE);
-            if (!cacheDir.exists()) {
-                cacheDir.mkdirs();
-            }
-        } else {
-            throw new RuntimeException("外部存储不可写");
+        File cacheDir = new File(getAppDir(), "cache");
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
         }
         return cacheDir;
     }
@@ -109,14 +87,9 @@ public class StorageUtil {
      * @return
      */
     public static File getAudioDir() {
-        File audioDir = null;
-        if (isExternalStorageWritable()) {
-            audioDir = new File(Environment.getExternalStorageDirectory() + File.separator + DIR_AUDIO);
-            if (!audioDir.exists()) {
-                audioDir.mkdirs();
-            }
-        } else {
-            throw new RuntimeException("外部存储不可写");
+        File audioDir = new File(getAppDir(), "audio");
+        if (!audioDir.exists()) {
+            audioDir.mkdirs();
         }
         return audioDir;
     }

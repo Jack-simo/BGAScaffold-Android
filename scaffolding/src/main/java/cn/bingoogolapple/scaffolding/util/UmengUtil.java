@@ -18,10 +18,10 @@ public class UmengUtil {
      * 初始化友盟 SDK，在 Application 的 onCreate 方法里调用
      */
     public static void initSdk() {
-        MobclickAgent.setDebugMode(AppManager.isBuildDebug());
+        MobclickAgent.setDebugMode(AppManager.getInstance().isBuildDebug());
         // 禁止默认的页面统计方式，这样将不会再自动统计Activity
         MobclickAgent.openActivityDurationTrack(false);
-        MobclickAgent.setSessionContinueMillis(AppManager.isBuildDebug() ? 3000 : 30000);
+        MobclickAgent.setSessionContinueMillis(AppManager.getInstance().isBuildDebug() ? 3000 : 30000);
     }
 
     /**
