@@ -7,7 +7,8 @@ import cn.bingoogolapple.alarmclock.R;
 import cn.bingoogolapple.alarmclock.plans.PlansActivity;
 import cn.bingoogolapple.alarmclock.plans.PlansFragmentActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
-import cn.bingoogolapple.scaffolding.view.TitleBarActivity;
+import cn.bingoogolapple.scaffolding.view.MvcActivity;
+import cn.bingoogolapple.scaffolding.view.TopBarType;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -16,15 +17,20 @@ import pub.devrel.easypermissions.EasyPermissions;
  * 创建时间:16/11/5 下午5:53
  * 描述:
  */
-public class MainActivity extends TitleBarActivity {
+public class MainActivity extends MvcActivity {
     /**
      * 权限请求码
      */
     private static final int REQUEST_CODE_PERMISSIONS = 1;
 
     @Override
-    protected void initView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_main);
+    protected TopBarType getTopBarType() {
+        return TopBarType.TitleBar;
+    }
+
+    @Override
+    protected int getRootLayoutResID() {
+        return R.layout.activity_main;
     }
 
     @Override

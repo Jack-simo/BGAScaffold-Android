@@ -3,7 +3,10 @@ package cn.bingoogolapple.scaffolding.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.ViewStubCompat;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +22,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.widget.BGASwipeBackLayout;
+import cn.bingoogolapple.titlebar.BGATitlebar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -28,16 +32,20 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
+public abstract class MvcActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected MaterialDialog mLoadingDialog;
     protected BGAAlertController mMoreMenu;
+
+    protected BGATitlebar mTitleBar;
+    protected Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initSwipeBackFinish();
         super.onCreate(savedInstanceState);
 
+        initContentView();
         initView(savedInstanceState);
         setListener();
         processLogic(savedInstanceState);
@@ -87,6 +95,97 @@ public abstract class BaseActivity extends RxAppCompatActivity implements EasyPe
     public void onPanelSlide(View view, float v) {
     }
 
+    protected void initContentView() {
+        if (getTopBarType() == TopBarType.None) {
+            setContentView(getRootLayoutResID());
+        } else if (getTopBarType() == TopBarType.TitleBar) {
+            initTitleBarContentView();
+        } else if (getTopBarType() == TopBarType.Toolbar) {
+            initToolbarContentView();
+        }
+    }
+
+    protected void initToolbarContentView() {
+        super.setContentView(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_merge);
+
+        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        toolbarVs.setLayoutResource(R.layout.inc_toolbar);
+        toolbarVs.inflate();
+
+        mToolbar = getViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        viewStub.setLayoutResource(getRootLayoutResID());
+        viewStub.inflate();
+    }
+
+    protected void initTitleBarContentView() {
+        super.setContentView(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_merge);
+
+        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        toolbarVs.setLayoutResource(R.layout.inc_titlebar);
+        toolbarVs.inflate();
+
+        mTitleBar = getViewById(R.id.titleBar);
+        mTitleBar.setLeftDrawable(getResources().getDrawable(R.mipmap.back_normal));
+        mTitleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
+            @Override
+            public void onClickLeftCtv() {
+                onClickLeft();
+            }
+
+            @Override
+            public void onClickRightCtv() {
+                onClickRight();
+            }
+
+            @Override
+            public void onClickTitleCtv() {
+                onClickTitle();
+            }
+        });
+
+        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        viewStub.setLayoutResource(getRootLayoutResID());
+        viewStub.inflate();
+    }
+
+    /**
+     * 有 TitleBar 或者 Toolbar 时，是否为线性布局
+     *
+     * @return
+     */
+    protected boolean isLinear() {
+        return true;
+    }
+
+    protected TopBarType getTopBarType() {
+        return TopBarType.None;
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if (getTopBarType() == TopBarType.None) {
+            super.setTitle(title);
+        } else if (getTopBarType() == TopBarType.TitleBar) {
+            mTitleBar.setTitleText(title);
+        } else if (getTopBarType() == TopBarType.Toolbar) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    protected void onClickLeft() {
+        onBackPressed();
+    }
+
+    protected void onClickRight() {
+    }
+
+    protected void onClickTitle() {
+    }
+
     /**
      * 设置点击事件，并防止重复点击
      *
@@ -108,6 +207,15 @@ public abstract class BaseActivity extends RxAppCompatActivity implements EasyPe
     }
 
     /**
+     * 获取布局文件根视图
+     *
+     * @return
+     */
+    protected abstract
+    @LayoutRes
+    int getRootLayoutResID();
+
+    /**
      * 查找View
      *
      * @param id   控件的id
@@ -119,9 +227,10 @@ public abstract class BaseActivity extends RxAppCompatActivity implements EasyPe
     }
 
     /**
-     * 初始化布局以及View控件
+     * 初始化View控件
      */
-    protected abstract void initView(Bundle savedInstanceState);
+    protected void initView(Bundle savedInstanceState) {
+    }
 
     /**
      * 给View控件添加事件监听器

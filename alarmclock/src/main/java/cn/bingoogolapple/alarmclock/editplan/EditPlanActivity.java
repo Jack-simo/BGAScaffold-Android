@@ -19,7 +19,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.scaffolding.util.CalendarUtil;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.ToastUtil;
-import cn.bingoogolapple.scaffolding.view.BaseMvvmActivity;
+import cn.bingoogolapple.scaffolding.view.MvpBindingActivity;
 import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**
@@ -27,7 +27,7 @@ import cn.bingoogolapple.titlebar.BGATitlebar;
  * 创建时间:15/10/11 上午11:57
  * 描述:查看/添加/编辑界面
  */
-public class EditPlanActivity extends BaseMvvmActivity<ActivityEditPlanBinding, EditPlanPresenter> implements EditPlanPresenter.View, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class EditPlanActivity extends MvpBindingActivity<ActivityEditPlanBinding, EditPlanPresenter> implements EditPlanPresenter.View, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     public static final String EXTRA_PLAN = "EXTRA_PLAN";
     public static final int OPERATE_TYPE_ADD = 0;
     public static final int OPERATE_TYPE_VIEW = 1;

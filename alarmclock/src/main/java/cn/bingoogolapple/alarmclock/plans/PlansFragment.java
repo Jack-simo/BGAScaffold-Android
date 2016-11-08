@@ -18,7 +18,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListener;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
-import cn.bingoogolapple.scaffolding.view.BaseMvvmFragment;
+import cn.bingoogolapple.scaffolding.view.MvpBindingFragment;
 import cn.bingoogolapple.scaffolding.widget.Divider;
 import cn.bingoogolapple.titlebar.BGATitlebar;
 
@@ -29,7 +29,7 @@ import static android.app.Activity.RESULT_OK;
  * 创建时间:16/11/5 下午5:18
  * 描述:Fragment实现计划列表界面
  */
-public class PlansFragment extends BaseMvvmFragment<FragmentPlansBinding, PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
+public class PlansFragment extends MvpBindingFragment<FragmentPlansBinding, PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
     private static final int REQUEST_CODE_ADD = 1;
     private static final int REQUEST_CODE_VIEW = 2;
     private PlanAdapter mPlanAdapter;

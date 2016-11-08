@@ -15,7 +15,7 @@ public interface BaseView {
 
     void showMsg(String msg);
 
-    BaseActivity getBaseActivity();
+    MvcActivity getBaseActivity();
 
     LifecycleProvider getLifecycleProvider();
 }

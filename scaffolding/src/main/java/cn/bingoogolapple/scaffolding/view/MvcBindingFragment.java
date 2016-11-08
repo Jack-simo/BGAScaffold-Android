@@ -3,19 +3,16 @@ package cn.bingoogolapple.scaffolding.view;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import cn.bingoogolapple.scaffolding.presenter.BasePresenter;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseMvvmFragment<B extends ViewDataBinding, P extends BasePresenter> extends BaseMvpFragment<P> {
+public abstract class MvcBindingFragment<B extends ViewDataBinding> extends MvcFragment {
     protected B mBinding;
 
     @Override
@@ -33,22 +30,5 @@ public abstract class BaseMvvmFragment<B extends ViewDataBinding, P extends Base
             }
         }
         return mBinding.getRoot();
-    }
-
-    /**
-     * 获取布局文件根视图
-     *
-     * @return
-     */
-    protected abstract
-    @LayoutRes
-    int getRootLayoutResID();
-
-    @Override
-    protected void initView(Bundle savedInstanceState) {
-    }
-
-    @Override
-    protected void setContentView(@LayoutRes int layoutResID) {
     }
 }

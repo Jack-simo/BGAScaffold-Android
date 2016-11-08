@@ -12,7 +12,7 @@ import cn.bingoogolapple.scaffolding.util.ToastUtil;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class BaseMvpActivity<P extends BasePresenter> extends BaseActivity implements BaseView {
+public abstract class MvpActivity<P extends BasePresenter> extends MvcActivity implements BaseView {
     protected P mPresenter;
 
     @Override
@@ -26,7 +26,7 @@ public abstract class BaseMvpActivity<P extends BasePresenter> extends BaseActiv
     }
 
     @Override
-    public BaseActivity getBaseActivity() {
+    public MvcActivity getBaseActivity() {
         return this;
     }
 

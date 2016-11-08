@@ -18,7 +18,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertAction;
 import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListener;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
-import cn.bingoogolapple.scaffolding.view.BaseMvvmActivity;
+import cn.bingoogolapple.scaffolding.view.MvpBindingActivity;
 import cn.bingoogolapple.scaffolding.widget.Divider;
 import cn.bingoogolapple.titlebar.BGATitlebar;
 
@@ -27,7 +27,7 @@ import cn.bingoogolapple.titlebar.BGATitlebar;
  * 创建时间:15/10/11 上午11:55
  * 描述:计划列表界面
  */
-public class PlansActivity extends BaseMvvmActivity<ActivityPlansBinding, PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
+public class PlansActivity extends MvpBindingActivity<ActivityPlansBinding, PlansPresenter> implements PlansPresenter.View, BGAOnItemChildClickListener, BGAOnItemChildCheckedChangeListener {
     private static final int REQUEST_CODE_ADD = 1;
     private static final int REQUEST_CODE_VIEW = 2;
     private PlanAdapter mPlanAdapter;

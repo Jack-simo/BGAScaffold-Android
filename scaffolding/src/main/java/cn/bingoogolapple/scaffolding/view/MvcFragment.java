@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.ViewStubCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,11 @@ import com.trello.rxlifecycle.components.support.RxFragment;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.UmengUtil;
+import cn.bingoogolapple.titlebar.BGATitlebar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -28,25 +32,26 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class BaseFragment extends RxFragment implements EasyPermissions.PermissionCallbacks {
-    protected String TAG;
+public abstract class MvcFragment extends RxFragment implements EasyPermissions.PermissionCallbacks {
     protected View mContentView;
-    protected BaseActivity mActivity;
+    protected MvcActivity mActivity;
 
     protected boolean mIsLoadedData = false;
+
+    protected BGATitlebar mTitleBar;
+    protected Toolbar mToolbar;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        TAG = this.getClass().getSimpleName();
-        mActivity = (BaseActivity) getActivity();
+        mActivity = (MvcActivity) getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 避免多次从xml中加载布局文件
         if (mContentView == null) {
-            initView(savedInstanceState);
+            initContentView();
             setListener();
             processLogic(savedInstanceState);
         } else {
@@ -56,6 +61,83 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
             }
         }
         return mContentView;
+    }
+
+    protected void initContentView() {
+        if (getTopBarType() == TopBarType.None) {
+            mContentView = LayoutInflater.from(getActivity()).inflate(getRootLayoutResID(), null);
+        } else if (getTopBarType() == TopBarType.TitleBar) {
+            initTitleBarContentView();
+        } else if (getTopBarType() == TopBarType.Toolbar) {
+            initToolbarContentView();
+        }
+    }
+
+    protected void initTitleBarContentView() {
+        mContentView = LayoutInflater.from(getActivity()).inflate(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_frame, null);
+
+        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        toolbarVs.setLayoutResource(R.layout.inc_titlebar);
+        toolbarVs.inflate();
+
+        mTitleBar = getViewById(R.id.titleBar);
+        mTitleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
+            @Override
+            public void onClickLeftCtv() {
+                onClickLeft();
+            }
+
+            @Override
+            public void onClickRightCtv() {
+                onClickRight();
+            }
+
+            @Override
+            public void onClickTitleCtv() {
+                onClickTitle();
+            }
+        });
+
+        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        viewStub.setLayoutResource(getRootLayoutResID());
+        viewStub.inflate();
+    }
+
+    protected void onClickLeft() {
+    }
+
+    protected void onClickRight() {
+    }
+
+    protected void onClickTitle() {
+    }
+
+    protected void initToolbarContentView() {
+        mContentView = LayoutInflater.from(getActivity()).inflate(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_frame, null);
+
+        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        toolbarVs.setLayoutResource(R.layout.inc_toolbar);
+        toolbarVs.inflate();
+        mToolbar = getViewById(R.id.toolbar);
+
+        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        viewStub.setLayoutResource(getRootLayoutResID());
+        viewStub.inflate();
+
+        setHasOptionsMenu(true);
+    }
+
+    /**
+     * 有 TitleBar 或者 Toolbar 时，是否为线性布局
+     *
+     * @return
+     */
+    protected boolean isLinear() {
+        return true;
+    }
+
+    protected TopBarType getTopBarType() {
+        return TopBarType.None;
     }
 
     @Override
@@ -93,9 +175,19 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
     }
 
     /**
+     * 获取布局文件根视图
+     *
+     * @return
+     */
+    protected abstract
+    @LayoutRes
+    int getRootLayoutResID();
+
+    /**
      * 初始化View控件
      */
-    protected abstract void initView(Bundle savedInstanceState);
+    protected void initView(Bundle savedInstanceState) {
+    }
 
     /**
      * 给View控件添加事件监听器
@@ -113,15 +205,6 @@ public abstract class BaseFragment extends RxFragment implements EasyPermissions
      * 懒加载一次
      */
     protected void lazyLoadDataOnce() {
-    }
-
-    /**
-     * 设置布局资源id
-     *
-     * @param layoutResID
-     */
-    protected void setContentView(@LayoutRes int layoutResID) {
-        mContentView = LayoutInflater.from(getActivity()).inflate(layoutResID, null);
     }
 
     /**
