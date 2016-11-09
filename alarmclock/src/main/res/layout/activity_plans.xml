@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -8,9 +9,12 @@
     <LinearLayout
         style="@style/MatchMatch.Vertical">
 
-        <cn.bingoogolapple.titlebar.BGATitlebar
+        <cn.bingoogolapple.titlebar.BGATitleBar
             android:id="@+id/titleBar"
-            style="@style/TitleBar"/>
+            style="@style/TitleBar"
+            app:bgatitlebar_leftDrawable="@null"
+            app:bgatitlebar_rightDrawable="@mipmap/add_normal"
+            app:bgatitlebar_titleText="@string/app_name"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/plan_rv"

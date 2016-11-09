@@ -20,7 +20,6 @@ import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildCheckedChangeListen
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.scaffolding.view.MvpBindingFragment;
 import cn.bingoogolapple.scaffolding.widget.Divider;
-import cn.bingoogolapple.titlebar.BGATitlebar;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -44,12 +43,7 @@ public class PlansFragment extends MvpBindingFragment<FragmentPlansBinding, Plan
 
     @Override
     protected void setListener() {
-        mBinding.titleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
-            @Override
-            public void onClickRightCtv() {
-                forward(EditPlanActivity.newIntent(mActivity, null), REQUEST_CODE_ADD);
-            }
-        });
+        mBinding.titleBar.setDelegate(this);
         mPlanAdapter = new PlanAdapter(mBinding.planRv);
         mPlanAdapter.setOnItemChildClickListener(this);
         mPlanAdapter.setOnItemChildCheckedChangeListener(this);
@@ -66,15 +60,17 @@ public class PlansFragment extends MvpBindingFragment<FragmentPlansBinding, Plan
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBinding.titleBar.setTitleText(R.string.app_name);
-        mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.add_normal));
-
         mBinding.planRv.setLayoutManager(new LinearLayoutManager(mActivity));
         mBinding.planRv.addItemDecoration(Divider.newBitmapDivider());
         mBinding.planRv.setAdapter(mPlanAdapter);
 
         mPresenter = new PlansPresenterImpl(this);
         mPresenter.loadPlans();
+    }
+
+    @Override
+    public void onClickRightCtv() {
+        forward(EditPlanActivity.newIntent(mActivity, null), REQUEST_CODE_ADD);
     }
 
     @Override

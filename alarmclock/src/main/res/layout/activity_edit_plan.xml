@@ -9,7 +9,7 @@
         style="@style/MatchMatch.Vertical"
         android:background="@color/white">
 
-        <cn.bingoogolapple.titlebar.BGATitlebar
+        <cn.bingoogolapple.titlebar.BGATitleBar
             android:id="@+id/titleBar"
             style="@style/TitleBar"/>
 

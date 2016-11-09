@@ -22,7 +22,7 @@ import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.UmengUtil;
-import cn.bingoogolapple.titlebar.BGATitlebar;
+import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -32,13 +32,13 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class MvcFragment extends RxFragment implements EasyPermissions.PermissionCallbacks {
+public abstract class MvcFragment extends RxFragment implements EasyPermissions.PermissionCallbacks, BGATitleBar.Delegate {
     protected View mContentView;
     protected MvcActivity mActivity;
 
     protected boolean mIsLoadedData = false;
 
-    protected BGATitlebar mTitleBar;
+    protected BGATitleBar mTitleBar;
     protected Toolbar mToolbar;
 
     @Override
@@ -81,35 +81,23 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
         toolbarVs.inflate();
 
         mTitleBar = getViewById(R.id.titleBar);
-        mTitleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
-            @Override
-            public void onClickLeftCtv() {
-                onClickLeft();
-            }
-
-            @Override
-            public void onClickRightCtv() {
-                onClickRight();
-            }
-
-            @Override
-            public void onClickTitleCtv() {
-                onClickTitle();
-            }
-        });
+        mTitleBar.setDelegate(this);
 
         ViewStubCompat viewStub = getViewById(R.id.contentVs);
         viewStub.setLayoutResource(getRootLayoutResID());
         viewStub.inflate();
     }
 
-    protected void onClickLeft() {
+    @Override
+    public void onClickLeftCtv() {
     }
 
-    protected void onClickRight() {
+    @Override
+    public void onClickRightCtv() {
     }
 
-    protected void onClickTitle() {
+    @Override
+    public void onClickTitleCtv() {
     }
 
     protected void initToolbarContentView() {

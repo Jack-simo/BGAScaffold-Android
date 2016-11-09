@@ -20,7 +20,6 @@ import cn.bingoogolapple.scaffolding.util.CalendarUtil;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.ToastUtil;
 import cn.bingoogolapple.scaffolding.view.MvpBindingActivity;
-import cn.bingoogolapple.titlebar.BGATitlebar;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -62,27 +61,7 @@ public class EditPlanActivity extends MvpBindingActivity<ActivityEditPlanBinding
 
     @Override
     protected void setListener() {
-        mBinding.titleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
-            @Override
-            public void onClickLeftCtv() {
-                onBackPressed();
-            }
-
-            @Override
-            public void onClickRightCtv() {
-                switch (mOperateType) {
-                    case OPERATE_TYPE_ADD:
-                        addPlan();
-                        break;
-                    case OPERATE_TYPE_VIEW:
-                        showMoreMenu();
-                        break;
-                    case OPERATE_TYPE_EDIT:
-                        editPlan();
-                        break;
-                }
-            }
-        });
+        mBinding.titleBar.setDelegate(this);
         setOnClick(mBinding.timeTv, object -> {
             KeyboardUtil.closeKeyboard(this);
             showDatePickerDialog();
@@ -91,19 +70,33 @@ public class EditPlanActivity extends MvpBindingActivity<ActivityEditPlanBinding
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBinding.titleBar.setLeftDrawable(getResources().getDrawable(R.mipmap.back_normal));
         mUltimateCalendar = CalendarUtil.getZeroSecondCalendar();
 
         mPlan = getIntent().getParcelableExtra(EXTRA_PLAN);
         if (mPlan == null) {
             mOperateType = OPERATE_TYPE_ADD;
             mBinding.titleBar.setTitleText(R.string.add_plan);
-            mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.confirm_normal));
+            mBinding.titleBar.setRightDrawable(R.mipmap.confirm_normal);
         } else {
             changeToView();
         }
 
         mPresenter = new EditPlanPresenterImpl(this);
+    }
+
+    @Override
+    public void onClickRightCtv() {
+        switch (mOperateType) {
+            case OPERATE_TYPE_ADD:
+                addPlan();
+                break;
+            case OPERATE_TYPE_VIEW:
+                showMoreMenu();
+                break;
+            case OPERATE_TYPE_EDIT:
+                editPlan();
+                break;
+        }
     }
 
     private void showDatePickerDialog() {
@@ -140,8 +133,7 @@ public class EditPlanActivity extends MvpBindingActivity<ActivityEditPlanBinding
 
     private void changeToView() {
         mOperateType = OPERATE_TYPE_VIEW;
-        mBinding.titleBar.setTitleText(R.string.view_plan);
-        mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.more_normal));
+        mBinding.titleBar.setTitleText(R.string.view_plan).setRightDrawable(R.mipmap.more_normal);
         mBinding.timeTv.setEnabled(false);
         mBinding.contentEt.setEnabled(false);
 
@@ -157,9 +149,7 @@ public class EditPlanActivity extends MvpBindingActivity<ActivityEditPlanBinding
 
     private void changeToEdit() {
         mOperateType = OPERATE_TYPE_EDIT;
-        mBinding.titleBar.setTitleText(R.string.edit_plan);
-
-        mBinding.titleBar.setRightDrawable(getResources().getDrawable(R.mipmap.confirm_normal));
+        mBinding.titleBar.setTitleText(R.string.edit_plan).setRightDrawable(R.mipmap.confirm_normal);
         mBinding.timeTv.setEnabled(true);
         mBinding.contentEt.setEnabled(true);
         mBinding.contentEt.setSelection(mBinding.contentEt.getText().toString().length());

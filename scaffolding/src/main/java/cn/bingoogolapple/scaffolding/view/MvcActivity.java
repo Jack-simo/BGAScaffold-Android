@@ -22,7 +22,7 @@ import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.widget.BGASwipeBackLayout;
-import cn.bingoogolapple.titlebar.BGATitlebar;
+import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -32,12 +32,12 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class MvcActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, BGASwipeBackLayout.PanelSlideListener {
+public abstract class MvcActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, BGATitleBar.Delegate, BGASwipeBackLayout.PanelSlideListener {
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected MaterialDialog mLoadingDialog;
     protected BGAAlertController mMoreMenu;
 
-    protected BGATitlebar mTitleBar;
+    protected BGATitleBar mTitleBar;
     protected Toolbar mToolbar;
 
     @Override
@@ -129,23 +129,7 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
         toolbarVs.inflate();
 
         mTitleBar = getViewById(R.id.titleBar);
-        mTitleBar.setLeftDrawable(getResources().getDrawable(R.mipmap.back_normal));
-        mTitleBar.setDelegate(new BGATitlebar.BGATitlebarDelegate() {
-            @Override
-            public void onClickLeftCtv() {
-                onClickLeft();
-            }
-
-            @Override
-            public void onClickRightCtv() {
-                onClickRight();
-            }
-
-            @Override
-            public void onClickTitleCtv() {
-                onClickTitle();
-            }
-        });
+        mTitleBar.setDelegate(this).setLeftDrawable(R.mipmap.back_normal);
 
         ViewStubCompat viewStub = getViewById(R.id.contentVs);
         viewStub.setLayoutResource(getRootLayoutResID());
@@ -176,14 +160,17 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
         }
     }
 
-    protected void onClickLeft() {
+    @Override
+    public void onClickLeftCtv() {
         onBackPressed();
     }
 
-    protected void onClickRight() {
+    @Override
+    public void onClickRightCtv() {
     }
 
-    protected void onClickTitle() {
+    @Override
+    public void onClickTitleCtv() {
     }
 
     /**
