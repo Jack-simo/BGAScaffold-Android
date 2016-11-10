@@ -4,19 +4,14 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMConversationListener;
-import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.util.NetUtils;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityConversationBinding;
-import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.SPUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 import cn.bingoogolapple.scaffolding.widget.Divider;
@@ -28,33 +23,6 @@ import cn.bingoogolapple.scaffolding.widget.Divider;
  */
 public class ConversationActivity extends MvcBindingActivity<ActivityConversationBinding> implements EMConversationListener, ConversationAdapter.Delegate {
     private ConversationAdapter mConversationAdapter;
-
-    /**
-     * 连接状态监听器
-     */
-    private EMConnectionListener mEMConnectionListener = new EMConnectionListener() {
-        @Override
-        public void onConnected() {
-            // 这里是在子线程的
-            Logger.i("连接聊天服务器成功");
-        }
-
-        @Override
-        public void onDisconnected(int error) {
-            // 这里是在子线程的
-            if (error == EMError.USER_REMOVED) {
-                Logger.i("帐号已经被移除");
-            } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
-                Logger.i("帐号在其他设备登录");
-            } else {
-                if (NetUtils.hasNetwork(AppManager.getApp())) {
-                    Logger.i("连接不到聊天服务器");
-                } else {
-                    Logger.i("当前网络不可用，请检查网络设置");
-                }
-            }
-        }
-    };
 
     @Override
     protected int getRootLayoutResID() {
@@ -87,14 +55,12 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
     @Override
     protected void onResume() {
         super.onResume();
-        EMClient.getInstance().addConnectionListener(mEMConnectionListener);
         EMClient.getInstance().chatManager().addConversationListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        EMClient.getInstance().removeConnectionListener(mEMConnectionListener);
         EMClient.getInstance().chatManager().removeConversationListener(this);
     }
 
