@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout style="@style/MatchMatch.Vertical">
+
+        <cn.bingoogolapple.titlebar.BGATitleBar
+            android:id="@+id/titleBar"
+            style="@style/TitleBar"
+            app:bgatitlebar_rightText="新建会话"
+            app:bgatitlebar_titleText="会话列表"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_conversation_content"
+            style="@style/MatchMatch"
+            android:overScrollMode="never"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_conversation"/>
+    </LinearLayout>
+
+</layout>

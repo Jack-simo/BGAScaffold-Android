@@ -1,6 +1,7 @@
 package cn.bingoogolapple.scaffolding.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,6 +21,8 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import cn.bingoogolapple.scaffolding.R;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -291,6 +294,23 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public static boolean isInOtherProcess(Context context) {
+        String processName = null;
+        ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+        Iterator iterator = am.getRunningAppProcesses().iterator();
+        while (iterator.hasNext()) {
+            ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (iterator.next());
+            try {
+                if (info.pid == android.os.Process.myPid()) {
+                    processName = info.processName;
+                }
+            } catch (Exception e) {
+                Log.d("AppManager", "Error>> :" + e.toString());
+            }
+        }
+        return processName == null || !processName.equalsIgnoreCase(context.getPackageName());
     }
 
     public interface Delegate {

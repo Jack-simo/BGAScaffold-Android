@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        style="@style/MatchMatch.Vertical">
+
+        <cn.bingoogolapple.titlebar.BGATitleBar
+            android:id="@+id/titleBar"
+            style="@style/TitleBar"
+            app:bgatitlebar_titleText="张三"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_chat_content"
+            style="@style/MatchAuto"
+            android:overScrollMode="never"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_chat_me_text"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/layer_line_white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/size_level2"
+            android:paddingRight="@dimen/size_level2">
+
+            <EditText
+                android:id="@+id/et_chat_msg"
+                style="@style/AutoMatch"
+                android:singleLine="true"
+                android:textColor="@color/black_dark"
+                android:textColorHint="@color/black_light_trans"
+                android:textSize="@dimen/textSize_14"/>
+
+            <ImageView
+                android:id="@+id/iv_chat_send"
+                style="@style/WrapMatch"
+                android:clickable="true"
+                android:paddingLeft="@dimen/size_level2"
+                android:paddingRight="@dimen/size_level2"
+                android:src="@mipmap/plane_send"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

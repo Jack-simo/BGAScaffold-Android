@@ -19,8 +19,9 @@ public class CalendarUtil {
     private static final SimpleDateFormat sYearMonthDaySdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
     private static final SimpleDateFormat sYearMonthDayWeekSlashSdf = new SimpleDateFormat("yyyy-MM-dd E", Locale.CHINESE);
     private static final SimpleDateFormat sYearMonthDayWeekSdf = new SimpleDateFormat("yyyy/MM/dd E", Locale.CHINESE);
-    private static final SimpleDateFormat sChineseYearMonthDaySdf = new SimpleDateFormat("yyyy年MM月dd", Locale.CHINESE);
-    private static final SimpleDateFormat sChineseYearMonthDayWeekSdf = new SimpleDateFormat("yyyy年MM月dd E", Locale.CHINESE);
+    private static final SimpleDateFormat sChineseMonthDaySdf = new SimpleDateFormat("MM月dd日", Locale.CHINESE);
+    private static final SimpleDateFormat sChineseYearMonthDaySdf = new SimpleDateFormat("yyyy年MM月dd日", Locale.CHINESE);
+    private static final SimpleDateFormat sChineseYearMonthDayWeekSdf = new SimpleDateFormat("yyyy年MM月dd日 E", Locale.CHINESE);
     private static final long MINUTE_MILLISECONDS = 60 * 1000;
     private static final long HOUR_MILLISECONDS = 60 * MINUTE_MILLISECONDS;
     private static final long DAY_MILLISECONDS = 24 * HOUR_MILLISECONDS;
@@ -261,6 +262,14 @@ public class CalendarUtil {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static String formatChineseMonthDay(Date date) {
+        return sChineseMonthDaySdf.format(date);
+    }
+
+    public static String formatChineseMonthDay(long milliseconds) {
+        return formatChineseMonthDay(new Date(milliseconds));
     }
 
     public static String formatChineseYearMonthDay(Date date) {

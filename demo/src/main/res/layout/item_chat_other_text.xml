@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        style="@style/MatchWrap"
+        android:padding="@dimen/size_level1">
+
+        <ImageView
+            android:id="@+id/iv_item_chat_text_avatar"
+            style="@style/WrapWrap"
+            android:layout_marginLeft="@dimen/size_level3"
+            android:layout_marginRight="@dimen/size_level2"
+            android:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/tv_item_chat_text_msg"
+            style="@style/WrapWrap"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_item_chat_text_avatar"
+            android:background="@drawable/shape_red_radius"
+            android:maxWidth="200dp"
+            android:padding="@dimen/size_level2"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_14"
+            tools:text="其他人发送的消息"/>
+    </RelativeLayout>
+</layout>
