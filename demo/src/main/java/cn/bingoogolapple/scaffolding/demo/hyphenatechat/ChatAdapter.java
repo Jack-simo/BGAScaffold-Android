@@ -95,7 +95,7 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
         smoothScrollToBottom();
     }
 
-    private void smoothScrollToBottom() {
+    public void smoothScrollToBottom() {
         mRecyclerView.smoothScrollToPosition(getItemCount());
     }
 }

@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -54,15 +53,12 @@ public class KeyboardUtil {
      * @param editText
      */
     public static void openKeyboard(final Context context, final EditText editText) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                editText.requestFocus();
-                editText.setSelection(editText.getText().toString().length());
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
-            }
-        }, 300);
+        RxUtil.runInUIThreadDelay(300).subscribe(aVoid -> {
+            editText.requestFocus();
+            editText.setSelection(editText.getText().toString().length());
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+        });
     }
 
     /**

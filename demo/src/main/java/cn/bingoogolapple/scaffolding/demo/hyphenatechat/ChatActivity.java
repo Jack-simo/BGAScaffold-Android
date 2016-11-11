@@ -12,7 +12,6 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import cn.bingoogolapple.scaffolding.demo.Engine;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityChatBinding;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
@@ -46,12 +45,13 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
     protected void setListener() {
         mBinding.titleBar.setDelegate(this);
 
-        setOnClick(mBinding.ivChatSend, object -> sendTextMessage());
-
         mBinding.rvChatContent.setOnTouchListener((v, event) -> {
             KeyboardUtil.closeKeyboard(this);
             return false;
         });
+
+        setOnClick(mBinding.etChatMsg, object -> RxUtil.runInUIThreadDelay(300).subscribe(aVoid -> mChatAdapter.smoothScrollToBottom()));
+        setOnClick(mBinding.ivChatSend, object -> sendTextMessage());
     }
 
     @Override
@@ -120,7 +120,6 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
 
     @Override
     public void onMessageReceived(List<EMMessage> messages) {
-        Logger.i("收到消息 messages:" + Engine.toJsonString(messages));
         // 循环遍历当前收到的消息
         for (EMMessage message : messages) {
             if (StringUtil.isEqual(message.getFrom(), mToChatUsername)) {
@@ -135,21 +134,21 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
 
     @Override
     public void onCmdMessageReceived(List<EMMessage> messages) {
-        Logger.i("收到透传消息 messages:" + Engine.toJsonString(messages));
+        // 收到透传消息
     }
 
     @Override
     public void onMessageReadAckReceived(List<EMMessage> messages) {
-        Logger.i("收到已读回执 messages:" + Engine.toJsonString(messages));
+        // 收到已读回执
     }
 
     @Override
     public void onMessageDeliveryAckReceived(List<EMMessage> message) {
-        Logger.i("收到已送达回执 message:" + Engine.toJsonString(message));
+        // 收到已送达回执
     }
 
     @Override
     public void onMessageChanged(EMMessage message, Object change) {
-        Logger.i("消息状态变动 message:" + Engine.toJsonString(message) + " change:" + Engine.toJsonString(change));
+        // 消息状态变动
     }
 }

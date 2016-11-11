@@ -5,6 +5,7 @@ import android.content.Context;
 import com.trello.rxlifecycle.LifecycleProvider;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -61,6 +62,26 @@ public class RxUtil {
 
     public static <T> Observable<T> runInUIThread(T t) {
         return Observable.just(t).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public static <T> Observable<T> runInUIThreadDelay(T t, long delayMillis) {
+        return Observable.just(t).delaySubscription(delayMillis, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread());
+    }
+
+    public static <T> Observable<T> runInUIThreadDelay(T t, long delayMillis, LifecycleProvider lifecycleProvider) {
+        return Observable.just(t).delaySubscription(delayMillis, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).compose(lifecycleProvider.bindToLifecycle());
+    }
+
+    public static Observable<Void> runInUIThread() {
+        return runInUIThread(null);
+    }
+
+    public static Observable<Void> runInUIThreadDelay(long delayMillis) {
+        return runInUIThreadDelay(null, delayMillis);
+    }
+
+    public static Observable<Void> runInUIThreadDelay(long delayMillis, LifecycleProvider lifecycleProvider) {
+        return runInUIThreadDelay(null, delayMillis, lifecycleProvider);
     }
 
     public static <T> Observable<T> load(final Context context, final String cacheKey, final long expireTime, Observable<T> fromNetworkObservable, boolean forceRefresh) {
