@@ -15,6 +15,7 @@ import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.HttpRequestException;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxEvent;
+import cn.bingoogolapple.scaffolding.util.UmengUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -54,6 +55,9 @@ public class App extends Application {
         RxBus.toObservable(RxEvent.AppEnterBackgroundEvent.class).subscribe(appEnterBackgroundEvent -> {
             Logger.i("应用进入后台");
         });
+
+        // 初始化友盟 SDK
+        UmengUtil.initSdk();
 
         // 初始化环信 SDK
         EmUtil.initSdk();

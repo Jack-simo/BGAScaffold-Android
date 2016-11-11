@@ -1,7 +1,6 @@
 package cn.bingoogolapple.scaffolding.util;
 
 import android.os.Build;
-import android.os.Looper;
 
 import com.orhanobut.logger.Logger;
 
@@ -57,23 +56,13 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
 
     private void handleException(Thread thread, Throwable ex) {
-        new Thread() {
-            @Override
-            public void run() {
-                // 除了主线程，其他线程默认情况下是没有开启looper消息处理的
-                Looper.prepare();
-                ToastUtil.show("系统出现未知异常，即将退出...");
-                Looper.loop();
-            }
-        }.start();
+        ToastUtil.showSafe("系统出现未知异常，即将退出...");
 
         collectionException(ex);
 
         try {
             thread.sleep(2000);
             AppManager.getInstance().exit();
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
         }

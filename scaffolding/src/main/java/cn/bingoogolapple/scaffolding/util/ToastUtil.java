@@ -3,9 +3,6 @@ package cn.bingoogolapple.scaffolding.util;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/2 下午5:17
@@ -31,7 +28,7 @@ public class ToastUtil {
     }
 
     public static void showSafe(final CharSequence text) {
-        Observable.just(text).observeOn(AndroidSchedulers.mainThread()).subscribe(msg -> show(msg));
+        RxUtil.runInUIThread(text).subscribe(msg -> show(msg));
     }
 
     public static void showSafe(@StringRes int resId) {

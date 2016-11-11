@@ -59,6 +59,10 @@ public class RxUtil {
         }
     }
 
+    public static <T> Observable<T> runInUIThread(T t) {
+        return Observable.just(t).observeOn(AndroidSchedulers.mainThread());
+    }
+
     public static <T> Observable<T> load(final Context context, final String cacheKey, final long expireTime, Observable<T> fromNetworkObservable, boolean forceRefresh) {
         Observable<T> fromCacheObservable = Observable.create(new Observable.OnSubscribe<T>() {
             @Override

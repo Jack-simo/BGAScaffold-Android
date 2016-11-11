@@ -16,8 +16,8 @@ import cn.bingoogolapple.scaffolding.demo.Engine;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityChatBinding;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
+import cn.bingoogolapple.scaffolding.util.RxUtil;
 import cn.bingoogolapple.scaffolding.util.StringUtil;
-import cn.bingoogolapple.scaffolding.util.ToastUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 
 /**
@@ -46,13 +46,7 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
     protected void setListener() {
         mBinding.titleBar.setDelegate(this);
 
-        setOnClick(mBinding.ivChatSend, object -> {
-            String msg = mBinding.etChatMsg.getText().toString().trim();
-            if (StringUtil.isNotEmpty(msg)) {
-                mBinding.etChatMsg.setText("");
-                sendTextMessage(msg);
-            }
-        });
+        setOnClick(mBinding.ivChatSend, object -> sendTextMessage());
 
         mBinding.rvChatContent.setOnTouchListener((v, event) -> {
             KeyboardUtil.closeKeyboard(this);
@@ -65,7 +59,7 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
         mToChatUsername = getIntent().getStringExtra(EXTRA_TO_CHAT_USERNAME);
         mBinding.titleBar.setTitleText(mToChatUsername);
 
-        mChatAdapter = new ChatAdapter(mToChatUsername);
+        mChatAdapter = new ChatAdapter(mBinding.rvChatContent, mToChatUsername);
         mBinding.rvChatContent.setAdapter(mChatAdapter);
         mChatAdapter.refresh();
     }
@@ -87,18 +81,26 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
         return false;
     }
 
-    @Override
-    public void onClickRightCtv() {
-        ToastUtil.show("打电话");
-    }
+    /**
+     * 发送文本消息
+     */
+    public void sendTextMessage() {
+        String msg = mBinding.etChatMsg.getText().toString().trim();
+        if (StringUtil.isEmpty(msg)) {
+            return;
+        }
 
-    public void sendTextMessage(String content) {
-        EMMessage message = EMMessage.createTxtSendMessage(content, mToChatUsername);
+        mBinding.etChatMsg.setText("");
+
+        EMMessage message = EMMessage.createTxtSendMessage(msg, mToChatUsername);
         message.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
-                Logger.i("消息发送成功 " + content);
-                mChatAdapter.refresh();
+                RxUtil.runInUIThread(message).subscribe(emMessage -> {
+                    Logger.i("消息发送成功 " + msg);
+
+                    mChatAdapter.refresh();
+                });
             }
 
             @Override
@@ -113,13 +115,22 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
             }
         });
         mChatAdapter.addMoreItem(message);
-        mBinding.rvChatContent.smoothScrollToPosition(mChatAdapter.getItemCount());
         EMClient.getInstance().chatManager().sendMessage(message);
     }
 
     @Override
     public void onMessageReceived(List<EMMessage> messages) {
         Logger.i("收到消息 messages:" + Engine.toJsonString(messages));
+        // 循环遍历当前收到的消息
+        for (EMMessage message : messages) {
+            if (StringUtil.isEqual(message.getFrom(), mToChatUsername)) {
+                RxUtil.runInUIThread(message).subscribe(emMessage -> {
+                    mChatAdapter.addMoreItem(emMessage);
+                });
+            } else {
+                Logger.i("收到其他人发来的消息");
+            }
+        }
     }
 
     @Override

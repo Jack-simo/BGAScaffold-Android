@@ -12,7 +12,6 @@ import java.util.List;
 
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityConversationBinding;
-import cn.bingoogolapple.scaffolding.util.SPUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 import cn.bingoogolapple.scaffolding.widget.Divider;
 
@@ -70,14 +69,13 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
         for (int i = 1; i < 6; i++) {
             usernameList.add("test" + i);
         }
-        usernameList.remove(SPUtil.getString("chatUsername"));
+        usernameList.remove(EMClient.getInstance().getCurrentUser());
         new MaterialDialog.Builder(this)
                 .title("请选择环信账号")
                 .items(usernameList)
                 .itemsCallback((dialog, itemView, position, text) -> {
                     goToChat(text.toString());
                 })
-                .cancelable(false)
                 .show();
     }
 

@@ -5,6 +5,7 @@ import android.util.Pair;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMOptions;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,8 @@ public class EmUtil {
 
         EMClient.getInstance().init(AppManager.getApp(), options);
         EMClient.getInstance().setDebugMode(BuildConfig.BUILD_TYPE.equalsIgnoreCase("debug"));
+
+        Logger.i("初始化了环信 SDK");
     }
 
     /**

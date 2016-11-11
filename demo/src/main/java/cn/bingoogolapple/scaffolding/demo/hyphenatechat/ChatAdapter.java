@@ -1,6 +1,7 @@
 package cn.bingoogolapple.scaffolding.demo.hyphenatechat;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
@@ -26,11 +27,13 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
     private static final int ITEM_TYPE_ME = 1;
     private static final int ITEM_TYPE_OTHER = 2;
 
+    private RecyclerView mRecyclerView;
     private List<EMMessage> mData;
     private String mToChatUsername;
     private EMConversation mEMConversation;
 
-    public ChatAdapter(String toChatUsername) {
+    public ChatAdapter(RecyclerView recyclerView, String toChatUsername) {
+        mRecyclerView = recyclerView;
         mData = new ArrayList<>();
         mToChatUsername = toChatUsername;
         mEMConversation = EMClient.getInstance().chatManager().getConversation(mToChatUsername, null, true);
@@ -88,6 +91,8 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
             mData.clear();
         }
         notifyDataSetChanged();
+
+        smoothScrollToBottom();
     }
 
     public void refresh() {
@@ -95,7 +100,17 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
     }
 
     public void addMoreItem(EMMessage message) {
+        if (StringUtil.isEqual(message.getFrom(), mToChatUsername)) {
+            mEMConversation.markMessageAsRead(message.getMsgId());
+        }
+
         mData.add(mData.size(), message);
         notifyItemInserted(mData.size() - 1);
+
+        smoothScrollToBottom();
+    }
+
+    private void smoothScrollToBottom() {
+        mRecyclerView.smoothScrollToPosition(getItemCount());
     }
 }

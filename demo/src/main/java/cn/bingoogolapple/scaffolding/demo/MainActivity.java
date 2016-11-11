@@ -12,7 +12,6 @@ import java.util.List;
 
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.ConversationActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
-import cn.bingoogolapple.scaffolding.util.SPUtil;
 import cn.bingoogolapple.scaffolding.util.ToastUtil;
 import cn.bingoogolapple.scaffolding.view.MvcActivity;
 import cn.bingoogolapple.scaffolding.view.TopBarType;
@@ -96,7 +95,6 @@ public class MainActivity extends MvcActivity {
                 .itemsCallback((dialog, itemView, position, text) -> {
                     emLogin(text.toString());
                 })
-                .cancelable(false)
                 .show();
     }
 
@@ -113,7 +111,6 @@ public class MainActivity extends MvcActivity {
 
                 EMClient.getInstance().chatManager().loadAllConversations();
 
-                SPUtil.putString("chatUsername", chatUsername);
                 forward(ConversationActivity.class);
             }
 
