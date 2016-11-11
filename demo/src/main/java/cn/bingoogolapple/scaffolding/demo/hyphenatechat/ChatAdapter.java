@@ -1,6 +1,5 @@
 package cn.bingoogolapple.scaffolding.demo.hyphenatechat;
 
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 
 import com.hyphenate.chat.EMClient;
@@ -24,9 +23,6 @@ import cn.bingoogolapple.scaffolding.util.StringUtil;
  * 描述:
  */
 public class ChatAdapter extends BGABindingRecyclerViewAdapter {
-    private static final int ITEM_TYPE_ME = 1;
-    private static final int ITEM_TYPE_OTHER = 2;
-
     private RecyclerView mRecyclerView;
     private List<EMMessage> mData;
     private String mToChatUsername;
@@ -46,19 +42,8 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
     }
 
     @Override
-    protected
-    @LayoutRes
-    int getItemRootLayoutResID(int viewType) {
-        if (viewType == ITEM_TYPE_OTHER) {
-            return R.layout.item_chat_other_text;
-        } else {
-            return R.layout.item_chat_me_text;
-        }
-    }
-
-    @Override
     public void onBindViewHolder(BGABindingViewHolder holder, int position) {
-        if (getItemViewType(position) == ITEM_TYPE_OTHER) {
+        if (getItemViewType(position) == R.layout.item_chat_other_text) {
             refreshOther((ItemChatOtherTextBinding) holder.getBinding(), mData.get(position));
         } else {
             refreshMe((ItemChatMeTextBinding) holder.getBinding(), mData.get(position));
@@ -78,9 +63,9 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
     @Override
     public int getItemViewType(int position) {
         if (StringUtil.isEqual(mData.get(position).getTo(), mToChatUsername)) {
-            return ITEM_TYPE_ME;
+            return R.layout.item_chat_me_text;
         } else {
-            return ITEM_TYPE_OTHER;
+            return R.layout.item_chat_other_text;
         }
     }
 

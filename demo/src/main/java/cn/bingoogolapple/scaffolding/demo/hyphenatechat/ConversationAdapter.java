@@ -42,7 +42,7 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter {
     }
 
     @Override
-    protected int getItemRootLayoutResID(int viewType) {
+    public int getItemViewType(int position) {
         return R.layout.item_conversation;
     }
 

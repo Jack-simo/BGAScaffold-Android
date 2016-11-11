@@ -28,9 +28,7 @@ public class UmengUtil {
      * 如果开发者调用Process.kill或者System.exit之类的方法杀死进程，请务必在此之前调用MobclickAgent.onKillProcess(Context context)方法，用来保存统计数据
      */
     public static void onKillProcess() {
-        if (AppManager.getApp() != null) {
-            MobclickAgent.onKillProcess(AppManager.getApp());
-        }
+        MobclickAgent.onKillProcess(AppManager.getApp());
     }
 
     // ======================== 页面路径统计 START ========================

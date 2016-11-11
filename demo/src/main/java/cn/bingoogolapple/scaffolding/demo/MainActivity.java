@@ -62,7 +62,7 @@ public class MainActivity extends MvcActivity {
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this, "缺少读写外部存储权限时「" + AppManager.getInstance().getAppName() + "」将无法正常工作,打开设置界面修改权限")
+            new AppSettingsDialog.Builder(this, "缺少权限时「" + AppManager.getInstance().getAppName() + "」将无法正常工作,打开设置界面修改权限")
                     .setTitle("权限请求")
                     .setPositiveButton("设置")
                     .setNegativeButton("取消", (dialog, which) -> finish())
@@ -74,9 +74,9 @@ public class MainActivity extends MvcActivity {
 
     @AfterPermissionGranted(REQUEST_CODE_PERMISSIONS)
     public void requestPermissions() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!EasyPermissions.hasPermissions(this, perms)) {
-            EasyPermissions.requestPermissions(this, "使用「" + AppManager.getInstance().getAppName() + "」需要授权读写外部存储权限!", REQUEST_CODE_PERMISSIONS, perms);
+            EasyPermissions.requestPermissions(this, "使用「" + AppManager.getInstance().getAppName() + "」需要授权权限!", REQUEST_CODE_PERMISSIONS, perms);
         }
     }
 
