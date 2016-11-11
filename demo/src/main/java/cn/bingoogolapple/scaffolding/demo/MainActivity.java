@@ -91,7 +91,8 @@ public class MainActivity extends MvcActivity {
     private void showChooseEmAccountDialog() {
         new MaterialDialog.Builder(this)
                 .title("请选择环信账号")
-                .items("test1", "test2", "test3", "test4", "test5")
+//                .items("test1", "test2", "test3", "test4", "test5")
+                .items("11111", "1111")
                 .itemsCallback((dialog, itemView, position, text) -> {
                     emLogin(text.toString());
                 })
@@ -104,7 +105,8 @@ public class MainActivity extends MvcActivity {
      * @param chatUsername 环信用户名
      */
     private void emLogin(String chatUsername) {
-        EMClient.getInstance().login(chatUsername, "111111", new EMCallBack() {
+//        EMClient.getInstance().login(chatUsername, "111111", new EMCallBack() {
+        EMClient.getInstance().login(chatUsername, chatUsername, new EMCallBack() {
             @Override
             public void onSuccess() {
                 Logger.i("登录聊天服务器成功 chatUsername:" + chatUsername);

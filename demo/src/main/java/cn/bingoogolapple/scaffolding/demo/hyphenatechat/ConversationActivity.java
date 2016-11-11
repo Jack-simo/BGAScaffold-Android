@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hyphenate.EMConversationListener;
 import com.hyphenate.chat.EMClient;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityConversationBinding;
+import cn.bingoogolapple.scaffolding.util.RxUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 import cn.bingoogolapple.scaffolding.widget.Divider;
 
@@ -66,9 +68,11 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
     @Override
     public void onClickRightCtv() {
         List<String> usernameList = new ArrayList<>();
-        for (int i = 1; i < 6; i++) {
-            usernameList.add("test" + i);
-        }
+        usernameList.add("11111");
+        usernameList.add("1111");
+//        for (int i = 1; i < 6; i++) {
+//            usernameList.add("test" + i);
+//        }
         usernameList.remove(EMClient.getInstance().getCurrentUser());
         new MaterialDialog.Builder(this)
                 .title("请选择环信账号")
@@ -86,6 +90,9 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
 
     @Override
     public void onCoversationUpdate() {
-        mConversationAdapter.refresh();
+        RxUtil.runInUIThread(new Object()).subscribe(object -> {
+            Logger.i("会话发生了改变");
+            mConversationAdapter.refresh();
+        });
     }
 }
