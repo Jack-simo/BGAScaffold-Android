@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.hyphenate.EMCallBack;
+import com.hyphenate.EMConnectionListener;
+import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
@@ -15,6 +17,7 @@ import java.util.List;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityChatBinding;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
+import cn.bingoogolapple.scaffolding.util.NetUtil;
 import cn.bingoogolapple.scaffolding.util.RxUtil;
 import cn.bingoogolapple.scaffolding.util.StringUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
@@ -24,7 +27,7 @@ import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
  * 创建时间:16/11/10 下午10:07
  * 描述:聊天界面
  */
-public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implements EMMessageListener {
+public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implements EMMessageListener, EMConnectionListener {
     private static final String EXTRA_TO_CHAT_USERNAME = "EXTRA_TO_CHAT_USERNAME";
 
     private String mToChatUsername;
@@ -67,12 +70,14 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
     @Override
     protected void onResume() {
         super.onResume();
+        EMClient.getInstance().addConnectionListener(this);
         EMClient.getInstance().chatManager().addMessageListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        EMClient.getInstance().removeConnectionListener(this);
         EMClient.getInstance().chatManager().removeMessageListener(this);
     }
 
@@ -120,7 +125,7 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
 
     @Override
     public void onMessageReceived(List<EMMessage> messages) {
-        // 循环遍历当前收到的消息
+        // 这里是在子线程的，循环遍历当前收到的消息。如果网络断开期间有新的消息，网络重连时也会走该方法
         for (EMMessage message : messages) {
             if (StringUtil.isEqual(message.getFrom(), mToChatUsername)) {
                 RxUtil.runInUIThread(message).subscribe(emMessage -> {
@@ -134,21 +139,43 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
 
     @Override
     public void onCmdMessageReceived(List<EMMessage> messages) {
-        // 收到透传消息
+        // 这里是在子线程的，收到透传消息
     }
 
     @Override
     public void onMessageReadAckReceived(List<EMMessage> messages) {
-        // 收到已读回执
+        // 这里是在子线程的，收到已读回执
     }
 
     @Override
     public void onMessageDeliveryAckReceived(List<EMMessage> message) {
-        // 收到已送达回执
+        // 这里是在子线程的，收到已送达回执
     }
 
     @Override
     public void onMessageChanged(EMMessage message, Object change) {
-        // 消息状态变动
+        // 这里是在子线程的，消息状态变动
+    }
+
+    @Override
+    public void onConnected() {
+        // 这里是在子线程的
+        Logger.i("连接聊天服务器成功");
+    }
+
+    @Override
+    public void onDisconnected(int error) {
+        // 这里是在子线程的
+        if (error == EMError.USER_REMOVED) {
+            Logger.i("帐号已经被移除");
+        } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+            Logger.i("帐号在其他设备登录");
+        } else {
+            if (NetUtil.isNetworkAvailable()) {
+                Logger.i("连接不到聊天服务器");
+            } else {
+                Logger.i("当前网络不可用，请检查网络设置");
+            }
+        }
     }
 }

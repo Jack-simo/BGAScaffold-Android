@@ -6,8 +6,8 @@
         style="@style/MatchWrap"
         android:padding="@dimen/size_level1">
 
-        <ImageView
-            android:id="@+id/iv_item_chat_text_avatar"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_item_chat_text_avatar"
             style="@style/WrapWrap"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/size_level2"
@@ -18,7 +18,7 @@
             android:id="@+id/tv_item_chat_text_msg"
             style="@style/WrapWrap"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/iv_item_chat_text_avatar"
+            android:layout_toLeftOf="@id/civ_item_chat_text_avatar"
             android:background="@drawable/shape_primary_radius"
             android:maxWidth="200dp"
             android:padding="@dimen/size_level2"
