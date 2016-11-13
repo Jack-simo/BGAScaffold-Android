@@ -3,11 +3,18 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="eventHandler"
+            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.ConversationActivity"/>
+    </data>
+
     <LinearLayout style="@style/MatchMatch.Vertical">
 
         <cn.bingoogolapple.titlebar.BGATitleBar
-            android:id="@+id/titleBar"
             style="@style/TitleBar"
+            app:bgatitlebar_delegate="@{eventHandler}"
             app:bgatitlebar_rightText="新建会话"
             app:bgatitlebar_titleText="会话列表"/>
 
@@ -16,6 +23,8 @@
             style="@style/MatchMatch"
             android:overScrollMode="never"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:rv_isShapeDivider="@{true}"
+            app:rv_onScrollStateChanged="@{eventHandler::onScrollStateChanged}"
             tools:listitem="@layout/item_conversation"/>
     </LinearLayout>
 

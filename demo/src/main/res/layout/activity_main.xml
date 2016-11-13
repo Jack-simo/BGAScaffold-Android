@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="presenter"
-            type="cn.bingoogolapple.scaffolding.demo.MainActivity.Presenter"/>
+            name="eventHandler"
+            type="cn.bingoogolapple.scaffolding.demo.MainActivity"/>
     </data>
 
     <LinearLayout
@@ -17,13 +17,13 @@
         <Button
             style="@style/DemoBtn"
             android:text="登陆环信"
-            app:onNoDoubleClick="@{() -> presenter.showChooseEmAccountDialog()}"/>
+            app:onNoDoubleClick="@{() -> eventHandler.showChooseEmAccountDialog()}"/>
 
         <Button
             android:id="@+id/tv_main_em_logout"
             style="@style/DemoBtn"
             android:text="退出环信"
-            app:onNoDoubleClick="@{() -> presenter.emLogout()}"/>
+            app:onNoDoubleClick="@{() -> eventHandler.emLogout()}"/>
 
     </LinearLayout>
 </layout>

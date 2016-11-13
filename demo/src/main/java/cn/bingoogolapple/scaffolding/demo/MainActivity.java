@@ -41,7 +41,7 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBinding.setPresenter(new Presenter());
+        mBinding.setEventHandler(this);
 
         requestPermissions();
     }
@@ -72,6 +72,40 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
         AppManager.getInstance().exitWithDoubleClick();
     }
 
+    /**
+     * 显示选择环信账号对话框
+     */
+    public void showChooseEmAccountDialog() {
+        new MaterialDialog.Builder(MainActivity.this)
+                .title("请选择环信账号")
+                .items("test1", "test2", "test3", "test4", "test5")
+                .itemsCallback((dialog, itemView, position, text) -> {
+                    emLogin(text.toString());
+                })
+                .show();
+    }
+
+    /**
+     * 退出环信聊天服务器
+     */
+    public void emLogout() {
+        EMClient.getInstance().logout(false, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ToastUtil.showSafe("退出聊天服务器成功");
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+                Logger.i("退出聊天服务器进度 progress:" + progress + " status:" + status);
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                ToastUtil.showSafe("退出聊天服务器失败 code:" + code + " message:" + message);
+            }
+        });
+    }
 
     /**
      * 登陆环信聊天服务器
@@ -99,42 +133,5 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
                 ToastUtil.showSafe("登录聊天服务器失败 code:" + code + " message:" + message);
             }
         });
-    }
-
-    public class Presenter {
-        /**
-         * 显示选择环信账号对话框
-         */
-        public void showChooseEmAccountDialog() {
-            new MaterialDialog.Builder(MainActivity.this)
-                    .title("请选择环信账号")
-                    .items("test1", "test2", "test3", "test4", "test5")
-                    .itemsCallback((dialog, itemView, position, text) -> {
-                        emLogin(text.toString());
-                    })
-                    .show();
-        }
-
-        /**
-         * 退出环信聊天服务器
-         */
-        public void emLogout() {
-            EMClient.getInstance().logout(false, new EMCallBack() {
-                @Override
-                public void onSuccess() {
-                    ToastUtil.showSafe("退出聊天服务器成功");
-                }
-
-                @Override
-                public void onProgress(int progress, String status) {
-                    Logger.i("退出聊天服务器进度 progress:" + progress + " status:" + status);
-                }
-
-                @Override
-                public void onError(int code, String message) {
-                    ToastUtil.showSafe("退出聊天服务器失败 code:" + code + " message:" + message);
-                }
-            });
-        }
     }
 }

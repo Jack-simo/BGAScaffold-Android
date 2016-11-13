@@ -20,7 +20,6 @@ import cn.bingoogolapple.scaffolding.demo.databinding.ActivityConversationBindin
 import cn.bingoogolapple.scaffolding.util.NetUtil;
 import cn.bingoogolapple.scaffolding.util.RxUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
-import cn.bingoogolapple.scaffolding.widget.Divider;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -36,21 +35,8 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
     }
 
     @Override
-    protected void setListener() {
-        mBinding.titleBar.setDelegate(this);
-        mBinding.rvConversationContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (RecyclerView.SCROLL_STATE_DRAGGING == newState) {
-                    mConversationAdapter.closeOpenedSwipeItemLayoutWithAnim();
-                }
-            }
-        });
-    }
-
-    @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBinding.rvConversationContent.addItemDecoration(Divider.newShapeDivider());
+        mBinding.setEventHandler(this);
 
         mConversationAdapter = new ConversationAdapter(this);
         mBinding.rvConversationContent.setAdapter(mConversationAdapter);
@@ -72,6 +58,12 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
         EMClient.getInstance().removeConnectionListener(this);
         EMClient.getInstance().chatManager().removeConversationListener(this);
         EMClient.getInstance().chatManager().removeMessageListener(this);
+    }
+
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        if (RecyclerView.SCROLL_STATE_DRAGGING == newState) {
+            mConversationAdapter.closeOpenedSwipeItemLayoutWithAnim();
+        }
     }
 
     @Override

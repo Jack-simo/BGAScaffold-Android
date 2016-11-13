@@ -45,22 +45,11 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
     }
 
     @Override
-    protected void setListener() {
-        mBinding.titleBar.setDelegate(this);
-
-        mBinding.rvChatContent.setOnTouchListener((v, event) -> {
-            KeyboardUtil.closeKeyboard(this);
-            return false;
-        });
-
-        setOnClick(mBinding.etChatMsg, object -> RxUtil.runInUIThreadDelay(300).subscribe(aVoid -> mChatAdapter.smoothScrollToBottom()));
-        setOnClick(mBinding.ivChatSend, object -> sendTextMessage());
-    }
-
-    @Override
     protected void processLogic(Bundle savedInstanceState) {
         mToChatUsername = getIntent().getStringExtra(EXTRA_TO_CHAT_USERNAME);
-        mBinding.titleBar.setTitleText(mToChatUsername);
+
+        mBinding.setEventHandler(this);
+        mBinding.setToChatUsername(mToChatUsername);
 
         mChatAdapter = new ChatAdapter(mBinding.rvChatContent, mToChatUsername);
         mBinding.rvChatContent.setAdapter(mChatAdapter);
@@ -84,6 +73,21 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
     @Override
     protected boolean isAutoCloseKeyboard() {
         return false;
+    }
+
+    /**
+     * 关闭键盘
+     */
+    public boolean closeKeyboard() {
+        KeyboardUtil.closeKeyboard(this);
+        return false;
+    }
+
+    /**
+     * 滚动到列表底部
+     */
+    public void smoothScrollToBottom() {
+        RxUtil.runInUIThreadDelay(300).subscribe(aVoid -> mChatAdapter.smoothScrollToBottom());
     }
 
     /**

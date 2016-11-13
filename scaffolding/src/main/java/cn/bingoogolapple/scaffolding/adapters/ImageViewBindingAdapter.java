@@ -1,20 +1,17 @@
-package cn.bingoogolapple.scaffolding.adapter;
+package cn.bingoogolapple.scaffolding.adapters;
 
 import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
-import cn.bingoogolapple.scaffolding.util.BGAOnNoDoubleClickListener;
-
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:16/11/13 上午10:21
+ * 创建时间:16/11/13 下午3:54
  * 描述:
  */
-public class BGABindingAdapter {
+public class ImageViewBindingAdapter {
 
     private static String getPath(String path) {
         if (path == null) {
@@ -32,13 +29,4 @@ public class BGABindingAdapter {
         Glide.with(imageView.getContext()).load(getPath(path)).placeholder(placeholder).into(imageView);
     }
 
-    @BindingAdapter({"onNoDoubleClick"})
-    public static void onNoDoubleClick(View view, View.OnClickListener onClickListener) {
-        view.setOnClickListener(new BGAOnNoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                onClickListener.onClick(v);
-            }
-        });
-    }
 }
