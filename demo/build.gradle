@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 apply plugin: 'com.antfortune.freeline'
 
 def releaseTime() {
@@ -19,6 +20,10 @@ android {
 
         // Enabling multidex support.
         multiDexEnabled true
+
+        ndk {
+            abiFilters "armeabi"
+        }
     }
 
     dexOptions {

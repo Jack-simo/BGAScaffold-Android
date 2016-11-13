@@ -10,22 +10,21 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
+import cn.bingoogolapple.scaffolding.demo.databinding.ActivityMainBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.ConversationActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.ToastUtil;
-import cn.bingoogolapple.scaffolding.view.MvcActivity;
-import cn.bingoogolapple.scaffolding.view.TopBarType;
+import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/11/5 下午5:53
  * 描述:
  */
-public class MainActivity extends MvcActivity {
+public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
     /**
      * 权限请求码
      */
@@ -36,25 +35,13 @@ public class MainActivity extends MvcActivity {
     private static final int REQUEST_CODE_SETTINGS_SCREEN = 1;
 
     @Override
-    protected TopBarType getTopBarType() {
-        return TopBarType.TitleBar;
-    }
-
-    @Override
     protected int getRootLayoutResID() {
         return R.layout.activity_main;
     }
 
     @Override
-    protected void setListener() {
-        setOnClick(R.id.tv_main_em_login, object -> showChooseEmAccountDialog());
-        setOnClick(R.id.tv_main_em_logout, object -> emLogout());
-    }
-
-    @Override
     protected void processLogic(Bundle savedInstanceState) {
-        setTitle(R.string.app_name);
-        mTitleBar.hiddenLeftCtv();
+        mBinding.setPresenter(new Presenter());
 
         requestPermissions();
     }
@@ -85,18 +72,6 @@ public class MainActivity extends MvcActivity {
         AppManager.getInstance().exitWithDoubleClick();
     }
 
-    /**
-     * 显示选择环信账号对话框
-     */
-    private void showChooseEmAccountDialog() {
-        new MaterialDialog.Builder(this)
-                .title("请选择环信账号")
-                .items("test1", "test2", "test3", "test4", "test5")
-                .itemsCallback((dialog, itemView, position, text) -> {
-                    emLogin(text.toString());
-                })
-                .show();
-    }
 
     /**
      * 登陆环信聊天服务器
@@ -126,25 +101,40 @@ public class MainActivity extends MvcActivity {
         });
     }
 
-    /**
-     * 退出环信聊天服务器
-     */
-    private void emLogout() {
-        EMClient.getInstance().logout(false, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                ToastUtil.showSafe("退出聊天服务器成功");
-            }
+    public class Presenter {
+        /**
+         * 显示选择环信账号对话框
+         */
+        public void showChooseEmAccountDialog() {
+            new MaterialDialog.Builder(MainActivity.this)
+                    .title("请选择环信账号")
+                    .items("test1", "test2", "test3", "test4", "test5")
+                    .itemsCallback((dialog, itemView, position, text) -> {
+                        emLogin(text.toString());
+                    })
+                    .show();
+        }
 
-            @Override
-            public void onProgress(int progress, String status) {
-                Logger.i("退出聊天服务器进度 progress:" + progress + " status:" + status);
-            }
+        /**
+         * 退出环信聊天服务器
+         */
+        public void emLogout() {
+            EMClient.getInstance().logout(false, new EMCallBack() {
+                @Override
+                public void onSuccess() {
+                    ToastUtil.showSafe("退出聊天服务器成功");
+                }
 
-            @Override
-            public void onError(int code, String message) {
-                ToastUtil.showSafe("退出聊天服务器失败 code:" + code + " message:" + message);
-            }
-        });
+                @Override
+                public void onProgress(int progress, String status) {
+                    Logger.i("退出聊天服务器进度 progress:" + progress + " status:" + status);
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    ToastUtil.showSafe("退出聊天服务器失败 code:" + code + " message:" + message);
+                }
+            });
+        }
     }
 }

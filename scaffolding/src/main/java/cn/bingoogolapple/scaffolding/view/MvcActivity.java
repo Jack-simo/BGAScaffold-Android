@@ -129,7 +129,6 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
         toolbarVs.inflate();
 
         mTitleBar = getViewById(R.id.titleBar);
-        mTitleBar.setDelegate(this).setLeftDrawable(R.mipmap.back_normal);
 
         ViewStubCompat viewStub = getViewById(R.id.contentVs);
         viewStub.setLayoutResource(getRootLayoutResID());
@@ -222,7 +221,8 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
     /**
      * 给View控件添加事件监听器
      */
-    protected abstract void setListener();
+    protected void setListener() {
+    }
 
     /**
      * 处理业务逻辑，状态恢复等操作

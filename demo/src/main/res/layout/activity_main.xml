@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              style="@style/MatchMatch.Vertical"
-              android:background="@color/white"
-              android:gravity="center">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Button
-        android:id="@+id/tv_main_em_login"
-        style="@style/DemoBtn"
-        android:text="登陆环信"/>
+    <data>
 
-    <Button
-        android:id="@+id/tv_main_em_logout"
-        style="@style/DemoBtn"
-        android:text="退出环信"/>
+        <variable
+            name="presenter"
+            type="cn.bingoogolapple.scaffolding.demo.MainActivity.Presenter"/>
+    </data>
 
-</LinearLayout>
+    <LinearLayout
+        style="@style/MatchMatch.Vertical"
+        android:background="@color/white"
+        android:gravity="center">
+
+        <Button
+            style="@style/DemoBtn"
+            android:text="登陆环信"
+            app:onNoDoubleClick="@{() -> presenter.showChooseEmAccountDialog()}"/>
+
+        <Button
+            android:id="@+id/tv_main_em_logout"
+            style="@style/DemoBtn"
+            android:text="退出环信"
+            app:onNoDoubleClick="@{() -> presenter.emLogout()}"/>
+
+    </LinearLayout>
+</layout>

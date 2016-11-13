@@ -28,7 +28,7 @@ public class Divider extends RecyclerView.ItemDecoration {
     }
 
     public static Divider newBitmapDivider() {
-        return new Divider(R.mipmap.list_divider);
+        return new Divider(R.drawable.list_divider);
     }
 
     /**
