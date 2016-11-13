@@ -186,4 +186,9 @@ public class EmUtil {
         }
         // TODO 更新数据库
     }
+
+    public static void deleteConversation(String username) {
+        EMClient.getInstance().chatManager().deleteConversation(username, true);
+        // TODO 更新数据库
+    }
 }

@@ -41,7 +41,7 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter<EMMessage, ViewDa
             refreshMe((ItemChatMeTextBinding) binding, model);
         }
     }
-    
+
     private void refreshOther(ItemChatOtherTextBinding binding, EMMessage emMessage) {
         EMTextMessageBody messageBody = (EMTextMessageBody) emMessage.getBody();
         binding.tvItemChatTextMsg.setText(messageBody.getMessage());

@@ -2,8 +2,6 @@ package cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter;
 
 import android.view.View;
 
-import com.hyphenate.chat.EMClient;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +11,13 @@ import cn.bingoogolapple.scaffolding.demo.databinding.ItemConversationBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ConversationModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
 import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
-import cn.bingoogolapple.titlebar.BGAOnNoDoubleClickListener;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/11/10 下午9:29
  * 描述:
  */
-public class ConversationAdapter extends BGABindingRecyclerViewAdapter<ConversationModel, ItemConversationBinding> {
+public class ConversationAdapter extends BGABindingRecyclerViewAdapter<ConversationModel, ItemConversationBinding> implements BGABindingRecyclerViewAdapter.ItemEventHandler<ConversationModel> {
     private Delegate mDelegate;
 
     /**
@@ -30,6 +27,7 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
 
     public ConversationAdapter(Delegate delegate) {
         mDelegate = delegate;
+        setItemEventHandler(this);
     }
 
     @Override
@@ -40,6 +38,8 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
     @Override
     protected void bindModel(ItemConversationBinding binding, int position, ConversationModel model) {
         binding.setModel(model);
+        binding.setItemEventHandler(mItemEventHandler);
+        binding.setPosition(position);
 
         if (model.unreadMsgCount > 0) {
             binding.brlItemConversationBadge.showTextBadge(String.valueOf(model.unreadMsgCount));
@@ -50,16 +50,6 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
             badgeable.hiddenBadge();
             model.unreadMsgCount = 0;
             EmUtil.markConversationAllMessagesAsRead(model.username);
-        });
-        binding.brlItemConversationBadge.setOnClickListener(new BGAOnNoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                if (mOpenedSil.size() > 0) {
-                    closeOpenedSwipeItemLayoutWithAnim();
-                } else {
-                    mDelegate.goToChat(model.username);
-                }
-            }
         });
         binding.silItemConversationRoot.setDelegate(new BGASwipeItemLayout.BGASwipeItemLayoutDelegate() {
             @Override
@@ -78,16 +68,6 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
                 closeOpenedSwipeItemLayoutWithAnim();
             }
         });
-        binding.tvItemConversationDelete.setOnClickListener(new BGAOnNoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                mData.remove(position);
-                notifyItemRemoved(position);
-                closeOpenedSwipeItemLayoutWithAnim();
-
-                EMClient.getInstance().chatManager().deleteConversation(model.username, true);
-            }
-        });
     }
 
     public void closeOpenedSwipeItemLayoutWithAnim() {
@@ -99,6 +79,22 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
 
     public void refresh() {
         setData(EmUtil.loadConversationList());
+    }
+
+    @Override
+    public void onItemClick(View view, int position, ConversationModel model) {
+        if (view.getId() == R.id.tv_item_conversation_delete) {
+            removeItem(position);
+            closeOpenedSwipeItemLayoutWithAnim();
+
+            EmUtil.deleteConversation(model.username);
+        } else if (view.getId() == R.id.brl_item_conversation_badge) {
+            if (mOpenedSil.size() > 0) {
+                closeOpenedSwipeItemLayoutWithAnim();
+            } else {
+                mDelegate.goToChat(model.username);
+            }
+        }
     }
 
     public interface Delegate {

@@ -19,6 +19,7 @@ import java.util.List;
 public abstract class BGABindingRecyclerViewAdapter<M, B extends ViewDataBinding> extends RecyclerView.Adapter<BGABindingViewHolder<B>> {
     private LayoutInflater mLayoutInflater;
     protected List<M> mData = new ArrayList<>();
+    protected ItemEventHandler mItemEventHandler;
 
     protected LayoutInflater getLayoutInflater(View view) {
         if (mLayoutInflater == null) {
@@ -194,5 +195,18 @@ public abstract class BGABindingRecyclerViewAdapter<M, B extends ViewDataBinding
     public void moveItem(int fromPosition, int toPosition) {
         mData.add(toPosition, mData.remove(fromPosition));
         notifyItemMoved(fromPosition, toPosition);
+    }
+
+    /**
+     * 设置 item 时间处理器
+     *
+     * @param itemEventHandler
+     */
+    public void setItemEventHandler(ItemEventHandler itemEventHandler) {
+        mItemEventHandler = itemEventHandler;
+    }
+
+    public interface ItemEventHandler<M> {
+        void onItemClick(View v, int position, M model);
     }
 }

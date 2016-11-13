@@ -8,8 +8,16 @@
         <import type="cn.bingoogolapple.scaffolding.util.CalendarUtil"/>
 
         <variable
+            name="position"
+            type="java.lang.Integer"/>
+
+        <variable
             name="model"
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ConversationModel"/>
+
+        <variable
+            name="itemEventHandler"
+            type="cn.bingoogolapple.scaffolding.adapter.BGABindingRecyclerViewAdapter.ItemEventHandler"/>
     </data>
 
     <cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout
@@ -30,7 +38,8 @@
             android:paddingRight="@dimen/size_level5"
             android:text="删除"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/textSize_14"/>
+            android:textSize="@dimen/textSize_14"
+            app:onNoDoubleClick="@{(v) -> itemEventHandler.onItemClick(v, position, model)}"/>
 
         <cn.bingoogolapple.badgeview.BGABadgeRelativeLayout
             android:id="@+id/brl_item_conversation_badge"
@@ -46,7 +55,8 @@
             app:badge_horizontalMargin="@dimen/size_level4"
             app:badge_isResumeTravel="true"
             app:badge_textSize="@dimen/textSize_12"
-            app:badge_verticalMargin="@dimen/size_level3">
+            app:badge_verticalMargin="@dimen/size_level3"
+            app:onNoDoubleClick="@{(v) -> itemEventHandler.onItemClick(v, position, model)}">
 
             <ImageView
                 android:id="@+id/iv_item_conversation_avatar"
