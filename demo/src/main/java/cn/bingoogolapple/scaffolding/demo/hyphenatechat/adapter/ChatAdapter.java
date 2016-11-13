@@ -1,5 +1,6 @@
-package cn.bingoogolapple.scaffolding.demo.hyphenatechat;
+package cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter;
 
+import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 
 import com.hyphenate.chat.EMClient;
@@ -7,11 +8,9 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.scaffolding.adapter.BGABindingRecyclerViewAdapter;
-import cn.bingoogolapple.scaffolding.adapter.BGABindingViewHolder;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ItemChatMeTextBinding;
 import cn.bingoogolapple.scaffolding.demo.databinding.ItemChatOtherTextBinding;
@@ -22,34 +21,27 @@ import cn.bingoogolapple.scaffolding.util.StringUtil;
  * 创建时间:16/11/10 下午9:57
  * 描述:
  */
-public class ChatAdapter extends BGABindingRecyclerViewAdapter {
+public class ChatAdapter extends BGABindingRecyclerViewAdapter<EMMessage, ViewDataBinding> {
     private RecyclerView mRecyclerView;
-    private List<EMMessage> mData;
     private String mToChatUsername;
     private EMConversation mEMConversation;
 
     public ChatAdapter(RecyclerView recyclerView, String toChatUsername) {
         mRecyclerView = recyclerView;
-        mData = new ArrayList<>();
         mToChatUsername = toChatUsername;
         mEMConversation = EMClient.getInstance().chatManager().getConversation(mToChatUsername, null, true);
         mEMConversation.markAllMessagesAsRead();
     }
 
     @Override
-    public int getItemCount() {
-        return mData.size();
-    }
-
-    @Override
-    public void onBindViewHolder(BGABindingViewHolder holder, int position) {
+    protected void bindModel(ViewDataBinding binding, int position, EMMessage model) {
         if (getItemViewType(position) == R.layout.item_chat_other_text) {
-            refreshOther((ItemChatOtherTextBinding) holder.getBinding(), mData.get(position));
+            refreshOther((ItemChatOtherTextBinding) binding, model);
         } else {
-            refreshMe((ItemChatMeTextBinding) holder.getBinding(), mData.get(position));
+            refreshMe((ItemChatMeTextBinding) binding, model);
         }
     }
-
+    
     private void refreshOther(ItemChatOtherTextBinding binding, EMMessage emMessage) {
         EMTextMessageBody messageBody = (EMTextMessageBody) emMessage.getBody();
         binding.tvItemChatTextMsg.setText(messageBody.getMessage());
@@ -69,14 +61,9 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
         }
     }
 
+    @Override
     public void setData(List<EMMessage> data) {
-        if (data != null) {
-            mData = data;
-        } else {
-            mData.clear();
-        }
-        notifyDataSetChanged();
-
+        super.setData(data);
         smoothScrollToBottom();
     }
 
@@ -88,10 +75,7 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter {
         if (StringUtil.isEqual(message.getFrom(), mToChatUsername)) {
             mEMConversation.markMessageAsRead(message.getMsgId());
         }
-
-        mData.add(mData.size(), message);
-        notifyItemInserted(mData.size() - 1);
-
+        super.addLastItem(message);
         smoothScrollToBottom();
     }
 

@@ -1,4 +1,4 @@
-package cn.bingoogolapple.scaffolding.demo.hyphenatechat;
+package cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import java.util.List;
 
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityChatBinding;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter.ChatAdapter;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.NetUtil;
 import cn.bingoogolapple.scaffolding.util.RxUtil;

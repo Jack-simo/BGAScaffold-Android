@@ -11,7 +11,7 @@ import com.orhanobut.logger.Logger;
 import java.util.List;
 
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityMainBinding;
-import cn.bingoogolapple.scaffolding.demo.hyphenatechat.ConversationActivity;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.ConversationActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.ToastUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;

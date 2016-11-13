@@ -120,14 +120,14 @@
 
         <!-- 会话列表界面 -->
         <activity
-            android:name=".hyphenatechat.ConversationActivity"
+            android:name=".hyphenatechat.activity.ConversationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <!-- 聊天界面 -->
         <activity
-            android:name=".hyphenatechat.ChatActivity"
+            android:name=".hyphenatechat.activity.ChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"/>

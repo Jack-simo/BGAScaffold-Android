@@ -8,15 +8,15 @@ import android.support.v7.widget.RecyclerView;
  * 创建时间:16/11/10 下午9:34
  * 描述:
  */
-public class BGABindingViewHolder<T extends ViewDataBinding> extends RecyclerView.ViewHolder {
-    private T mBinding;
+public class BGABindingViewHolder<B extends ViewDataBinding> extends RecyclerView.ViewHolder {
+    private B mBinding;
 
-    public BGABindingViewHolder(T binding) {
+    public BGABindingViewHolder(B binding) {
         super(binding.getRoot());
         mBinding = binding;
     }
 
-    public T getBinding() {
+    public B getBinding() {
         return mBinding;
     }
 }

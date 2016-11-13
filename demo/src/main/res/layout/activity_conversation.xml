@@ -7,7 +7,7 @@
 
         <variable
             name="eventHandler"
-            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.ConversationActivity"/>
+            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.ConversationActivity"/>
     </data>
 
     <LinearLayout style="@style/MatchMatch.Vertical">

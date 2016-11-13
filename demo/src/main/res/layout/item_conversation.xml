@@ -3,6 +3,15 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <import type="cn.bingoogolapple.scaffolding.util.CalendarUtil"/>
+
+        <variable
+            name="model"
+            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ConversationModel"/>
+    </data>
+
     <cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout
         android:id="@+id/sil_item_conversation_root"
         style="@style/MatchWrap"
@@ -52,6 +61,7 @@
                 android:layout_alignBottom="@+id/tv_item_conversation_title"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="@dimen/size_level1"
+                android:text="@{CalendarUtil.formatChineseMonthDay(model.lastMsgTime)}"
                 android:textColor="@color/black_light"
                 android:textSize="@dimen/textSize_12"
                 tools:text="10月10日"/>
@@ -62,6 +72,7 @@
                 android:layout_toLeftOf="@id/tv_item_conversation_date"
                 android:layout_toRightOf="@id/iv_item_conversation_avatar"
                 android:singleLine="true"
+                android:text="@{model.nickname}"
                 android:textColor="@color/black_dark"
                 android:textSize="@dimen/textSize_18"
                 tools:text="标题"/>
@@ -73,6 +84,7 @@
                 android:layout_toLeftOf="@id/tv_item_conversation_date"
                 android:layout_toRightOf="@id/iv_item_conversation_avatar"
                 android:singleLine="true"
+                android:text="@{model.lastMsgContent}"
                 android:textColor="@color/black_middle"
                 android:textSize="@dimen/textSize_12"
                 tools:text="详细内容"/>

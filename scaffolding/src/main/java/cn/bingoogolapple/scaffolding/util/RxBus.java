@@ -1,6 +1,9 @@
 package cn.bingoogolapple.scaffolding.util;
 
 import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.android.FragmentEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -57,6 +60,11 @@ public class RxBus {
     }
 
     public static <T> Observable<T> toObservableAndBindToLifecycle(Class<T> clazz, LifecycleProvider lifecycleProvider) {
+        getInstance().toObservable(clazz).compose(lifecycleProvider.bindUntilEvent(ActivityEvent.PAUSE));
         return getInstance().toObservable(clazz).compose(lifecycleProvider.bindToLifecycle());
+    }
+
+    public static <T> Observable<T> toObservableAndBindUntilStop(Class<T> clazz, LifecycleProvider lifecycleProvider) {
+        return getInstance().toObservable(clazz).compose(lifecycleProvider.bindUntilEvent(lifecycleProvider instanceof RxAppCompatActivity ? ActivityEvent.STOP : FragmentEvent.STOP));
     }
 }

@@ -1,11 +1,10 @@
-package cn.bingoogolapple.scaffolding.demo.hyphenatechat;
+package cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hyphenate.EMConnectionListener;
-import com.hyphenate.EMConversationListener;
 import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
@@ -17,7 +16,10 @@ import java.util.List;
 
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityConversationBinding;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter.ConversationAdapter;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.RxEmEvent;
 import cn.bingoogolapple.scaffolding.util.NetUtil;
+import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 
@@ -26,7 +28,7 @@ import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
  * 创建时间:16/11/10 下午9:04
  * 描述:会话列表界面
  */
-public class ConversationActivity extends MvcBindingActivity<ActivityConversationBinding> implements EMConversationListener, EMMessageListener, EMConnectionListener, ConversationAdapter.Delegate {
+public class ConversationActivity extends MvcBindingActivity<ActivityConversationBinding> implements EMMessageListener, EMConnectionListener, ConversationAdapter.Delegate {
     private ConversationAdapter mConversationAdapter;
 
     @Override
@@ -40,23 +42,27 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
 
         mConversationAdapter = new ConversationAdapter(this);
         mBinding.rvConversationContent.setAdapter(mConversationAdapter);
-
-        mConversationAdapter.refresh();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+
+        mConversationAdapter.refresh();
+        RxBus.toObservableAndBindUntilStop(RxEmEvent.ConversationUpdateEvent.class, this).subscribe(conversationUpdateEvent -> {
+            Logger.i("会话发生了改变");
+            mConversationAdapter.refresh();
+        });
+
         EMClient.getInstance().addConnectionListener(this);
-        EMClient.getInstance().chatManager().addConversationListener(this);
         EMClient.getInstance().chatManager().addMessageListener(this);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
+
         EMClient.getInstance().removeConnectionListener(this);
-        EMClient.getInstance().chatManager().removeConversationListener(this);
         EMClient.getInstance().chatManager().removeMessageListener(this);
     }
 
@@ -85,15 +91,6 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
     @Override
     public void goToChat(String toChatUsername) {
         forward(ChatActivity.newIntent(this, toChatUsername));
-    }
-
-    @Override
-    public void onCoversationUpdate() {
-        // 这里是在子线程的。如果网络断开期间有新的会话产生，网络重连时也会走该方法
-        Logger.i("会话发生了改变");
-        RxUtil.runInUIThread().subscribe(object -> {
-            mConversationAdapter.refresh();
-        });
     }
 
     @Override
