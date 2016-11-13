@@ -10,7 +10,7 @@ import com.hyphenate.chat.EMTextMessageBody;
 
 import java.util.List;
 
-import cn.bingoogolapple.scaffolding.adapter.BGABindingRecyclerViewAdapter;
+import cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ItemChatMeTextBinding;
 import cn.bingoogolapple.scaffolding.demo.databinding.ItemChatOtherTextBinding;
@@ -34,7 +34,7 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter<EMMessage, ViewDa
     }
 
     @Override
-    protected void bindModel(ViewDataBinding binding, int position, EMMessage model) {
+    protected void bindSpecialModel(ViewDataBinding binding, int position, EMMessage model) {
         if (getItemViewType(position) == R.layout.item_chat_other_text) {
             refreshOther((ItemChatOtherTextBinding) binding, model);
         } else {

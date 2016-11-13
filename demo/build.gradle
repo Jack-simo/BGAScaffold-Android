@@ -118,8 +118,15 @@ android {
 
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile(name: 'bga-adapter', ext: 'aar')
     compile project(':scaffolding')
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'

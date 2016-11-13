@@ -5,7 +5,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bingoogolapple.scaffolding.adapter.BGABindingRecyclerViewAdapter;
+import cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ItemConversationBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ConversationModel;
@@ -36,11 +36,7 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
     }
 
     @Override
-    protected void bindModel(ItemConversationBinding binding, int position, ConversationModel model) {
-        binding.setModel(model);
-        binding.setItemEventHandler(mItemEventHandler);
-        binding.setPosition(position);
-
+    protected void bindSpecialModel(ItemConversationBinding binding, int position, ConversationModel model) {
         if (model.unreadMsgCount > 0) {
             binding.brlItemConversationBadge.showTextBadge(String.valueOf(model.unreadMsgCount));
         } else {
