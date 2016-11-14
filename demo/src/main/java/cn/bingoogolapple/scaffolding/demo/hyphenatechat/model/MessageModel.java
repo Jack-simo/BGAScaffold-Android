@@ -15,7 +15,7 @@ public class MessageModel {
 
     public String avatar;
 
-    public boolean isSendByMe;
+    public String from;
 
     public String contentType;
 

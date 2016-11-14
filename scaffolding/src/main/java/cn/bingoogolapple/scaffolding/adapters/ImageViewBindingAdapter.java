@@ -26,7 +26,7 @@ public class ImageViewBindingAdapter {
 
     @BindingAdapter({"path", "placeholder"})
     public static void displayImage(ImageView imageView, String path, Drawable placeholder) {
-        Glide.with(imageView.getContext()).load(getPath(path)).placeholder(placeholder).into(imageView);
+        Glide.with(imageView.getContext()).load(getPath(path)).dontAnimate().placeholder(placeholder).into(imageView);
     }
 
 }

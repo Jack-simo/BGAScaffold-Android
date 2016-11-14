@@ -2,6 +2,7 @@ package cn.bingoogolapple.scaffolding.demo.hyphenatechat.util;
 
 import android.util.Pair;
 
+import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMConversationListener;
 import com.hyphenate.EMError;
@@ -37,22 +38,26 @@ public class EmUtil {
         public void onConnected() {
             // 这里是在子线程的
             Logger.i("连接聊天服务器成功");
+            RxBus.send(new RxEmEvent.EMConnectedEvent());
         }
 
         @Override
         public void onDisconnected(int error) {
             // 这里是在子线程的
+            String errorMsg = "";
             if (error == EMError.USER_REMOVED) {
-                Logger.i("帐号已经被移除");
+                errorMsg = "帐号已经被移除";
             } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
-                Logger.i("帐号在其他设备登录");
+                errorMsg = "帐号在其他设备登录";
             } else {
                 if (NetUtil.isNetworkAvailable()) {
-                    Logger.i("连接不到聊天服务器");
+                    errorMsg = "连接不到聊天服务器";
                 } else {
-                    Logger.i("当前网络不可用，请检查网络设置");
+                    errorMsg = "当前网络不可用，请检查网络设置";
                 }
             }
+            Logger.i(errorMsg);
+            RxBus.send(new RxEmEvent.EMDisconnectedEvent(error, errorMsg));
         }
     };
 
@@ -71,6 +76,18 @@ public class EmUtil {
         public void onMessageReceived(List<EMMessage> messages) {
             // 这里是在子线程的，循环遍历当前收到的消息。如果网络断开期间有新的消息，网络重连时也会走该方法
             Logger.i("onMessageReceived");
+            MessageModel messageModel = null;
+            List<MessageModel> messageModelList = new ArrayList<>();
+            for (EMMessage message : messages) {
+                messageModel = convertToMessageModel(message);
+                if (messageModel != null) {
+                    messageModelList.add(messageModel);
+                }
+            }
+
+            if (messageModelList.size() > 0) {
+                RxBus.send(new RxEmEvent.MessageReceivedEvent(messageModelList));
+            }
         }
 
         @Override
@@ -184,9 +201,10 @@ public class EmUtil {
             messageModel = convertToMessageModel(conversation.getLastMessage());
         }
         if (messageModel != null) {
+            // TODO 处理头像
             conversationModel.avatar = messageModel.avatar;
             conversationModel.lastMsgTime = messageModel.msgTime;
-            conversationModel.lastMsgContent = messageModel.contentType;
+            conversationModel.lastMsgContent = messageModel.msg;
         } else {
             // TODO 处理头像
             conversationModel.avatar = "https://avatars2.githubusercontent.com/u/11001615?v=3&s=460";
@@ -250,13 +268,12 @@ public class EmUtil {
             messageModel.msgId = message.getMsgId();
             messageModel.msg = messageBody.getMessage();
             messageModel.msgTime = message.getMsgTime();
-            if (StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), message.getFrom())) {
-                messageModel.isSendByMe = true;
-                // TODO 处理头像
+            messageModel.from = message.getFrom();
+
+            // TODO 处理头像
+            if (StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), messageModel.from)) {
                 messageModel.avatar = "https://avatars2.githubusercontent.com/u/8949716?v=3&s=460";
             } else {
-                messageModel.isSendByMe = false;
-                // TODO 处理头像
                 messageModel.avatar = "https://avatars2.githubusercontent.com/u/11001615?v=3&s=460";
             }
 
@@ -265,5 +282,27 @@ public class EmUtil {
             return messageModel;
         }
         return null;
+    }
+
+    public static void sendMessage(final EMMessage emMessage) {
+        emMessage.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                RxBus.send(new RxEmEvent.MessageSendSuccessEvent(convertToMessageModel(emMessage)));
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Logger.e("消息发送失败 code:" + code + " message:" + message);
+                RxBus.send(new RxEmEvent.MessageSendSuccessEvent(convertToMessageModel(emMessage)));
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+                // 消息发送进度，一般只有在发送图片和文件等消息才会有回调，txt 不回调
+                Logger.i("消息发送中 progress:" + progress + " status:" + status);
+            }
+        });
+        EMClient.getInstance().chatManager().sendMessage(emMessage);
     }
 }

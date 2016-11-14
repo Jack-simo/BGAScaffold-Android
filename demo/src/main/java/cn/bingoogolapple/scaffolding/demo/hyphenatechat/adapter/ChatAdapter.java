@@ -12,6 +12,7 @@ import cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
+import cn.bingoogolapple.scaffolding.util.StringUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -36,7 +37,7 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter<MessageModel, Vie
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position).isSendByMe) {
+        if (StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), getItem(position).from)) {
             // TODO 处理非文本消息
             return R.layout.item_chat_me_text;
         } else {
@@ -55,11 +56,11 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter<MessageModel, Vie
         setData(EmUtil.loadMessageList(mConversation));
     }
 
-    public void addMoreItem(MessageModel message) {
-        if (!message.isSendByMe) {
-            mConversation.markMessageAsRead(message.msgId);
+    public void addMoreItem(MessageModel messageModel) {
+        if (!StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), messageModel.from)) {
+            mConversation.markMessageAsRead(messageModel.msgId);
         }
-        super.addLastItem(message);
+        super.addLastItem(messageModel);
         smoothScrollToBottom();
     }
 
