@@ -60,7 +60,6 @@ public class RxBus {
     }
 
     public static <T> Observable<T> toObservableAndBindToLifecycle(Class<T> clazz, LifecycleProvider lifecycleProvider) {
-        getInstance().toObservable(clazz).compose(lifecycleProvider.bindUntilEvent(ActivityEvent.PAUSE));
         return getInstance().toObservable(clazz).compose(lifecycleProvider.bindToLifecycle());
     }
 
