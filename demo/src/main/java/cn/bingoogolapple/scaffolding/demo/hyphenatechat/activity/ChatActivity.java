@@ -17,6 +17,7 @@ import java.util.List;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityChatBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter.ChatAdapter;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.NetUtil;
 import cn.bingoogolapple.scaffolding.util.RxUtil;
@@ -30,13 +31,15 @@ import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
  */
 public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implements EMMessageListener, EMConnectionListener {
     private static final String EXTRA_TO_CHAT_USERNAME = "EXTRA_TO_CHAT_USERNAME";
+    private static final String EXTRA_TO_CHAT_NICKNAME = "EXTRA_TO_CHAT_NICKNAME";
 
     private String mToChatUsername;
     private ChatAdapter mChatAdapter;
 
-    public static Intent newIntent(Context context, String toChatUsername) {
+    public static Intent newIntent(Context context, String toChatUsername, String toChatNickname) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(EXTRA_TO_CHAT_USERNAME, toChatUsername);
+        intent.putExtra(EXTRA_TO_CHAT_NICKNAME, toChatNickname);
         return intent;
     }
 
@@ -47,26 +50,27 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mToChatUsername = getIntent().getStringExtra(EXTRA_TO_CHAT_USERNAME);
-
         mBinding.setEventHandler(this);
-        mBinding.setToChatUsername(mToChatUsername);
+        mBinding.setToChatNickname(getIntent().getStringExtra(EXTRA_TO_CHAT_NICKNAME));
 
+        mToChatUsername = getIntent().getStringExtra(EXTRA_TO_CHAT_USERNAME);
         mChatAdapter = new ChatAdapter(mBinding.rvChatContent, mToChatUsername);
         mBinding.rvChatContent.setAdapter(mChatAdapter);
-        mChatAdapter.refresh();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+
+        mChatAdapter.refresh();
+
         EMClient.getInstance().addConnectionListener(this);
         EMClient.getInstance().chatManager().addMessageListener(this);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         EMClient.getInstance().removeConnectionListener(this);
         EMClient.getInstance().chatManager().removeMessageListener(this);
     }
@@ -124,7 +128,7 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
                 Logger.i("消息发送中 progress:" + progress + " status:" + status);
             }
         });
-        mChatAdapter.addMoreItem(message);
+        mChatAdapter.addMoreItem(EmUtil.convertToMessageModel(message));
         EMClient.getInstance().chatManager().sendMessage(message);
     }
 
@@ -134,7 +138,7 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
         for (EMMessage message : messages) {
             if (StringUtil.isEqual(message.getFrom(), mToChatUsername)) {
                 RxUtil.runInUIThread(message).subscribe(emMessage -> {
-                    mChatAdapter.addMoreItem(emMessage);
+                    mChatAdapter.addMoreItem(EmUtil.convertToMessageModel(emMessage));
                 });
             } else {
                 Logger.i("收到其他人发来的消息");

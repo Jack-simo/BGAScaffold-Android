@@ -49,6 +49,7 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
         super.onStart();
 
         mConversationAdapter.refresh();
+
         RxBus.toObservableAndBindUntilStop(RxEmEvent.ConversationUpdateEvent.class, this).subscribe(conversationUpdateEvent -> {
             Logger.i("会话发生了改变");
             mConversationAdapter.refresh();
@@ -83,14 +84,14 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
                 .title("请选择环信账号")
                 .items(usernameList)
                 .itemsCallback((dialog, itemView, position, text) -> {
-                    goToChat(text.toString());
+                    goToChat(text.toString(), text.toString());
                 })
                 .show();
     }
 
     @Override
-    public void goToChat(String toChatUsername) {
-        forward(ChatActivity.newIntent(this, toChatUsername));
+    public void goToChat(String toChatUsername, String toChatNickname) {
+        forward(ChatActivity.newIntent(this, toChatUsername, toChatNickname));
     }
 
     @Override

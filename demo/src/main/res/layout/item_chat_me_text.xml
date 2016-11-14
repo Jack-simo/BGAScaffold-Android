@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="position"
+            type="java.lang.Integer"/>
+
+        <variable
+            name="model"
+            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel"/>
+    </data>
 
     <RelativeLayout
         style="@style/MatchWrap"
@@ -8,11 +20,14 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civ_item_chat_text_avatar"
-            style="@style/WrapWrap"
+            android:layout_width="@dimen/size_level10"
+            android:layout_height="@dimen/size_level10"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/size_level2"
             android:layout_marginRight="@dimen/size_level3"
-            android:src="@mipmap/ic_launcher"/>
+            app:path="@{model.avatar}"
+            app:placeholder="@{@drawable/placeholder_light}"
+            tools:src="@drawable/placeholder_light"/>
 
         <TextView
             android:id="@+id/tv_item_chat_text_msg"
@@ -22,6 +37,7 @@
             android:background="@drawable/shape_primary_radius"
             android:maxWidth="200dp"
             android:padding="@dimen/size_level2"
+            android:text="@{model.msg}"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_14"
             tools:text="我发送的消息"/>

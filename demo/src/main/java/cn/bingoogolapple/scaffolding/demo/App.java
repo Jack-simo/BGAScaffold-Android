@@ -11,7 +11,6 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
-import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.LiteOrmUtil;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.HttpRequestException;
 import cn.bingoogolapple.scaffolding.util.RxBus;
@@ -46,9 +45,6 @@ public class App extends Application implements AppManager.Delegate {
 
         // 初始化环信 SDK
         EmUtil.initSdk();
-
-        // 初始化 LiteOrm
-        LiteOrmUtil.init();
 
         RxBus.toObservable(RxEvent.AppEnterForegroundEvent.class).subscribe(appEnterForegroundEvent -> appEnterForeground());
         RxBus.toObservable(RxEvent.AppEnterBackgroundEvent.class).subscribe(appEnterBackgroundEvent -> appEnterBackground());

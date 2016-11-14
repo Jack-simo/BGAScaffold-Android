@@ -58,12 +58,14 @@
             app:badge_verticalMargin="@dimen/size_level3"
             app:onNoDoubleClick="@{(v) -> itemEventHandler.onItemClick(v, position, model)}">
 
-            <ImageView
-                android:id="@+id/iv_item_conversation_avatar"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/civ_item_conversation_avatar"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="@dimen/size_level4"
-                android:src="@mipmap/ic_launcher"/>
+                app:path="@{model.avatar}"
+                app:placeholder="@{@drawable/placeholder_light}"
+                tools:src="@drawable/placeholder_light"/>
 
             <TextView
                 android:id="@+id/tv_item_conversation_date"
@@ -80,7 +82,7 @@
                 android:id="@id/tv_item_conversation_title"
                 style="@style/MatchWrap"
                 android:layout_toLeftOf="@id/tv_item_conversation_date"
-                android:layout_toRightOf="@id/iv_item_conversation_avatar"
+                android:layout_toRightOf="@id/civ_item_conversation_avatar"
                 android:singleLine="true"
                 android:text="@{model.nickname}"
                 android:textColor="@color/black_dark"
@@ -90,9 +92,9 @@
             <TextView
                 android:id="@+id/tv_item_conversation_detail"
                 style="@style/MatchWrap"
-                android:layout_alignBottom="@id/iv_item_conversation_avatar"
+                android:layout_alignBottom="@id/civ_item_conversation_avatar"
                 android:layout_toLeftOf="@id/tv_item_conversation_date"
-                android:layout_toRightOf="@id/iv_item_conversation_avatar"
+                android:layout_toRightOf="@id/civ_item_conversation_avatar"
                 android:singleLine="true"
                 android:text="@{model.lastMsgContent}"
                 android:textColor="@color/black_middle"

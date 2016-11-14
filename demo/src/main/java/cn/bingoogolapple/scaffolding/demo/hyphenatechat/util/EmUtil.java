@@ -20,9 +20,11 @@ import java.util.Map;
 
 import cn.bingoogolapple.scaffolding.demo.BuildConfig;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ConversationModel;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.NetUtil;
 import cn.bingoogolapple.scaffolding.util.RxBus;
+import cn.bingoogolapple.scaffolding.util.StringUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -125,20 +127,25 @@ public class EmUtil {
         EMClient.getInstance().chatManager().addMessageListener(sEMMessageListener);
     }
 
+    /**
+     * 加载所有会话
+     *
+     * @return
+     */
     public static List<ConversationModel> loadConversationList() {
         Map<String, EMConversation> conversationMap = EMClient.getInstance().chatManager().getAllConversations();
-        List<Pair<Long, EMConversation>> sortList = new ArrayList<>();
+        List<Pair<Long, EMConversation>> conversationList = new ArrayList<>();
 
         synchronized (conversationMap) {
             for (EMConversation conversation : conversationMap.values()) {
                 if (conversation.getAllMessages().size() > 0) {
-                    sortList.add(new Pair<>(conversation.getLastMessage().getMsgTime(), conversation));
+                    conversationList.add(new Pair<>(conversation.getLastMessage().getMsgTime(), conversation));
                 }
             }
         }
 
         try {
-            Collections.sort(sortList, (pair1, pair2) -> {
+            Collections.sort(conversationList, (pair1, pair2) -> {
                 if (pair1.first.equals(pair2.first)) {
                     return 0;
                 } else if (pair2.first.longValue() > pair1.first.longValue()) {
@@ -151,44 +158,112 @@ public class EmUtil {
             e.printStackTrace();
         }
 
-        List<ConversationModel> list = new ArrayList<>();
-        for (Pair<Long, EMConversation> sortItem : sortList) {
-            list.add(LiteOrmUtil.saveOrUpdateConversation(convertToConversationModel(sortItem.second)));
+        List<ConversationModel> conversationModelList = new ArrayList<>();
+        for (Pair<Long, EMConversation> sortItem : conversationList) {
+            conversationModelList.add(convertToConversationModel(sortItem.second));
         }
-        return list;
+        return conversationModelList;
     }
 
-    public static ConversationModel convertToConversationModel(EMConversation emConversation) {
+    /**
+     * 将环信的会话数据模型转换成自己的数据模型
+     *
+     * @param conversation 环信的会话数据模型
+     * @return
+     */
+    public static ConversationModel convertToConversationModel(EMConversation conversation) {
         ConversationModel conversationModel = new ConversationModel();
-        conversationModel.conversationId = emConversation.conversationId();
-        conversationModel.username = emConversation.getUserName();
-        // 昵称
+        conversationModel.conversationId = conversation.conversationId();
+        conversationModel.username = conversation.getUserName();
+        // TODO 处理昵称
         conversationModel.nickname = conversationModel.username;
-        conversationModel.unreadMsgCount = emConversation.getUnreadMsgCount();
-        conversationModel.lastMsgTime = emConversation.getLastMessage().getMsgTime();
+        conversationModel.unreadMsgCount = conversation.getUnreadMsgCount();
 
-        if (emConversation.getLastMessage().getType() == EMMessage.Type.TXT) {
-            EMTextMessageBody messageBody = (EMTextMessageBody) emConversation.getLastMessage().getBody();
-            conversationModel.lastMsgContent = messageBody.getMessage();
-            // TODO 卡片类型
-        } else {
-            conversationModel.lastMsgContent = "";
+        MessageModel messageModel = null;
+        if (conversation.getLastMessage() != null) {
+            messageModel = convertToMessageModel(conversation.getLastMessage());
         }
-        // TODO 头像
+        if (messageModel != null) {
+            conversationModel.avatar = messageModel.avatar;
+            conversationModel.lastMsgTime = messageModel.msgTime;
+            conversationModel.lastMsgContent = messageModel.contentType;
+        } else {
+            // TODO 处理头像
+            conversationModel.avatar = "https://avatars2.githubusercontent.com/u/11001615?v=3&s=460";
+            conversationModel.lastMsgTime = System.currentTimeMillis();
+        }
 
         return conversationModel;
     }
 
+    /**
+     * 将和指定用户会话的所有消息标记为已读
+     *
+     * @param username 环信用户名
+     */
     public static void markConversationAllMessagesAsRead(String username) {
-        EMConversation emConversation = EMClient.getInstance().chatManager().getConversation(username);
-        if (emConversation != null) {
-            emConversation.markAllMessagesAsRead();
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(username);
+        if (conversation != null) {
+            conversation.markAllMessagesAsRead();
         }
-        // TODO 更新数据库
     }
 
+    /**
+     * 删除和指定用户会话
+     *
+     * @param username
+     */
     public static void deleteConversation(String username) {
         EMClient.getInstance().chatManager().deleteConversation(username, true);
-        // TODO 更新数据库
+    }
+
+    /**
+     * 加载指定会话下的所有消息
+     *
+     * @param conversation
+     */
+    public static List<MessageModel> loadMessageList(EMConversation conversation) {
+        List<EMMessage> messageList = conversation.getAllMessages();
+        List<MessageModel> messageModelList = new ArrayList<>();
+        if (messageList != null) {
+            MessageModel messageModel;
+            for (EMMessage message : messageList) {
+                messageModel = convertToMessageModel(message);
+                if (messageModel != null) {
+                    messageModelList.add(messageModel);
+                }
+            }
+        }
+        return messageModelList;
+    }
+
+    /**
+     * 将环信的消息数据模型转换成自己的消息数据模型
+     *
+     * @param message 环信的消息数据模型
+     * @return
+     */
+    public static MessageModel convertToMessageModel(EMMessage message) {
+        if (message.getType() == EMMessage.Type.TXT) {
+            MessageModel messageModel = new MessageModel();
+            EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();
+            messageModel.msgId = message.getMsgId();
+            messageModel.msg = messageBody.getMessage();
+            messageModel.msgTime = message.getMsgTime();
+            if (StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), message.getFrom())) {
+                messageModel.isSendByMe = true;
+                // TODO 处理头像
+                messageModel.avatar = "https://avatars2.githubusercontent.com/u/8949716?v=3&s=460";
+            } else {
+                messageModel.isSendByMe = false;
+                // TODO 处理头像
+                messageModel.avatar = "https://avatars2.githubusercontent.com/u/11001615?v=3&s=460";
+            }
+
+            // TODO 处理自定义消息类型
+            messageModel.contentType = MessageModel.TYPE_CONTENT_TEXT;
+            return messageModel;
+        }
+        return null;
     }
 }
