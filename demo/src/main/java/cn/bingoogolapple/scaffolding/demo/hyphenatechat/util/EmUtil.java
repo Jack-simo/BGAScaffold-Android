@@ -4,7 +4,6 @@ import android.util.Pair;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
-import com.hyphenate.EMConversationListener;
 import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
@@ -26,6 +25,7 @@ import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.NetUtil;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.StringUtil;
+import cn.bingoogolapple.scaffolding.util.ToastUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -61,16 +61,6 @@ public class EmUtil {
         }
     };
 
-    private static final EMConversationListener sEMConversationListener = new EMConversationListener() {
-
-        @Override
-        public void onCoversationUpdate() {
-            // 这里是在子线程的。如果网络断开期间有新的会话产生，网络重连时也会走该方法
-            Logger.i("会话发生了改变");
-            RxBus.send(new RxEmEvent.ConversationUpdateEvent());
-        }
-    };
-
     private static final EMMessageListener sEMMessageListener = new EMMessageListener() {
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
@@ -88,6 +78,8 @@ public class EmUtil {
             if (messageModelList.size() > 0) {
                 RxBus.send(new RxEmEvent.MessageReceivedEvent(messageModelList));
             }
+
+            loadConversationList();
         }
 
         @Override
@@ -140,16 +132,59 @@ public class EmUtil {
         Logger.i("初始化了环信 SDK");
 
         EMClient.getInstance().addConnectionListener(sEMConnectionListener);
-        EMClient.getInstance().chatManager().addConversationListener(sEMConversationListener);
         EMClient.getInstance().chatManager().addMessageListener(sEMMessageListener);
     }
 
+    public static void login(String chatUsername, String password) {
+        EMClient.getInstance().login(chatUsername, password, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                Logger.i("登录聊天服务器成功 chatUsername:" + chatUsername);
+                EMClient.getInstance().chatManager().loadAllConversations();
+
+                RxBus.send(new RxEmEvent.LoginEvent(true, 0, null));
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+                Logger.i("登录聊天服务器进度 progress:" + progress + " status:" + status);
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Logger.i("登录聊天服务器失败 code:" + code + " message:" + message);
+                RxBus.send(new RxEmEvent.LoginEvent(false, code, message));
+            }
+        });
+    }
+
+    public static void logout() {
+        EMClient.getInstance().logout(false, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                RxBus.send(new RxEmEvent.UnreadMsgCountChangedEvent(0));
+
+                ToastUtil.showSafe("退出聊天服务器成功");
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+                Logger.i("退出聊天服务器进度 progress:" + progress + " status:" + status);
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                ToastUtil.showSafe("退出聊天服务器失败 code:" + code + " message:" + message);
+            }
+        });
+    }
+
     /**
-     * 加载所有会话
+     * 加载所有会话。收到新消息和需要主动刷新会话或未读消息总数时调用该方法
      *
      * @return
      */
-    public static List<ConversationModel> loadConversationList() {
+    public static void loadConversationList() {
         Map<String, EMConversation> conversationMap = EMClient.getInstance().chatManager().getAllConversations();
         List<Pair<Long, EMConversation>> conversationList = new ArrayList<>();
 
@@ -175,11 +210,17 @@ public class EmUtil {
             e.printStackTrace();
         }
 
+        int unreadMsgCount = 0;
         List<ConversationModel> conversationModelList = new ArrayList<>();
+        ConversationModel conversationModel;
         for (Pair<Long, EMConversation> sortItem : conversationList) {
-            conversationModelList.add(convertToConversationModel(sortItem.second));
+            conversationModel = convertToConversationModel(sortItem.second);
+            unreadMsgCount += conversationModel.unreadMsgCount;
+            conversationModelList.add(conversationModel);
         }
-        return conversationModelList;
+
+        RxBus.send(new RxEmEvent.UnreadMsgCountChangedEvent(unreadMsgCount));
+        RxBus.send(new RxEmEvent.ConversationUpdateEvent(conversationModelList));
     }
 
     /**

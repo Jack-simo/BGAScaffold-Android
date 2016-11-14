@@ -3,6 +3,7 @@ package cn.bingoogolapple.scaffolding.view;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 
+import cn.bingoogolapple.scaffolding.BR;
 import cn.bingoogolapple.scaffolding.presenter.BasePresenter;
 
 /**
@@ -16,5 +17,6 @@ public abstract class MvpBindingActivity<B extends ViewDataBinding, P extends Ba
     @Override
     protected void initContentView() {
         mBinding = DataBindingUtil.setContentView(this, getRootLayoutResID());
+        mBinding.setVariable(BR.eventHandler, this);
     }
 }

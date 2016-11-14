@@ -73,8 +73,12 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
         mOpenedSil.clear();
     }
 
-    public void refresh() {
-        setData(EmUtil.loadConversationList());
+    @Override
+    public void setData(List<ConversationModel> data) {
+        if (getItemCount() != data.size()) {
+            closeOpenedSwipeItemLayoutWithAnim();
+        }
+        super.setData(data);
     }
 
     @Override

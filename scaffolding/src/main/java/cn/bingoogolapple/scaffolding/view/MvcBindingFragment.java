@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import cn.bingoogolapple.scaffolding.BR;
+
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:15/9/2 下午10:57
@@ -20,6 +22,7 @@ public abstract class MvcBindingFragment<B extends ViewDataBinding> extends MvcF
         // 避免多次从xml中加载布局文件
         if (mBinding == null) {
             mBinding = DataBindingUtil.inflate(inflater, getRootLayoutResID(), container, false);
+            mBinding.setVariable(BR.eventHandler, this);
             initView(savedInstanceState);
             setListener();
             processLogic(savedInstanceState);

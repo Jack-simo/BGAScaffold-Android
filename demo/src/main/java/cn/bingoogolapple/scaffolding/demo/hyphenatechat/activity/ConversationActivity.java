@@ -13,6 +13,7 @@ import java.util.List;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityConversationBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter.ConversationAdapter;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.RxEmEvent;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
@@ -32,8 +33,6 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBinding.setEventHandler(this);
-
         mConversationAdapter = new ConversationAdapter(this);
         mBinding.rvConversationContent.setAdapter(mConversationAdapter);
     }
@@ -42,22 +41,20 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
     protected void onStart() {
         super.onStart();
 
-        mConversationAdapter.refresh();
-
         RxBus.toObservableAndBindUntilStop(RxEmEvent.ConversationUpdateEvent.class, this).subscribe(conversationUpdateEvent -> {
             Logger.i("会话发生了改变");
-            mConversationAdapter.refresh();
-        });
-        RxBus.toObservableAndBindUntilStop(RxEmEvent.MessageReceivedEvent.class, this).subscribe(messageReceivedEvent -> {
-            Logger.i("收到新的消息");
-            mConversationAdapter.refresh();
+            mConversationAdapter.setData(conversationUpdateEvent.mConversationModelList);
         });
         RxBus.toObservableAndBindUntilStop(RxEmEvent.EMConnectedEvent.class, this).subscribe(emConnectedEvent -> {
             Logger.i("连接聊天服务器成功");
+            // TODO 界面上展示出来
         });
         RxBus.toObservableAndBindUntilStop(RxEmEvent.EMDisconnectedEvent.class, this).subscribe(emDisconnectedEvent -> {
+            //  TODO 界面上展示出来
             Logger.i(emDisconnectedEvent.mErrorMsg);
         });
+
+        EmUtil.loadConversationList();
     }
 
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

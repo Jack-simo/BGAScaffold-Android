@@ -45,7 +45,6 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBinding.setEventHandler(this);
         mBinding.setToChatNickname(getIntent().getStringExtra(EXTRA_TO_CHAT_NICKNAME));
 
         mToChatUsername = getIntent().getStringExtra(EXTRA_TO_CHAT_USERNAME);

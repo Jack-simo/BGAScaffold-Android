@@ -16,14 +16,8 @@
 
         <Button
             style="@style/DemoBtn"
-            android:text="登陆环信"
-            app:onNoDoubleClick="@{() -> eventHandler.showChooseEmAccountDialog()}"/>
-
-        <Button
-            android:id="@+id/tv_main_em_logout"
-            style="@style/DemoBtn"
-            android:text="退出环信"
-            app:onNoDoubleClick="@{() -> eventHandler.emLogout()}"/>
+            android:text="跳转到环信案例主界面"
+            app:onNoDoubleClick="@{() -> eventHandler.goToEm()}"/>
 
     </LinearLayout>
 </layout>

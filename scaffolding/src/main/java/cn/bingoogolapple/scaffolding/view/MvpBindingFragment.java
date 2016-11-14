@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import cn.bingoogolapple.scaffolding.BR;
 import cn.bingoogolapple.scaffolding.presenter.BasePresenter;
 
 /**
@@ -22,6 +23,7 @@ public abstract class MvpBindingFragment<B extends ViewDataBinding, P extends Ba
         // 避免多次从xml中加载布局文件
         if (mBinding == null) {
             mBinding = DataBindingUtil.inflate(inflater, getRootLayoutResID(), container, false);
+            mBinding.setVariable(BR.eventHandler, this);
             initView(savedInstanceState);
             setListener();
             processLogic(savedInstanceState);
