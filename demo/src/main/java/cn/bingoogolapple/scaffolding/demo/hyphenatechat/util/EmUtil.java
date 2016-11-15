@@ -19,9 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bingoogolapple.scaffolding.demo.BuildConfig;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ChatUserModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ConversationModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel;
 import cn.bingoogolapple.scaffolding.util.AppManager;
+import cn.bingoogolapple.scaffolding.util.LocalSubscriber;
 import cn.bingoogolapple.scaffolding.util.NetUtil;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.StringUtil;
@@ -210,31 +212,36 @@ public class EmUtil {
             e.printStackTrace();
         }
 
-        int unreadMsgCount = 0;
-        List<ConversationModel> conversationModelList = new ArrayList<>();
-        ConversationModel conversationModel;
-        for (Pair<Long, EMConversation> sortItem : conversationList) {
-            conversationModel = convertToConversationModel(sortItem.second);
-            unreadMsgCount += conversationModel.unreadMsgCount;
-            conversationModelList.add(conversationModel);
-        }
 
-        RxBus.send(new RxEmEvent.UnreadMsgCountChangedEvent(unreadMsgCount));
-        RxBus.send(new RxEmEvent.ConversationUpdateEvent(conversationModelList));
+        LiteOrmUtil.getChatUserModelList().subscribe(new LocalSubscriber<List<ChatUserModel>>() {
+            @Override
+            public void onNext(List<ChatUserModel> chatUserModels) {
+                int unreadMsgCount = 0;
+                List<ConversationModel> conversationModelList = new ArrayList<>();
+                ConversationModel conversationModel;
+                for (Pair<Long, EMConversation> sortItem : conversationList) {
+                    conversationModel = convertToConversationModel(sortItem.second, chatUserModels);
+                    unreadMsgCount += conversationModel.unreadMsgCount;
+                    conversationModelList.add(conversationModel);
+                }
+
+                RxBus.send(new RxEmEvent.UnreadMsgCountChangedEvent(unreadMsgCount));
+                RxBus.send(new RxEmEvent.ConversationUpdateEvent(conversationModelList));
+            }
+        });
     }
 
     /**
      * 将环信的会话数据模型转换成自己的数据模型
      *
-     * @param conversation 环信的会话数据模型
+     * @param conversation   环信的会话数据模型
+     * @param chatUserModels 本地存在的聊天用户信息集合
      * @return
      */
-    public static ConversationModel convertToConversationModel(EMConversation conversation) {
+    public static ConversationModel convertToConversationModel(EMConversation conversation, List<ChatUserModel> chatUserModels) {
         ConversationModel conversationModel = new ConversationModel();
         conversationModel.conversationId = conversation.conversationId();
         conversationModel.username = conversation.getUserName();
-        // TODO 处理昵称
-        conversationModel.nickname = conversationModel.username;
         conversationModel.unreadMsgCount = conversation.getUnreadMsgCount();
 
         MessageModel messageModel = null;
@@ -242,14 +249,28 @@ public class EmUtil {
             messageModel = convertToMessageModel(conversation.getLastMessage());
         }
         if (messageModel != null) {
-            // TODO 处理头像
-            conversationModel.avatar = messageModel.avatar;
             conversationModel.lastMsgTime = messageModel.msgTime;
             conversationModel.lastMsgContent = messageModel.msg;
         } else {
-            // TODO 处理头像
-            conversationModel.avatar = "https://avatars2.githubusercontent.com/u/11001615?v=3&s=460";
             conversationModel.lastMsgTime = System.currentTimeMillis();
+            conversationModel.lastMsgContent = "";
+        }
+
+        ChatUserModel chatUserModel = null;
+        for (ChatUserModel chatUser : chatUserModels) {
+            if (StringUtil.isEqual(conversationModel.username, chatUser.chatUserName)) {
+                chatUserModel = chatUser;
+                break;
+            }
+        }
+        if (chatUserModel != null) {
+            conversationModel.nickname = chatUserModel.nickName;
+            conversationModel.avatar = chatUserModel.avatar;
+        } else {
+            // TODO 记录下来，并去服务端拉取缺少的聊天用户信息
+
+            conversationModel.nickname = conversationModel.username;
+            conversationModel.avatar = "";
         }
 
         return conversationModel;
@@ -311,12 +332,7 @@ public class EmUtil {
             messageModel.msgTime = message.getMsgTime();
             messageModel.from = message.getFrom();
 
-            // TODO 处理头像
-            if (StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), messageModel.from)) {
-                messageModel.avatar = "https://avatars2.githubusercontent.com/u/8949716?v=3&s=460";
-            } else {
-                messageModel.avatar = "https://avatars2.githubusercontent.com/u/11001615?v=3&s=460";
-            }
+            messageModel.avatar = message.getStringAttribute("avatar", "https://avatars2.githubusercontent.com/u/8949716?v=3&s=460");
 
             // TODO 处理自定义消息类型
             messageModel.contentType = MessageModel.TYPE_CONTENT_TEXT;

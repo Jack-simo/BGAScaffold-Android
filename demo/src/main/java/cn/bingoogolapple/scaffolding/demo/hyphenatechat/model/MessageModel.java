@@ -20,5 +20,4 @@ public class MessageModel {
     public String contentType;
 
     public String msg;
-
 }

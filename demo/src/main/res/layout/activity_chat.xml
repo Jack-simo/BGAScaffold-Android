@@ -10,7 +10,7 @@
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.ChatActivity"/>
 
         <variable
-            name="toChatNickname"
+            name="nickname"
             type="java.lang.String"/>
     </data>
 
@@ -20,7 +20,7 @@
         <cn.bingoogolapple.titlebar.BGATitleBar
             style="@style/TitleBar"
             app:bgatitlebar_delegate="@{eventHandler}"
-            app:bgatitlebar_titleText="@{toChatNickname}"/>
+            app:bgatitlebar_titleText="@{nickname}"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_chat_content"

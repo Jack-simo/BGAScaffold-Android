@@ -92,12 +92,12 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
             if (mOpenedSil.size() > 0) {
                 closeOpenedSwipeItemLayoutWithAnim();
             } else {
-                mDelegate.goToChat(model.username, model.nickname);
+                mDelegate.goToChat(model.username);
             }
         }
     }
 
     public interface Delegate {
-        void goToChat(String toChatUsername, String toChatNickname);
+        void goToChat(String toChatUsername);
     }
 }

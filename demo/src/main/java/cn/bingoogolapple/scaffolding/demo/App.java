@@ -11,6 +11,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.LiteOrmUtil;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.HttpRequestException;
 import cn.bingoogolapple.scaffolding.util.RxBus;
@@ -39,6 +40,9 @@ public class App extends Application implements AppManager.Delegate {
 
         // 初始化应用程序管理器
         AppManager.getInstance().init(BuildConfig.BUILD_TYPE.equalsIgnoreCase("debug"), this);
+
+        // 初始化数据库
+        LiteOrmUtil.init();
 
         // 初始化友盟 SDK
         UmengUtil.initSdk();

@@ -13,8 +13,11 @@ import java.util.List;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityConversationBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter.ConversationAdapter;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ChatUserModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.LiteOrmUtil;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.RxEmEvent;
+import cn.bingoogolapple.scaffolding.util.LocalSubscriber;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 
@@ -74,13 +77,19 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
                 .title("请选择环信账号")
                 .items(usernameList)
                 .itemsCallback((dialog, itemView, position, text) -> {
-                    goToChat(text.toString(), text.toString());
+                    goToChat(text.toString());
                 })
                 .show();
     }
 
     @Override
-    public void goToChat(String toChatUsername, String toChatNickname) {
-        forward(ChatActivity.newIntent(this, toChatUsername, toChatNickname));
+    public void goToChat(String toChatUsername) {
+        LiteOrmUtil.getChatUserModelByChatUserName(toChatUsername).subscribe(new LocalSubscriber<ChatUserModel>() {
+            @Override
+            public void onNext(ChatUserModel chatUserModel) {
+                forward(ChatActivity.newIntent(ConversationActivity.this, chatUserModel));
+            }
+        });
+
     }
 }

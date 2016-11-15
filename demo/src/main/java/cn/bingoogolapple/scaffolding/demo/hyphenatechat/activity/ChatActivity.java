@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.orhanobut.logger.Logger;
 
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityChatBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter.ChatAdapter;
+import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ChatUserModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.RxEmEvent;
@@ -25,16 +27,16 @@ import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
  * 描述:聊天界面
  */
 public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> {
-    private static final String EXTRA_TO_CHAT_USERNAME = "EXTRA_TO_CHAT_USERNAME";
-    private static final String EXTRA_TO_CHAT_NICKNAME = "EXTRA_TO_CHAT_NICKNAME";
+    private static final String EXTRA_CHAT_USER = "EXTRA_CHAT_USER";
 
-    private String mToChatUsername;
+    private ChatUserModel mChatUserModel;
     private ChatAdapter mChatAdapter;
 
-    public static Intent newIntent(Context context, String toChatUsername, String toChatNickname) {
+    private String mCurrentUserAvatar;
+
+    public static Intent newIntent(Context context, ChatUserModel chatUserModel) {
         Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra(EXTRA_TO_CHAT_USERNAME, toChatUsername);
-        intent.putExtra(EXTRA_TO_CHAT_NICKNAME, toChatNickname);
+        intent.putExtra(EXTRA_CHAT_USER, chatUserModel);
         return intent;
     }
 
@@ -45,10 +47,12 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBinding.setToChatNickname(getIntent().getStringExtra(EXTRA_TO_CHAT_NICKNAME));
+        mChatUserModel = getIntent().getParcelableExtra(EXTRA_CHAT_USER);
 
-        mToChatUsername = getIntent().getStringExtra(EXTRA_TO_CHAT_USERNAME);
-        mChatAdapter = new ChatAdapter(mBinding.rvChatContent, mToChatUsername);
+        mCurrentUserAvatar = "http://7xk9dj.com1.z0.glb.clouddn.com/adapter/imgs/" + EMClient.getInstance().getCurrentUser().replace("test", "") + ".png";
+
+        mBinding.setNickname(mChatUserModel.nickName);
+        mChatAdapter = new ChatAdapter(mBinding.rvChatContent, mChatUserModel.chatUserName);
         mBinding.rvChatContent.setAdapter(mChatAdapter);
     }
 
@@ -60,7 +64,7 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> {
 
         RxBus.toObservableAndBindUntilStop(RxEmEvent.MessageReceivedEvent.class, this).subscribe(messageReceivedEvent -> {
             for (MessageModel messageModel : messageReceivedEvent.mMessageModelList) {
-                if (StringUtil.isEqual(messageModel.from, mToChatUsername)) {
+                if (StringUtil.isEqual(messageModel.from, mChatUserModel.chatUserName)) {
                     Logger.i("收到新的消息 msg:" + messageModel.msg);
                     mChatAdapter.addMoreItem(messageModel);
                 } else {
@@ -116,7 +120,8 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> {
 
         mBinding.etChatMsg.setText("");
 
-        EMMessage message = EMMessage.createTxtSendMessage(msg, mToChatUsername);
+        EMMessage message = EMMessage.createTxtSendMessage(msg, mChatUserModel.chatUserName);
+        message.setAttribute("avatar", mCurrentUserAvatar);
         EmUtil.sendMessage(message);
         mChatAdapter.addMoreItem(EmUtil.convertToMessageModel(message));
     }
