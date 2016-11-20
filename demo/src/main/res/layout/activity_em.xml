@@ -18,7 +18,7 @@
 
         <Button
             style="@style/DemoBtn"
-            android:text="登陆环信"
+            android:text="登录环信"
             app:onNoDoubleClick="@{() -> eventHandler.showChooseEmAccountDialog()}"/>
 
         <Button

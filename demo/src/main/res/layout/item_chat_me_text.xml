@@ -5,6 +5,10 @@
 
     <data>
 
+        <import type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel"/>
+
+        <import type="android.view.View"/>
+
         <variable
             name="position"
             type="java.lang.Integer"/>
@@ -12,6 +16,10 @@
         <variable
             name="model"
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel"/>
+
+        <variable
+            name="itemEventHandler"
+            type="cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter.ItemEventHandler"/>
     </data>
 
     <RelativeLayout
@@ -33,6 +41,7 @@
             android:id="@+id/tv_item_chat_text_msg"
             style="@style/WrapWrap"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/size_level2"
             android:layout_toLeftOf="@id/civ_item_chat_text_avatar"
             android:background="@drawable/shape_primary_radius"
             android:maxWidth="200dp"
@@ -41,5 +50,29 @@
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_14"
             tools:text="我发送的消息"/>
+
+        <ImageView
+            android:id="@+id/iv_item_chat_send_status"
+            android:layout_width="@dimen/size_level5"
+            android:layout_height="@dimen/size_level5"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_item_chat_text_msg"
+            android:clickable="@{model.sendStatus == MessageModel.SEND_STATUS_FAIL}"
+            android:src="@{model.sendStatus == MessageModel.SEND_STATUS_INPROGRESS ? @drawable/bga_refresh_loding : @drawable/exclamation_mark_red}"
+            android:visibility="@{(model.sendStatus == MessageModel.SEND_STATUS_INPROGRESS || model.sendStatus == MessageModel.SEND_STATUS_FAIL) ? View.VISIBLE : View.GONE}"
+            app:onNoDoubleClick="@{(v) -> itemEventHandler.onItemClick(v, position, model)}"
+            tools:src="@drawable/bga_refresh_loding"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/tv_item_chat_send_status"
+            style="@style/WrapWrap"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_item_chat_text_msg"
+            android:text="已读"
+            android:textColor="@color/black_middle"
+            android:textSize="@dimen/textSize_10"
+            android:visibility="@{model.sendStatus == MessageModel.SEND_STATUS_ACK ? View.VISIBLE : View.GONE}"
+            tools:visibility="visible"/>
     </RelativeLayout>
 </layout>

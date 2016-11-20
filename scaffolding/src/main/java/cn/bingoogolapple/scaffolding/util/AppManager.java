@@ -167,6 +167,29 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         mActivityStack.remove(activity);
     }
 
+    /**
+     * Activity栈是否是空的
+     *
+     * @return
+     */
+    public boolean isActivityStackEmpty() {
+        return mActivityStack.isEmpty();
+    }
+
+    /**
+     * Activity栈中Activity的个数
+     *
+     * @return
+     */
+    public int getActivityStackSize() {
+        return mActivityStack.size();
+    }
+
+    /**
+     * 获取当前栈顶Activity
+     *
+     * @return
+     */
     public Activity currentActivity() {
         Activity activity = null;
         if (!mActivityStack.empty()) {
@@ -175,6 +198,11 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         return activity;
     }
 
+    /**
+     * 移除指定Activity
+     *
+     * @param activity
+     */
     public void popOneActivity(Activity activity) {
         if (activity == null || mActivityStack.isEmpty()) {
             return;
@@ -218,9 +246,9 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     /**
-     * 退出应用程序
+     * 关闭所有Activity
      */
-    public void exit() {
+    public void finishAllActivity() {
         try {
             while (true) {
                 Activity activity = currentActivity();
@@ -229,6 +257,17 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
                 }
                 popOneActivity(activity);
             }
+        } catch (Exception e) {
+            Logger.e("关闭所有Activity错误");
+        }
+    }
+
+    /**
+     * 退出应用程序
+     */
+    public void exit() {
+        try {
+            finishAllActivity();
 
             // 如果开发者调用Process.kill或者System.exit之类的方法杀死进程，请务必在此之前调用MobclickAgent.onKillProcess(Context context)方法，用来保存统计数据
             UmengUtil.onKillProcess();
@@ -296,6 +335,24 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         }
     }
 
+    /**
+     * 应用是否在后台
+     *
+     * @return
+     */
+    public boolean isBackStage() {
+        return mActivityStartedCount == 0;
+    }
+
+    /**
+     * 应用是否在前台
+     *
+     * @return
+     */
+    public boolean isFrontStage() {
+        return mActivityStartedCount > 0;
+    }
+
     public static boolean isInOtherProcess(Context context) {
         String processName = null;
         ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
@@ -307,7 +364,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
                     processName = info.processName;
                 }
             } catch (Exception e) {
-                Log.d("AppManager", "Error>> :" + e.toString());
+                Log.d(AppManager.class.getSimpleName(), "Error>> :" + e.toString());
             }
         }
         return processName == null || !processName.equalsIgnoreCase(context.getPackageName());

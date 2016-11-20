@@ -5,6 +5,12 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
+        <variable
+            name="connected"
+            type="java.lang.Boolean"/>
+
         <variable
             name="eventHandler"
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.ChatActivity"/>
@@ -22,13 +28,23 @@
             app:bgatitlebar_delegate="@{eventHandler}"
             app:bgatitlebar_titleText="@{nickname}"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_chat_content"
+        <TextView
+            style="@style/EmConnectionStatusTv"
+            android:visibility="@{connected ? View.GONE : View.VISIBLE}"/>
+
+        <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+            android:id="@+id/refresh_chat_content"
             style="@style/MatchAuto"
-            android:onTouch="@{() -> eventHandler.closeKeyboard()}"
-            android:overScrollMode="never"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_chat_me_text"/>
+            app:bga_refresh_delegate="@{eventHandler}">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_chat_content"
+                style="@style/MatchAuto"
+                android:onTouch="@{() -> eventHandler.closeKeyboard()}"
+                android:overScrollMode="never"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_chat_me_text"/>
+        </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,8 +69,8 @@
                 android:clickable="true"
                 android:paddingLeft="@dimen/size_level2"
                 android:paddingRight="@dimen/size_level2"
-                android:src="@mipmap/plane_send"
-                app:onNoDoubleClick="@{() -> eventHandler.sendTextMessage()}"/>
+                android:src="@drawable/plane_send"
+                app:onNoDoubleClick="@{() -> eventHandler.handleSendTextMessage()}"/>
         </LinearLayout>
     </LinearLayout>
 

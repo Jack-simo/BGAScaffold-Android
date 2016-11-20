@@ -5,6 +5,12 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
+        <variable
+            name="connected"
+            type="java.lang.Boolean"/>
+
         <variable
             name="eventHandler"
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.ConversationActivity"/>
@@ -17,6 +23,10 @@
             app:bgatitlebar_delegate="@{eventHandler}"
             app:bgatitlebar_rightText="新建会话"
             app:bgatitlebar_titleText="会话列表"/>
+
+        <TextView
+            style="@style/EmConnectionStatusTv"
+            android:visibility="@{connected ? View.GONE : View.VISIBLE}"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_conversation_content"

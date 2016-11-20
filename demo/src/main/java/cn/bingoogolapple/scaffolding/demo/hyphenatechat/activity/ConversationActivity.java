@@ -50,12 +50,14 @@ public class ConversationActivity extends MvcBindingActivity<ActivityConversatio
         });
         RxBus.toObservableAndBindUntilStop(RxEmEvent.EMConnectedEvent.class, this).subscribe(emConnectedEvent -> {
             Logger.i("连接聊天服务器成功");
-            // TODO 界面上展示出来
+            mBinding.setConnected(true);
         });
         RxBus.toObservableAndBindUntilStop(RxEmEvent.EMDisconnectedEvent.class, this).subscribe(emDisconnectedEvent -> {
-            //  TODO 界面上展示出来
             Logger.i(emDisconnectedEvent.mErrorMsg);
+            mBinding.setConnected(false);
         });
+
+        mBinding.setConnected(EMClient.getInstance().isConnected());
 
         EmUtil.loadConversationList();
     }

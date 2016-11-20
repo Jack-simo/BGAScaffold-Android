@@ -140,9 +140,9 @@ public class CalendarUtil {
             return "昨天 " + formatHourMinute(ultimateCalendar.getTime());
         } else if (ultimateCalendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) && ultimateCalendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
             long differenceTime = today.getTimeInMillis() - ultimateCalendar.getTimeInMillis();
-            if (differenceTime >= 0 && differenceTime < MINUTE_MILLISECONDS) {
+            if (differenceTime < MINUTE_MILLISECONDS) {
                 return "刚刚";
-            } else if (differenceTime >= 0 && differenceTime < HOUR_MILLISECONDS) {
+            } else if (differenceTime < HOUR_MILLISECONDS) {
                 return (new Long(today.getTimeInMillis() / MINUTE_MILLISECONDS).intValue() - new Long(ultimateCalendar.getTimeInMillis() / MINUTE_MILLISECONDS).intValue()) + "分钟前";
             } else {
                 return "今天 " + formatHourMinute(ultimateCalendar.getTime());

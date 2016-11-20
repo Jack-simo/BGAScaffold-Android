@@ -86,6 +86,7 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
         if (view.getId() == R.id.tv_item_conversation_delete) {
             removeItem(position);
             closeOpenedSwipeItemLayoutWithAnim();
+            notifyItemRangeChanged(position, getItemCount() - position);
 
             EmUtil.deleteConversation(model.username);
         } else if (view.getId() == R.id.brl_item_conversation_badge) {

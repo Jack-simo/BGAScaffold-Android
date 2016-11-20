@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="cn.bingoogolapple.scaffolding.util.CalendarUtil"/>
+
+        <variable
+            name="model"
+            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel"/>
+    </data>
+
+    <TextView
+        style="@style/MatchWrap"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/size_level2"
+        android:text="@{CalendarUtil.formatDetailDisplayTime(model.msgTime)}"
+        android:textColor="@color/black_light"
+        android:textSize="@dimen/textSize_10"
+        tools:text="1分钟前"/>
+</layout>

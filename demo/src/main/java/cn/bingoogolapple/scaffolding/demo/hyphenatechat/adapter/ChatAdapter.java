@@ -21,13 +21,11 @@ import cn.bingoogolapple.scaffolding.util.StringUtil;
  */
 public class ChatAdapter extends BGABindingRecyclerViewAdapter<MessageModel, ViewDataBinding> {
     private RecyclerView mRecyclerView;
-    private String mToChatUsername;
     private EMConversation mConversation;
 
-    public ChatAdapter(RecyclerView recyclerView, String toChatUsername) {
+    public ChatAdapter(RecyclerView recyclerView, EMConversation conversation) {
         mRecyclerView = recyclerView;
-        mToChatUsername = toChatUsername;
-        mConversation = EMClient.getInstance().chatManager().getConversation(mToChatUsername, null, true);
+        mConversation = conversation;
         mConversation.markAllMessagesAsRead();
     }
 
@@ -37,7 +35,10 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter<MessageModel, Vie
 
     @Override
     public int getItemViewType(int position) {
-        if (StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), getItem(position).from)) {
+        MessageModel messageModel = getItem(position);
+        if (messageModel.contentType == MessageModel.TYPE_CONTENT_TIME) {
+            return R.layout.item_chat_time;
+        } if (StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), messageModel.from)) {
             // TODO 处理非文本消息
             return R.layout.item_chat_me_text;
         } else {
@@ -47,21 +48,38 @@ public class ChatAdapter extends BGABindingRecyclerViewAdapter<MessageModel, Vie
     }
 
     @Override
+    public void addNewData(List<MessageModel> data) {
+        EmUtil.markMessageListAsRead(mConversation, data);
+        super.addNewData(data);
+    }
+
+    @Override
     public void setData(List<MessageModel> data) {
+        EmUtil.markMessageListAsRead(mConversation, data);
         super.setData(data);
         smoothScrollToBottom();
     }
 
-    public void refresh() {
-        setData(EmUtil.loadMessageList(mConversation));
-    }
-
-    public void addMoreItem(MessageModel messageModel) {
-        if (!StringUtil.isEqual(EMClient.getInstance().getCurrentUser(), messageModel.from)) {
-            mConversation.markMessageAsRead(messageModel.msgId);
+    @Override
+    public void addLastItem(MessageModel messageModel) {
+        // 如果不是第一条消息，处理是否添加时间类型的消息
+        if (getItemCount() > 0) {
+            MessageModel timeMessageModel = EmUtil.getTimeMessageModel(messageModel, getItem(getItemCount() - 1));
+            if (timeMessageModel != null) {
+                super.addLastItem(timeMessageModel);
+            }
         }
+
+        EmUtil.markMessageAsRead(mConversation, messageModel);
         super.addLastItem(messageModel);
         smoothScrollToBottom();
+    }
+
+    /**
+     * 从内存中加载消息集合并刷新列表
+     */
+    public void loadMessageListFromMemory() {
+        setData(EmUtil.loadMessageListFromMemory(mConversation));
     }
 
     public void smoothScrollToBottom() {

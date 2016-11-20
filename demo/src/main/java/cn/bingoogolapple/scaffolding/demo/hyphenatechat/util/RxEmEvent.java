@@ -69,6 +69,17 @@ public class RxEmEvent {
     }
 
     /**
+     * 收到已读回执事件
+     */
+    public static class MessageReadAckReceivedEvent {
+        public List<MessageModel> mMessageModelList;
+
+        public MessageReadAckReceivedEvent(List<MessageModel> messageModelList) {
+            mMessageModelList = messageModelList;
+        }
+    }
+
+    /**
      * 连接上环信服务器事件
      */
     public static class EMConnectedEvent {
