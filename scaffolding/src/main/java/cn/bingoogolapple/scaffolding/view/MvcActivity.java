@@ -169,6 +169,10 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
     }
 
     @Override
+    public void onClickRightSecondaryCtv() {
+    }
+
+    @Override
     public void onClickTitleCtv() {
     }
 

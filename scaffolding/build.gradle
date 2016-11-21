@@ -25,7 +25,7 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_APPCOMPAT_VERSION}"
     compile 'com.android.support:multidex:1.0.1'
-    compile 'cn.bingoogolapple:bga-titlebar:1.0.6@aar'
+    compile 'cn.bingoogolapple:bga-titlebar:1.0.7@aar'
     compile 'cn.bingoogolapple:bga-adapter:1.1.2@aar'
     compile 'cn.bingoogolapple:bga-refreshlayout:1.1.6@aar'
     compile 'cn.bingoogolapple:bga-alertcontroller:1.0.8@aar'

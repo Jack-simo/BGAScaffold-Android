@@ -97,6 +97,10 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     }
 
     @Override
+    public void onClickRightSecondaryCtv() {
+    }
+
+    @Override
     public void onClickTitleCtv() {
     }
 
