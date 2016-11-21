@@ -25,25 +25,25 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_APPCOMPAT_VERSION}"
     compile 'com.android.support:multidex:1.0.1'
-    compile 'cn.bingoogolapple:bga-titlebar:1.0.5@aar'
+    compile 'cn.bingoogolapple:bga-titlebar:1.0.6@aar'
     compile 'cn.bingoogolapple:bga-adapter:1.1.2@aar'
     compile 'cn.bingoogolapple:bga-refreshlayout:1.1.6@aar'
     compile 'cn.bingoogolapple:bga-alertcontroller:1.0.8@aar'
     compile 'cn.bingoogolapple:bga-swipeitemlayout:1.0.4@aar'
     compile 'cn.bingoogolapple:bga-badgeview:1.1.3@aar'
 
-    compile 'io.reactivex:rxjava:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.2'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
-    compile 'com.trello:rxlifecycle:0.8.0'
-    compile 'com.trello:rxlifecycle-android:0.8.0'
-    compile 'com.trello:rxlifecycle-components:0.8.0'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
-    compile 'pub.devrel:easypermissions:0.2.0'
-    compile 'com.afollestad.material-dialogs:core:0.9.0.2'
+    compile "com.trello:rxlifecycle:${RXLIFECYCLE_VERSION}"
+    compile "com.trello:rxlifecycle-android:${RXLIFECYCLE_VERSION}"
+    compile "com.trello:rxlifecycle-components:${RXLIFECYCLE_VERSION}"
+    compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    compile "com.squareup.retrofit2:adapter-rxjava:${RETROFIT_VERSION}"
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.2'
+    compile 'pub.devrel:easypermissions:0.2.1'
+    compile 'com.afollestad.material-dialogs:core:0.9.1.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.umeng.analytics:analytics:latest.integration'
