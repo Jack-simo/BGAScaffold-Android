@@ -3,7 +3,7 @@ package cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -13,7 +13,7 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter;
+import cn.bingoogolapple.androidcommon.adapter.BGABindingViewHolder;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.scaffolding.demo.MainActivity;
@@ -39,7 +39,7 @@ import rx.functions.Func1;
  * 创建时间:16/11/10 下午10:07
  * 描述:聊天界面
  */
-public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implements BGABindingRecyclerViewAdapter.ItemEventHandler<MessageModel>, BGARefreshLayout.BGARefreshLayoutDelegate {
+public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implements BGARefreshLayout.BGARefreshLayoutDelegate {
     private static final String EXTRA_CHAT_USER = "EXTRA_CHAT_USER";
 
     private EMConversation mConversation;
@@ -55,6 +55,13 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
     @Override
     protected void setListener() {
         super.setListener();
+
+        mBinding.etChatMsg.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                RxUtil.runInUIThreadDelay(300, ChatActivity.this).subscribe(aVoid -> mChatAdapter.smoothScrollToBottom());
+            }
+            return false;
+        });
 
         mBinding.etChatMsg.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
@@ -168,13 +175,6 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
     }
 
     /**
-     * 滚动到列表底部
-     */
-    public void smoothScrollToBottom() {
-        RxUtil.runInUIThreadDelay(300).subscribe(aVoid -> mChatAdapter.smoothScrollToBottom());
-    }
-
-    /**
      * 处理发送文本消息
      */
     public void handleSendTextMessage() {
@@ -217,16 +217,13 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
         return false;
     }
 
-    @Override
-    public void onItemClick(View v, int position, MessageModel model) {
+    public void resendMessage(BGABindingViewHolder viewHolder, MessageModel model) {
         new MaterialDialog.Builder(this)
                 .title("重发该消息？")
                 .positiveText("重发")
                 .onPositive((dialog, which) -> {
                     model.sendStatus = MessageModel.SEND_STATUS_INPROGRESS;
-                    mChatAdapter.moveItem(position, mChatAdapter.getItemCount() - 1);
-
-                    mChatAdapter.notifyItemRangeChanged(position, mChatAdapter.getItemCount() - position);
+                    mChatAdapter.moveItem(viewHolder.getAdapterPosition(), mChatAdapter.getItemCount() - 1);
 
                     EmUtil.resendMessage(model.msgId);
                 })

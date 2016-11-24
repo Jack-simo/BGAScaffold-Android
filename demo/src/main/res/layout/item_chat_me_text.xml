@@ -10,8 +10,8 @@
         <import type="android.view.View"/>
 
         <variable
-            name="position"
-            type="java.lang.Integer"/>
+            name="viewHolder"
+            type="cn.bingoogolapple.androidcommon.adapter.BGABindingViewHolder"/>
 
         <variable
             name="model"
@@ -19,7 +19,7 @@
 
         <variable
             name="itemEventHandler"
-            type="cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter.ItemEventHandler"/>
+            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.ChatActivity"/>
     </data>
 
     <RelativeLayout
@@ -60,7 +60,7 @@
             android:clickable="@{model.sendStatus == MessageModel.SEND_STATUS_FAIL}"
             android:src="@{model.sendStatus == MessageModel.SEND_STATUS_INPROGRESS ? @drawable/bga_refresh_loding : @drawable/exclamation_mark_red}"
             android:visibility="@{(model.sendStatus == MessageModel.SEND_STATUS_INPROGRESS || model.sendStatus == MessageModel.SEND_STATUS_FAIL) ? View.VISIBLE : View.GONE}"
-            app:onNoDoubleClick="@{(v) -> itemEventHandler.onItemClick(v, position, model)}"
+            app:onNoDoubleClick="@{(v) -> itemEventHandler.resendMessage(viewHolder, model)}"
             tools:src="@drawable/bga_refresh_loding"
             tools:visibility="visible"/>
 

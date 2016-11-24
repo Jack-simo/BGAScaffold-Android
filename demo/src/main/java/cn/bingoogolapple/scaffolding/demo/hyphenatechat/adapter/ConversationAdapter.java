@@ -1,11 +1,10 @@
 package cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter;
 
-import android.view.View;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter;
+import cn.bingoogolapple.androidcommon.adapter.BGABindingViewHolder;
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.databinding.ItemConversationBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.ConversationModel;
@@ -17,7 +16,7 @@ import cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout;
  * 创建时间:16/11/10 下午9:29
  * 描述:
  */
-public class ConversationAdapter extends BGABindingRecyclerViewAdapter<ConversationModel, ItemConversationBinding> implements BGABindingRecyclerViewAdapter.ItemEventHandler<ConversationModel> {
+public class ConversationAdapter extends BGABindingRecyclerViewAdapter<ConversationModel, ItemConversationBinding> {
     private Delegate mDelegate;
 
     /**
@@ -81,20 +80,18 @@ public class ConversationAdapter extends BGABindingRecyclerViewAdapter<Conversat
         super.setData(data);
     }
 
-    @Override
-    public void onItemClick(View view, int position, ConversationModel model) {
-        if (view.getId() == R.id.tv_item_conversation_delete) {
-            removeItem(position);
-            closeOpenedSwipeItemLayoutWithAnim();
-            notifyItemRangeChanged(position, getItemCount() - position);
+    public void onClickDelete(BGABindingViewHolder viewHolder, ConversationModel model) {
+        removeItem(viewHolder.getAdapterPosition());
+        closeOpenedSwipeItemLayoutWithAnim();
 
-            EmUtil.deleteConversation(model.username);
-        } else if (view.getId() == R.id.brl_item_conversation_badge) {
-            if (mOpenedSil.size() > 0) {
-                closeOpenedSwipeItemLayoutWithAnim();
-            } else {
-                mDelegate.goToChat(model.username);
-            }
+        EmUtil.deleteConversation(model.username);
+    }
+
+    public void onClickItem(ConversationModel model) {
+        if (mOpenedSil.size() > 0) {
+            closeOpenedSwipeItemLayoutWithAnim();
+        } else {
+            mDelegate.goToChat(model.username);
         }
     }
 

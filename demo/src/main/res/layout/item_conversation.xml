@@ -8,8 +8,8 @@
         <import type="cn.bingoogolapple.scaffolding.util.CalendarUtil"/>
 
         <variable
-            name="position"
-            type="java.lang.Integer"/>
+            name="viewHolder"
+            type="cn.bingoogolapple.androidcommon.adapter.BGABindingViewHolder"/>
 
         <variable
             name="model"
@@ -17,7 +17,7 @@
 
         <variable
             name="itemEventHandler"
-            type="cn.bingoogolapple.androidcommon.adapter.BGABindingRecyclerViewAdapter.ItemEventHandler"/>
+            type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.adapter.ConversationAdapter"/>
     </data>
 
     <cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout
@@ -39,7 +39,7 @@
             android:text="删除"
             android:textColor="@android:color/white"
             android:textSize="@dimen/textSize_14"
-            app:onNoDoubleClick="@{(v) -> itemEventHandler.onItemClick(v, position, model)}"/>
+            app:onNoDoubleClick="@{(v) -> itemEventHandler.onClickDelete(viewHolder, model)}"/>
 
         <cn.bingoogolapple.badgeview.BGABadgeRelativeLayout
             android:id="@+id/brl_item_conversation_badge"
@@ -56,7 +56,7 @@
             app:badge_isResumeTravel="true"
             app:badge_textSize="@dimen/textSize_12"
             app:badge_verticalMargin="@dimen/size_level3"
-            app:onNoDoubleClick="@{(v) -> itemEventHandler.onItemClick(v, position, model)}">
+            app:onNoDoubleClick="@{(v) -> itemEventHandler.onClickItem(model)}">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/civ_item_conversation_avatar"

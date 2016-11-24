@@ -1,6 +1,5 @@
 package cn.bingoogolapple.scaffolding.view;
 
-import android.annotation.TargetApi;
 import android.databinding.DataBindingUtil;
 import android.databinding.OnRebindCallback;
 import android.databinding.ViewDataBinding;
@@ -29,11 +28,12 @@ public abstract class MvcBindingActivity<B extends ViewDataBinding> extends MvcA
     @Override
     protected void setListener() {
         mBinding.addOnRebindCallback(new OnRebindCallback() {
-            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public boolean onPreBind(ViewDataBinding binding) {
                 ViewGroup view = (ViewGroup) binding.getRoot();
-                TransitionManager.beginDelayedTransition(view);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    TransitionManager.beginDelayedTransition(view);
+                }
                 return true;
             }
         });
