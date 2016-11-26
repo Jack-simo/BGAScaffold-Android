@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="position"
-            type="java.lang.Integer"/>
-
-        <variable
             name="model"
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel"/>
     </data>

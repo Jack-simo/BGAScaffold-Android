@@ -60,7 +60,7 @@
             android:clickable="@{model.sendStatus == MessageModel.SEND_STATUS_FAIL}"
             android:src="@{model.sendStatus == MessageModel.SEND_STATUS_INPROGRESS ? @drawable/bga_refresh_loding : @drawable/exclamation_mark_red}"
             android:visibility="@{(model.sendStatus == MessageModel.SEND_STATUS_INPROGRESS || model.sendStatus == MessageModel.SEND_STATUS_FAIL) ? View.VISIBLE : View.GONE}"
-            app:onNoDoubleClick="@{(v) -> itemEventHandler.resendMessage(viewHolder, model)}"
+            app:onNoDoubleClick="@{() -> itemEventHandler.resendMessage(viewHolder, model)}"
             tools:src="@drawable/bga_refresh_loding"
             tools:visibility="visible"/>
 
