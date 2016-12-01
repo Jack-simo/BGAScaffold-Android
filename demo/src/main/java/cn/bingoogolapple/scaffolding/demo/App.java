@@ -1,11 +1,13 @@
 package cn.bingoogolapple.scaffolding.demo;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.antfortune.freeline.FreelineCore;
 import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -13,7 +15,7 @@ import com.squareup.leakcanary.RefWatcher;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.LiteOrmUtil;
 import cn.bingoogolapple.scaffolding.util.AppManager;
-import cn.bingoogolapple.scaffolding.util.HttpRequestException;
+import cn.bingoogolapple.scaffolding.util.ApiException;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxEvent;
 import cn.bingoogolapple.scaffolding.util.UmengUtil;
@@ -29,6 +31,7 @@ public class App extends Application implements AppManager.Delegate {
     @Override
     public void onCreate() {
         super.onCreate();
+        FreelineCore.init(this);
 
         if (AppManager.isInOtherProcess(this)) {
             Log.e("App", "enter the other process!");
@@ -66,7 +69,12 @@ public class App extends Application implements AppManager.Delegate {
     }
 
     @Override
-    public void handleServerException(HttpRequestException httpRequestException) {
+    public boolean isActivityNotContainFragment(Activity activity) {
+        return true;
+    }
+
+    @Override
+    public void handleServerException(ApiException apiException) {
         Logger.i("处理网络请求异常");
     }
 

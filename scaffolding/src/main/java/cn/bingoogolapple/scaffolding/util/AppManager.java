@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 bingoogolapple
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.bingoogolapple.scaffolding.util;
 
 import android.app.Activity;
@@ -10,6 +26,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -54,9 +71,17 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
                 Log.e(AppManager.class.getSimpleName(), "Failed to get current application from ActivityThread." + e.getMessage());
             }
         } finally {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+                try {
+                    Class.forName("android.os.AsyncTask");
+                } catch (ClassNotFoundException e) {
+                }
+            }
+
             sApp = app;
 
             sInstance = new AppManager();
+
             sApp.registerActivityLifecycleCallbacks(sInstance);
         }
     }
@@ -115,15 +140,38 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         return mIsBuildDebug;
     }
 
+    /**
+     * LeakCanary 监控 Fragment 的内存泄露
+     *
+     * @param fragment
+     */
     public void refWatcherWatchFragment(Fragment fragment) {
         if (mDelegate != null) {
             mDelegate.refWatcherWatchFragment(fragment);
         }
     }
 
-    public void handleServerException(HttpRequestException httpRequestException) {
+    /**
+     * Activity 是否包含 Fragment。用于处理友盟页面统计，避免重复统计 Activity 和 Fragment
+     *
+     * @param activity
+     * @return
+     */
+    public boolean isActivityNotContainFragment(Activity activity) {
         if (mDelegate != null) {
-            mDelegate.handleServerException(httpRequestException);
+            return mDelegate.isActivityNotContainFragment(activity);
+        }
+        return true;
+    }
+
+    /**
+     * 处理全局网络请求异常
+     *
+     * @param apiException
+     */
+    public void handleServerException(ApiException apiException) {
+        if (mDelegate != null) {
+            mDelegate.handleServerException(apiException);
         }
     }
 
@@ -371,8 +419,28 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     public interface Delegate {
+
+        /**
+         * LeakCanary 监控 Fragment 的内存泄露
+         *
+         * @param fragment
+         */
         void refWatcherWatchFragment(Fragment fragment);
 
-        void handleServerException(HttpRequestException httpRequestException);
+        /**
+         * Activity 是否包含 Fragment。用于处理友盟页面统计，避免重复统计 Activity 和 Fragment
+         *
+         * @param activity
+         * @return
+         */
+        boolean isActivityNotContainFragment(Activity activity);
+
+        /**
+         * 处理全局网络请求异常
+         *
+         * @param apiException
+         */
+        void handleServerException(ApiException apiException);
+
     }
 }

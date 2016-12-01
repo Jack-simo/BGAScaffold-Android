@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 bingoogolapple
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.bingoogolapple.scaffolding.view;
 
 import android.content.Context;
@@ -5,7 +21,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.ViewStubCompat;
 import android.view.LayoutInflater;
@@ -13,7 +28,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
-import cn.bingoogolapple.scaffolding.util.UmengUtil;
 import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
@@ -135,35 +151,67 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        UmengUtil.setFragmentUserVisibleHint(this, isVisibleToUser);
-
-        handleLazyLoadDataOnce();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        handleLazyLoadDataOnce();
-    }
-
-    private void handleLazyLoadDataOnce() {
-        if (mContentView != null && getUserVisibleHint() && !mIsLoadedData) {
-            mIsLoadedData = true;
-            lazyLoadDataOnce();
+        if (isResumed()) {
+            handleOnVisibilityChangedToUser(isVisibleToUser);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        UmengUtil.onFragmentResume(this);
+        if (getUserVisibleHint()) {
+            handleOnVisibilityChangedToUser(true);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        UmengUtil.onFragmentPause(this);
+        if (getUserVisibleHint()) {
+            handleOnVisibilityChangedToUser(false);
+        }
+    }
+
+    /**
+     * 处理对用户是否可见
+     *
+     * @param isVisibleToUser
+     */
+    private void handleOnVisibilityChangedToUser(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            // 对用户可见
+            if (!mIsLoadedData) {
+                Logger.d(this.getClass().getSimpleName() + " 懒加载一次");
+                mIsLoadedData = true;
+                onLazyLoadOnce();
+            }
+            Logger.d(this.getClass().getSimpleName() + " 对用户可见");
+            MobclickAgent.onPageStart(this.getClass().getSimpleName());
+            onVisibleToUser();
+        } else {
+            // 对用户不可见
+            Logger.d(this.getClass().getSimpleName() + " 对用户不可见");
+            MobclickAgent.onPageEnd(this.getClass().getSimpleName());
+            onInvisibleToUser();
+        }
+    }
+
+    /**
+     * 懒加载一次。如果只想在对用户可见时才加载数据，并且只加载一次数据，在子类中重写该方法
+     */
+    protected void onLazyLoadOnce() {
+    }
+
+    /**
+     * 对用户可见时触发该方法。如果只想在对用户可见时才加载数据，在子类中重写该方法
+     */
+    protected void onVisibleToUser() {
+    }
+
+    /**
+     * 对用户不可见时触发该方法
+     */
+    protected void onInvisibleToUser() {
     }
 
     /**
@@ -192,12 +240,6 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
      * @param savedInstanceState
      */
     protected abstract void processLogic(Bundle savedInstanceState);
-
-    /**
-     * 懒加载一次
-     */
-    protected void lazyLoadDataOnce() {
-    }
 
     /**
      * 跳转到下一个Activity，并且销毁当前Activity

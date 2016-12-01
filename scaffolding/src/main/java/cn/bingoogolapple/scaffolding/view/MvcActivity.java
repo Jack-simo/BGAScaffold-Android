@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 bingoogolapple
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.bingoogolapple.scaffolding.view;
 
 import android.content.Intent;
@@ -219,14 +235,12 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
     /**
      * 初始化View控件
      */
-    protected void initView(Bundle savedInstanceState) {
-    }
+    protected abstract void initView(Bundle savedInstanceState);
 
     /**
      * 给View控件添加事件监听器
      */
-    protected void setListener() {
-    }
+    protected abstract void setListener();
 
     /**
      * 处理业务逻辑，状态恢复等操作

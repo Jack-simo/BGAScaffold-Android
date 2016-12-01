@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 bingoogolapple
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.bingoogolapple.scaffolding.util;
 
 import android.os.Build;
@@ -40,18 +56,12 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        if (isNeedHandle(ex)) {
-            handleException(thread, ex);
-        } else {
-            mDefaultUncaughtExceptionHandler.uncaughtException(thread, ex);
-        }
-    }
+        if (ex != null) {
+            if (mDefaultUncaughtExceptionHandler != null) {
+                mDefaultUncaughtExceptionHandler.uncaughtException(thread, ex);
+            }
 
-    private boolean isNeedHandle(Throwable ex) {
-        if (ex == null) {
-            return false;
-        } else {
-            return true;
+            handleException(thread, ex);
         }
     }
 
@@ -69,6 +79,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
 
     private void collectionException(Throwable ex) {
+        // TODO 在 APPManager 里增加回调接口来处理上传
         Logger.e("【deviceInfo】\n" + getDeviceInfo() + "【errorInfo】\n" + getErrorInfo(ex));
     }
 

@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 bingoogolapple
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.bingoogolapple.scaffolding.util;
 
 import java.text.ParseException;
@@ -25,6 +41,8 @@ public class CalendarUtil {
     private static final long MINUTE_MILLISECONDS = 60 * 1000;
     private static final long HOUR_MILLISECONDS = 60 * MINUTE_MILLISECONDS;
     private static final long DAY_MILLISECONDS = 24 * HOUR_MILLISECONDS;
+
+    public static final int NO_TIME = 0;
 
     private CalendarUtil() {
     }
@@ -117,6 +135,10 @@ public class CalendarUtil {
      * @return
      */
     public static CharSequence formatDetailDisplayTime(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         Calendar ultimateCalendar = getCalendar();
         ultimateCalendar.setTimeInMillis(milliseconds);
 
@@ -163,6 +185,10 @@ public class CalendarUtil {
      * @return
      */
     public static CharSequence formatDetailDisplayDate(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         Calendar ultimateCalendar = getCalendar();
         ultimateCalendar.setTimeInMillis(milliseconds);
 
@@ -200,6 +226,10 @@ public class CalendarUtil {
     }
 
     public static String formatHourMinute(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatHourMinute(new Date(milliseconds));
     }
 
@@ -209,6 +239,10 @@ public class CalendarUtil {
     }
 
     public static String formatMonthDayHourMinute(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatMonthDayHourMinute(new Date(milliseconds));
     }
 
@@ -218,6 +252,10 @@ public class CalendarUtil {
     }
 
     public static String formatYearMonthDayHourMinute(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatYearMonthDayHourMinute(new Date(milliseconds));
     }
 
@@ -226,6 +264,10 @@ public class CalendarUtil {
     }
 
     public static String formatYearMonthDay(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatYearMonthDay(new Date(milliseconds));
     }
 
@@ -234,6 +276,10 @@ public class CalendarUtil {
     }
 
     public static String formatYearMonthDayWeek(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatYearMonthDayWeek(new Date(milliseconds));
     }
 
@@ -242,6 +288,10 @@ public class CalendarUtil {
     }
 
     public static String formatYearMonthDayWeekSlash(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatYearMonthDayWeekSlash(new Date(milliseconds));
     }
 
@@ -269,6 +319,10 @@ public class CalendarUtil {
     }
 
     public static String formatChineseMonthDay(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatChineseMonthDay(new Date(milliseconds));
     }
 
@@ -277,6 +331,10 @@ public class CalendarUtil {
     }
 
     public static String formatChineseYearMonthDay(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatChineseYearMonthDay(new Date(milliseconds));
     }
 
@@ -285,6 +343,10 @@ public class CalendarUtil {
     }
 
     public static String formatChineseYearMonthDayWeek(long milliseconds) {
+        if (milliseconds == NO_TIME) {
+            return "";
+        }
+
         return formatChineseYearMonthDayWeek(new Date(milliseconds));
     }
 

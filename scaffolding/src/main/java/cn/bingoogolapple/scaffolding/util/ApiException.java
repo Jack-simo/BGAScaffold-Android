@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package cn.bingoogolapple.scaffolding.presenter;
+package cn.bingoogolapple.scaffolding.util;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:16/11/4 上午9:38
- * 描述:
+ * 创建时间:16/8/14 上午12:45
+ * 描述:Http 请求异常
  */
-public interface BasePresenter {
+public class ApiException extends Exception {
+    private int mCode;
+
+    public ApiException(String msg, int code) {
+        super(msg);
+        mCode = code;
+    }
+
+    public int getCode() {
+        return mCode;
+    }
 }

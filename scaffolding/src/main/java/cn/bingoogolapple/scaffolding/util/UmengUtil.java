@@ -1,7 +1,22 @@
+/**
+ * Copyright 2016 bingoogolapple
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.bingoogolapple.scaffolding.util;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -33,8 +48,6 @@ public class UmengUtil {
 
     // ======================== 页面路径统计 START ========================
 
-    // ======================== Activity START ========================
-
     /**
      * Activity 中是否包含 Fragment
      *
@@ -42,7 +55,7 @@ public class UmengUtil {
      * @return
      */
     private static boolean isActivityNotContainFragment(Activity activity) {
-        return true;
+        return AppManager.getInstance().isActivityNotContainFragment(activity);
     }
 
     /**
@@ -69,50 +82,5 @@ public class UmengUtil {
         }
         MobclickAgent.onPause(activity);
     }
-    // ======================== Activity END ========================
-
-    // ======================== Fragment START ========================
-
-    /**
-     * 在 Fragment 的 setUserVisibleHint 方法里调用
-     *
-     * @param fragment
-     * @param isVisibleToUser
-     */
-    public static void setFragmentUserVisibleHint(Fragment fragment, boolean isVisibleToUser) {
-        if (fragment.isResumed()) {
-            onVisibilityChangedToUser(fragment, isVisibleToUser);
-        }
-    }
-
-    /**
-     * 在 Fragment 的 onResume 方法里调用
-     *
-     * @param fragment
-     */
-    public static void onFragmentResume(Fragment fragment) {
-        if (fragment.getUserVisibleHint()) {
-            onVisibilityChangedToUser(fragment, true);
-        }
-    }
-
-    /**
-     * 在 Fragment 的 onPause 方法里调用
-     *
-     * @param fragment
-     */
-    public static void onFragmentPause(Fragment fragment) {
-        if (fragment.getUserVisibleHint()) {
-            onVisibilityChangedToUser(fragment, false);
-        }
-    }
-
-    private static void onVisibilityChangedToUser(Fragment fragment, boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            MobclickAgent.onPageStart(fragment.getClass().getSimpleName());
-        } else {
-            MobclickAgent.onPageEnd(fragment.getClass().getSimpleName());
-        }
-    }
-    // ======================== Fragment END ========================
+    // ======================== 页面路径统计 START ========================
 }
