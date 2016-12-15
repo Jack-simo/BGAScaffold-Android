@@ -84,7 +84,7 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
      * @return
      */
     protected boolean isSupportSwipeBack() {
-        return false;
+        return true;
     }
 
     /**

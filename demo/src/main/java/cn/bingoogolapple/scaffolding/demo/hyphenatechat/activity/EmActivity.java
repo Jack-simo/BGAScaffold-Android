@@ -19,6 +19,7 @@ import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
  * 描述:环信案例主界面
  */
 public class EmActivity extends MvcBindingActivity<ActivityEmBinding> {
+
     @Override
     protected int getRootLayoutResID() {
         return R.layout.activity_em;

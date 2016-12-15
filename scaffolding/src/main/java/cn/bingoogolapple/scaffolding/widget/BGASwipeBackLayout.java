@@ -51,6 +51,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import cn.bingoogolapple.scaffolding.R;
+import cn.bingoogolapple.scaffolding.util.UIUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -528,6 +529,10 @@ public class BGASwipeBackLayout extends ViewGroup {
                 maxLayoutHeight = heightSize - getPaddingTop() - getPaddingBottom();
                 break;
         }
+
+        // ============ 新加的 START ============
+        maxLayoutHeight -= UIUtil.getNavigationBarHeight();
+        // ============ 新加的 END ============
 
         float weightSum = 0;
         boolean canSlide = false;

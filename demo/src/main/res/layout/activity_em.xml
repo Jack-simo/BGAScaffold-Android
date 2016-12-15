@@ -11,27 +11,45 @@
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.EmActivity"/>
     </data>
 
-    <LinearLayout
-        style="@style/MatchMatch.Vertical"
-        android:background="@color/white"
-        android:gravity="center">
+    <ScrollView
+        style="@style/MatchMatch">
 
-        <Button
-            style="@style/DemoBtn"
-            android:text="登录环信"
-            app:onNoDoubleClick="@{() -> eventHandler.showChooseEmAccountDialog()}"/>
+        <LinearLayout
+            style="@style/MatchMatch.Vertical"
+            android:background="#abc"
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/tv_main_em_logout"
-            style="@style/DemoBtn"
-            android:text="退出环信"
-            app:onNoDoubleClick="@{() -> EmUtil.logout()}"/>
+            <Button
+                style="@style/DemoBtn"
+                android:text="登录环信"
+                app:onNoDoubleClick="@{() -> eventHandler.showChooseEmAccountDialog()}"/>
 
-        <cn.bingoogolapple.badgeview.BGABadgeTextView
-            android:id="@+id/btv_em_unread"
-            style="@style/WrapWrap"
-            android:padding="@dimen/size_level6"
-            android:text="所有未读消息数量"/>
+            <Button
+                android:id="@+id/tv_main_em_logout"
+                style="@style/DemoBtn"
+                android:text="退出环信"
+                app:onNoDoubleClick="@{() -> EmUtil.logout()}"/>
 
-    </LinearLayout>
+            <cn.bingoogolapple.badgeview.BGABadgeTextView
+                android:id="@+id/btv_em_unread"
+                style="@style/WrapWrap"
+                android:padding="@dimen/size_level6"
+                android:text="所有未读消息数量"/>
+
+            <View
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:background="#5bc"/>
+
+            <View
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:background="#bc5"/>
+
+            <View
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:background="#0ff"/>
+        </LinearLayout>
+    </ScrollView>
 </layout>

@@ -18,6 +18,6 @@
 
     <color name="gray_line">#dedede</color>
     <color name="list_item_pressed">#efefef</color>
-    <color name="white">#ffffff</color>
+    <color name="white">@android:color/white</color>
 
 </resources>

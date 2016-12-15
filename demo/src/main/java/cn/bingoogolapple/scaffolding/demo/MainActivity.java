@@ -29,6 +29,11 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
     private static final int REQUEST_CODE_SETTINGS_SCREEN = 1;
 
     @Override
+    protected boolean isSupportSwipeBack() {
+        return false;
+    }
+
+    @Override
     protected int getRootLayoutResID() {
         return R.layout.activity_main;
     }
