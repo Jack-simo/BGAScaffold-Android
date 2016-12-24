@@ -2,10 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.antfortune.freeline'
 
-def releaseTime() {
-    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
-}
-
 android {
     useLibrary 'org.apache.http.legacy'
     compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
@@ -17,7 +13,6 @@ android {
         versionCode VERSION_CODE as int
         versionName VERSION_NAME
 
-        // Enabling multidex support.
         multiDexEnabled true
 
         ndk {
@@ -25,14 +20,13 @@ android {
         }
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     dexOptions {
         javaMaxHeapSize "2048M"
         preDexLibraries = false
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     lintOptions {
@@ -53,6 +47,9 @@ android {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/ASL2.0'
+        exclude 'LICENSE'
+        exclude 'NOTICE'
     }
 
     signingConfigs {
@@ -66,68 +63,95 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField "boolean", "IS_DEVELOP_MODE", "true"
-            minifyEnabled false
-            zipAlignEnabled false
-            shrinkResources false
-            signingConfig signingConfigs.release
-        }
-
         release {
-            buildConfigField "boolean", "IS_DEVELOP_MODE", "false"
-
-            debuggable false
-            //是否zip对齐
             zipAlignEnabled true
-            // 移除无用的resource文件
             shrinkResources true
-
-            signingConfig signingConfigs.release
-            minifyEnabled false
+            debuggable false
+            jniDebuggable false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
+            signingConfig signingConfigs.release
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
+                    if (output.zipAlign != null) {
+                        output.zipAlign.doLast {
+                            output.zipAlign.inputFile.delete()
+                        }
+                    }
+
                     def outputFile = output.outputFile
                     if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                        def fileName = "${project.name}_v${defaultConfig.versionName}_${releaseTime()}_${variant.productFlavors[0].name}.apk"
+                        def fileName = "app_${variant.productFlavors[0].name.replace("production", "release")}_v${variant.versionName}"
+                        if (variant.buildType.name.equals("release")) {
+                            fileName += ".apk"
+                        } else {
+                            fileName += "_${variant.buildType.name}.apk"
+                        }
                         output.outputFile = new File(outputFile.parent, fileName)
                     }
                 }
             }
         }
+        debug {
+            zipAlignEnabled false
+            shrinkResources false
+            debuggable true
+            jniDebuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
     }
 
     productFlavors {
-        fir {}
+        // buildTypes 为 debug 时
+        dev {
+            buildConfigField "String", "APP_ENV_TIP", '"调试版"'
+            buildConfigField "boolean", "CHANGE_ENV_ENABLE", "true"
+        }
+
+        // gradle assembleAlphaRelease
+        alpha {
+            buildConfigField "String", "APP_ENV_TIP", '"内测版"'
+            buildConfigField "boolean", "CHANGE_ENV_ENABLE", "true"
+        }
+
+        // gradle assembleBetaRelease
+        beta {
+            buildConfigField "String", "APP_ENV_TIP", '"公测版"'
+            buildConfigField "boolean", "CHANGE_ENV_ENABLE", "true"
+        }
+
+        // gradle assembleProductionRelease
+        production {
+            buildConfigField "String", "APP_ENV_TIP", '"正式版"'
+            buildConfigField "boolean", "CHANGE_ENV_ENABLE", "false"
+        }
     }
 
     productFlavors.all { flavor ->
-        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
-    }
-
-    dataBinding {
-        enabled = true
+        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name, UMENG_APPKEY_VALUE: "5824622df29d9859ce0034dd"]
     }
 
     freeline {
         hack true
-        productFlavor 'fir'
-    }
-
-}
-
-repositories {
-    flatDir {
-        dirs 'libs'
+        productFlavor 'dev'
+        applicationProxy false
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile(name: 'bga-adapter', ext: 'aar')
     compile project(':scaffolding')
+
+    compile 'com.android.support:multidex:1.0.1'
+
+    compile 'cn.bingoogolapple:bga-adapter:1.1.5@aar'
+    compile 'cn.bingoogolapple:bga-refreshlayout:1.1.6@aar'
+    compile 'cn.bingoogolapple:bga-swipeitemlayout:1.0.4@aar'
+    compile 'cn.bingoogolapple:bga-badgeview:1.1.3@aar'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:${LEAKCANARY_VERSION}"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${LEAKCANARY_VERSION}"

@@ -45,6 +45,4 @@ proguard/
 
 captures
 
-freeline/
-freeline_core/
-freeline.py
+freeline*
