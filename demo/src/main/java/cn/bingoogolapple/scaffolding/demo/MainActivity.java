@@ -8,6 +8,7 @@ import java.util.List;
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityMainBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.EmActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
+import cn.bingoogolapple.scaffolding.util.PermissionUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -19,14 +20,6 @@ import pub.devrel.easypermissions.EasyPermissions;
  * 描述:
  */
 public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
-    /**
-     * 权限请求码
-     */
-    private static final int REQUEST_CODE_PERMISSIONS = 1;
-    /**
-     * 跳转到权限设置界面的请求码
-     */
-    private static final int REQUEST_CODE_SETTINGS_SCREEN = 1;
 
     @Override
     protected boolean isSupportSwipeBack() {
@@ -43,24 +36,11 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
         requestPermissions();
     }
 
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this, "缺少权限时「" + AppManager.getInstance().getAppName() + "」将无法正常工作,打开设置界面修改权限")
-                    .setTitle("权限请求")
-                    .setPositiveButton("设置")
-                    .setNegativeButton("取消", (dialog, which) -> finish())
-                    .setRequestCode(REQUEST_CODE_SETTINGS_SCREEN)
-                    .build()
-                    .show();
-        }
-    }
-
-    @AfterPermissionGranted(REQUEST_CODE_PERMISSIONS)
+    @AfterPermissionGranted(PermissionUtil.RC_PERMISSION_STORAGE)
     public void requestPermissions() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION};
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(this, perms)) {
-            EasyPermissions.requestPermissions(this, "使用「" + AppManager.getInstance().getAppName() + "」需要授权权限!", REQUEST_CODE_PERMISSIONS, perms);
+            PermissionUtil.requestPermissions(this, R.string.permission_request_storage, PermissionUtil.RC_PERMISSION_STORAGE, perms);
         }
     }
 

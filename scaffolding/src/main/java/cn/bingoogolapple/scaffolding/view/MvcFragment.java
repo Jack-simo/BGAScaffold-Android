@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
+import cn.bingoogolapple.scaffolding.util.PermissionUtil;
 import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,7 +49,7 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午10:57
  * 描述:
  */
-public abstract class MvcFragment extends RxFragment implements EasyPermissions.PermissionCallbacks, BGATitleBar.Delegate {
+public abstract class MvcFragment extends RxFragment implements EasyPermissions.PermissionCallbacks, PermissionUtil.Delegate, BGATitleBar.Delegate {
     protected View mContentView;
     protected MvcActivity mActivity;
 
@@ -353,5 +354,24 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
+        PermissionUtil.onPermissionsDenied(this, this, requestCode);
+    }
+
+    /**
+     * 某些权限被永久拒绝
+     *
+     * @param requestCode 权限请求码
+     */
+    @Override
+    public void onSomePermissionDenied(int requestCode) {
+    }
+
+    /**
+     * 点击取消打开权限设置界面
+     *
+     * @param requestCode 权限请求码
+     */
+    @Override
+    public void onClickCancelOpenPermissionsSettingsScreen(int requestCode) {
     }
 }

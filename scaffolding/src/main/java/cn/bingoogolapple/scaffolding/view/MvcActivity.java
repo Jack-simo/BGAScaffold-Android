@@ -34,9 +34,9 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import cn.bingoogolapple.alertcontroller.BGAAlertController;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
+import cn.bingoogolapple.scaffolding.util.PermissionUtil;
 import cn.bingoogolapple.scaffolding.widget.BGASwipeBackLayout;
 import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -48,10 +48,9 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class MvcActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, BGATitleBar.Delegate, BGASwipeBackLayout.PanelSlideListener {
+public abstract class MvcActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, PermissionUtil.Delegate, BGATitleBar.Delegate, BGASwipeBackLayout.PanelSlideListener {
     protected BGASwipeBackLayout mSwipeBackLayout;
     protected MaterialDialog mLoadingDialog;
-    protected BGAAlertController mMoreMenu;
 
     protected BGATitleBar mTitleBar;
     protected Toolbar mToolbar;
@@ -376,12 +375,6 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
         }
     }
 
-    /**
-     * 显示底部的更多菜单
-     */
-    protected void showMoreMenu() {
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -389,20 +382,6 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
     }
 
     @Override
@@ -418,5 +397,38 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
      */
     protected boolean isAutoCloseKeyboard() {
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        PermissionUtil.onPermissionsDenied(this, this, requestCode);
+    }
+
+    /**
+     * 某些权限被永久拒绝
+     *
+     * @param requestCode 权限请求码
+     */
+    @Override
+    public void onSomePermissionDenied(int requestCode) {
+    }
+
+    /**
+     * 点击取消打开权限设置界面
+     *
+     * @param requestCode 权限请求码
+     */
+    @Override
+    public void onClickCancelOpenPermissionsSettingsScreen(int requestCode) {
     }
 }

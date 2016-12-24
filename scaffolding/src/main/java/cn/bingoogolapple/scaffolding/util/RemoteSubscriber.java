@@ -19,6 +19,8 @@ package cn.bingoogolapple.scaffolding.util;
 import android.app.Activity;
 import android.support.annotation.StringRes;
 
+import com.orhanobut.logger.Logger;
+
 import cn.bingoogolapple.scaffolding.R;
 
 /**
@@ -57,9 +59,7 @@ public abstract class RemoteSubscriber<T> extends LocalSubscriber<T> {
 
     @Override
     public void onError(Throwable e) {
-        if (AppManager.getInstance().isBuildDebug()) {
-            e.printStackTrace();
-        }
+        Logger.e(e, RemoteSubscriber.class.getSimpleName());
 
         dismissLoadingDialog();
 
@@ -67,8 +67,12 @@ public abstract class RemoteSubscriber<T> extends LocalSubscriber<T> {
             onError(AppManager.getApp().getString(R.string.network_unavailable));
         } else if (e instanceof ApiException) {
             onError(e.getMessage());
-
-            AppManager.getInstance().handleServerException((ApiException) e);
+            try {
+                if (AppManager.getInstance().isFrontStage()) {
+                    RxUtil.runInIoThread().subscribe(aVoid -> AppManager.getInstance().handleServerException((ApiException) e));
+                }
+            } catch (Exception e2) {
+            }
         } else {
             onError(AppManager.getApp().getString(R.string.try_again_later));
         }

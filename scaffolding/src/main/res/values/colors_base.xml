@@ -11,6 +11,8 @@
     <color name="red_pressed">#ff6e63</color>
     <color name="red_normal">#ff3329</color>
 
+    <color name="toast_background">#b9000000</color>
+
     <color name="black_middle">#8f8f8f</color>
     <color name="black_light">#d4d4d4</color>
     <color name="black_light_trans">#0dd4d4d4</color>

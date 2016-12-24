@@ -97,10 +97,13 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                     if (!mIsFirstReceiveBroadcast) {
-                        if (NetUtil.isNetworkAvailable()) {
-                            RxBus.send(new RxEvent.NetworkConnectedEvent());
-                        } else {
-                            RxBus.send(new RxEvent.NetworkDisconnectedEvent());
+                        try {
+                            if (NetUtil.isNetworkAvailable()) {
+                                RxBus.send(new RxEvent.NetworkConnectedEvent());
+                            } else {
+                                RxBus.send(new RxEvent.NetworkDisconnectedEvent());
+                            }
+                        } catch (Exception e) {
                         }
                     } else {
                         mIsFirstReceiveBroadcast = false;
@@ -328,62 +331,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     /**
-     * 获取应用名称
-     *
-     * @return
-     */
-    public String getAppName() {
-        try {
-            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).applicationInfo.loadLabel(sApp.getPackageManager()).toString();
-        } catch (Exception e) {
-            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
-            return "";
-        }
-    }
-
-    /**
-     * 获取当前版本名称
-     *
-     * @return
-     */
-    public String getCurrentVersionName() {
-        try {
-            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).versionName;
-        } catch (Exception e) {
-            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
-            return "";
-        }
-    }
-
-    /**
-     * 获取当前版本号
-     *
-     * @return
-     */
-    public int getCurrentVersionCode() {
-        try {
-            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).versionCode;
-        } catch (Exception e) {
-            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
-            return 0;
-        }
-    }
-
-    /**
-     * 获取渠道号
-     *
-     * @return
-     */
-    private String getChannel() {
-        try {
-            ApplicationInfo appInfo = sApp.getPackageManager().getApplicationInfo(sApp.getPackageName(), PackageManager.GET_META_DATA);
-            return appInfo.metaData.getString("UMENG_CHANNEL");
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    /**
      * 应用是否在后台
      *
      * @return
@@ -399,6 +346,62 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
      */
     public boolean isFrontStage() {
         return mActivityStartedCount > 0;
+    }
+
+    /**
+     * 获取应用名称
+     *
+     * @return
+     */
+    public static String getAppName() {
+        try {
+            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).applicationInfo.loadLabel(sApp.getPackageManager()).toString();
+        } catch (Exception e) {
+            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
+            return "";
+        }
+    }
+
+    /**
+     * 获取当前版本名称
+     *
+     * @return
+     */
+    public static String getCurrentVersionName() {
+        try {
+            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).versionName;
+        } catch (Exception e) {
+            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
+            return "";
+        }
+    }
+
+    /**
+     * 获取当前版本号
+     *
+     * @return
+     */
+    public static int getCurrentVersionCode() {
+        try {
+            return sApp.getPackageManager().getPackageInfo(sApp.getPackageName(), 0).versionCode;
+        } catch (Exception e) {
+            // 利用系统api getPackageName()得到的包名，这个异常根本不可能发生
+            return 0;
+        }
+    }
+
+    /**
+     * 获取渠道号
+     *
+     * @return
+     */
+    private static String getChannel() {
+        try {
+            ApplicationInfo appInfo = sApp.getPackageManager().getApplicationInfo(sApp.getPackageName(), PackageManager.GET_META_DATA);
+            return appInfo.metaData.getString("UMENG_CHANNEL");
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static boolean isInOtherProcess(Context context) {
