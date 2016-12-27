@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
-import cn.bingoogolapple.scaffolding.widget.BGASwipeBackLayout;
+import cn.bingoogolapple.swipebacklayout.BGASwipeBackLayout;
 import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
