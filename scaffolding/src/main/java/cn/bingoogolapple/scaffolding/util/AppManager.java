@@ -162,15 +162,16 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     }
 
     /**
-     * Activity 是否包含 Fragment。用于处理友盟页面统计，避免重复统计 Activity 和 Fragment
+     * Activity 中是否不包含 Fragment。用于处理友盟页面统计，避免重复统计 Activity 和 Fragment
      *
      * @param activity
      * @return
      */
     public boolean isActivityNotContainFragment(Activity activity) {
         if (mDelegate != null) {
-            return mDelegate.isActivityNotContainFragment(activity);
+            return !mDelegate.isActivityContainFragment(activity);
         }
+        // 默认返回 true，表示该 Activity 中不包含 Fragment
         return true;
     }
 
@@ -200,12 +201,12 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
-        UmengUtil.onActivityResumed(activity);
+        UMAnalyticsUtil.onActivityResumed(activity);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-        UmengUtil.onActivityPaused(activity);
+        UMAnalyticsUtil.onActivityPaused(activity);
     }
 
     @Override
@@ -328,7 +329,7 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
             finishAllActivity();
 
             // 如果开发者调用Process.kill或者System.exit之类的方法杀死进程，请务必在此之前调用MobclickAgent.onKillProcess(Context context)方法，用来保存统计数据
-            UmengUtil.onKillProcess();
+            UMAnalyticsUtil.onKillProcess();
 
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);
@@ -438,12 +439,12 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         void refWatcherWatchFragment(Fragment fragment);
 
         /**
-         * Activity 是否包含 Fragment。用于处理友盟页面统计，避免重复统计 Activity 和 Fragment
+         * Activity 中是否包含 Fragment。用于处理友盟页面统计，避免重复统计 Activity 和 Fragment
          *
          * @param activity
          * @return
          */
-        boolean isActivityNotContainFragment(Activity activity);
+        boolean isActivityContainFragment(Activity activity);
 
         /**
          * 处理全局网络请求异常

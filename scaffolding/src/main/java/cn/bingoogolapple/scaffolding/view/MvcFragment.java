@@ -30,7 +30,6 @@ import android.view.ViewGroup;
 import com.jakewharton.rxbinding.view.RxView;
 import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle.components.support.RxFragment;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
+import cn.bingoogolapple.scaffolding.util.UMAnalyticsUtil;
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil;
 import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -179,6 +179,8 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
      * @param isVisibleToUser
      */
     private void handleOnVisibilityChangedToUser(boolean isVisibleToUser) {
+        UMAnalyticsUtil.onVisibilityChangedToUser(this, isVisibleToUser);
+
         if (isVisibleToUser) {
             // 对用户可见
             if (!mIsLoadedData) {
@@ -187,12 +189,10 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
                 onLazyLoadOnce();
             }
             Logger.d(this.getClass().getSimpleName() + " 对用户可见");
-            MobclickAgent.onPageStart(this.getClass().getSimpleName());
             onVisibleToUser();
         } else {
             // 对用户不可见
             Logger.d(this.getClass().getSimpleName() + " 对用户不可见");
-            MobclickAgent.onPageEnd(this.getClass().getSimpleName());
             onInvisibleToUser();
         }
     }

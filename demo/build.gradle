@@ -135,7 +135,7 @@ android {
     }
 
     productFlavors.all { flavor ->
-        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name, UMENG_APPKEY_VALUE: "5824622df29d9859ce0034dd"]
+//        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name, UMENG_APPKEY_VALUE: "5824622df29d9859ce0034dd"]
     }
 
     freeline {

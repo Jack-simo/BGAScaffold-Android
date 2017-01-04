@@ -18,7 +18,7 @@ import cn.bingoogolapple.scaffolding.util.ApiException;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxEvent;
-import cn.bingoogolapple.scaffolding.util.UmengUtil;
+import cn.bingoogolapple.scaffolding.util.UMAnalyticsUtil;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -42,13 +42,13 @@ public class App extends Application implements AppManager.Delegate {
         mRefWatcher = LeakCanary.install(this);
 
         // 初始化应用程序管理器
-        AppManager.getInstance().init(BuildConfig.BUILD_TYPE, false, this);
+        AppManager.getInstance().init(BuildConfig.BUILD_TYPE, true, this);
 
         // 初始化数据库
         LiteOrmUtil.init();
 
         // 初始化友盟 SDK
-        UmengUtil.initSdk();
+        UMAnalyticsUtil.initSdk("5824622df29d9859ce0034dd", BuildConfig.FLAVOR);
 
         // 初始化环信 SDK
         EmUtil.initSdk();
@@ -63,16 +63,32 @@ public class App extends Application implements AppManager.Delegate {
         MultiDex.install(this);
     }
 
+    /**
+     * LeakCanary 监控 Fragment 的内存泄露
+     *
+     * @param fragment
+     */
     @Override
     public void refWatcherWatchFragment(Fragment fragment) {
         mRefWatcher.watch(fragment);
     }
 
+    /**
+     * Activity 中是否包含 Fragment。用于处理友盟页面统计，避免重复统计 Activity 和 Fragment
+     *
+     * @param activity
+     * @return
+     */
     @Override
-    public boolean isActivityNotContainFragment(Activity activity) {
-        return true;
+    public boolean isActivityContainFragment(Activity activity) {
+        return false;
     }
 
+    /**
+     * 处理全局网络请求异常
+     *
+     * @param apiException
+     */
     @Override
     public void handleServerException(ApiException apiException) {
         Logger.i("处理网络请求异常");
