@@ -27,7 +27,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.scaffolding.R;
-import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
+import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -93,7 +93,7 @@ public abstract class BaseDialog extends AppCompatDialog {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        KeyboardUtil.handleAutoCloseKeyboard(isAutoCloseKeyboard(), getCurrentFocus(), ev, this);
+        BGAKeyboardUtil.handleAutoCloseKeyboard(isAutoCloseKeyboard(), getCurrentFocus(), ev, this);
         return super.dispatchTouchEvent(ev);
     }
 

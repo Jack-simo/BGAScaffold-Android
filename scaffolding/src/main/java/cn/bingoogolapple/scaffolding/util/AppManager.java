@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import cn.bingoogolapple.scaffolding.R;
+import cn.bingoogolapple.swipebacklayout.BGASwipeBackManager;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -116,11 +117,17 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     /**
      * 必须在 Application 的 onCreate 方法中调用
      *
-     * @param isBuildDebug 是否构建的是 debug
+     * @param buildType              构建类型，传入 BuildConfig.BUILD_TYPE
+     * @param isWeChatSwipeBackStyle 是否是微信滑动返回样式
      */
-    public void init(boolean isBuildDebug, Delegate delegate) {
-        mIsBuildDebug = isBuildDebug;
+    public void init(String buildType, boolean isWeChatSwipeBackStyle, Delegate delegate) {
+        mIsBuildDebug = StringUtil.isEqual(buildType, "debug");
         mDelegate = delegate;
+
+        // 启用微信滑动返回样式
+        if (isWeChatSwipeBackStyle) {
+            BGASwipeBackManager.getInstance().init(sApp);
+        }
 
         // 初始化日志打印库
         Logger.init(getInstance().getAppName()).logLevel(mIsBuildDebug ? LogLevel.FULL : LogLevel.NONE);

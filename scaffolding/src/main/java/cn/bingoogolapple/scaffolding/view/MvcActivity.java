@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.scaffolding.R;
-import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
-import cn.bingoogolapple.swipebacklayout.BGASwipeBackLayout;
+import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil;
+import cn.bingoogolapple.swipebacklayout.BGASwipeBackHelper;
 import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,8 +48,8 @@ import rx.functions.Action1;
  * 创建时间:15/9/2 下午5:07
  * 描述:
  */
-public abstract class MvcActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, PermissionUtil.Delegate, BGATitleBar.Delegate, BGASwipeBackLayout.PanelSlideListener {
-    protected BGASwipeBackLayout mSwipeBackLayout;
+public abstract class MvcActivity extends RxAppCompatActivity implements EasyPermissions.PermissionCallbacks, PermissionUtil.Delegate, BGATitleBar.Delegate, BGASwipeBackHelper.Delegate {
+    protected BGASwipeBackHelper mSwipeBackHelper;
     protected MaterialDialog mLoadingDialog;
 
     protected BGATitleBar mTitleBar;
@@ -57,7 +57,7 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initSwipeBackFinish();
+        mSwipeBackHelper = new BGASwipeBackHelper(this, this);
         super.onCreate(savedInstanceState);
 
         initContentView();
@@ -67,47 +67,42 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
     }
 
     /**
-     * 初始化滑动返回
-     */
-    private void initSwipeBackFinish() {
-        if (isSupportSwipeBack()) {
-            mSwipeBackLayout = new BGASwipeBackLayout(this);
-            mSwipeBackLayout.attachToActivity(this);
-            mSwipeBackLayout.setPanelSlideListener(this);
-        }
-    }
-
-    /**
-     * 是否支持滑动返回
+     * 是否支持滑动返回。这里在父类中默认返回 true 来支持滑动返回，如果某个界面不想支持滑动返回则重写该方法返回 false 即可
      *
      * @return
      */
-    protected boolean isSupportSwipeBack() {
+    @Override
+    public boolean isSupportSwipeBack() {
         return true;
     }
 
     /**
-     * 设置滑动返回是否可用
+     * 正在滑动返回
      *
-     * @param swipeBackEnable
+     * @param slideOffset 从 0 到 1
      */
-    protected void setSwipeBackEnable(boolean swipeBackEnable) {
-        if (mSwipeBackLayout != null) {
-            mSwipeBackLayout.setSwipeBackEnable(swipeBackEnable);
-        }
+    @Override
+    public void onSwipeBackLayoutSlide(float slideOffset) {
+    }
+
+    /**
+     * 没达到滑动返回的阈值，取消滑动返回动作，回到默认状态
+     */
+    @Override
+    public void onSwipeBackLayoutCancel() {
+    }
+
+    /**
+     * 滑动返回执行完毕，销毁当前 Activity
+     */
+    @Override
+    public void onSwipeBackLayoutExecuted() {
+        mSwipeBackHelper.swipeBackward();
     }
 
     @Override
-    public void onPanelClosed(View view) {
-    }
-
-    @Override
-    public void onPanelOpened(View view) {
-        swipeBackward();
-    }
-
-    @Override
-    public void onPanelSlide(View view, float v) {
+    public void onBackPressed() {
+        mSwipeBackHelper.backward();
     }
 
     protected void initContentView() {
@@ -248,102 +243,90 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
      */
     protected abstract void processLogic(Bundle savedInstanceState);
 
-    @Override
-    public void onBackPressed() {
-        backward();
-    }
-
-    /**
-     * 跳转到下一个Activity，并且销毁当前Activity
-     *
-     * @param cls 下一个Activity的Class
-     */
-    public void forwardAndFinish(Class<?> cls) {
-        forward(cls);
-        finish();
-    }
-
-    /**
-     * 跳转到下一个Activity，不销毁当前Activity
-     *
-     * @param cls 下一个Activity的Class
-     */
-    public void forward(Class<?> cls) {
-        KeyboardUtil.closeKeyboard(this);
-        startActivity(new Intent(this, cls));
-        executeForwardAnim();
-    }
-
-    public void forward(Class<?> cls, int requestCode) {
-        forward(new Intent(this, cls), requestCode);
-    }
-
-    public void forwardAndFinish(Intent intent) {
-        forward(intent);
-        finish();
-    }
-
-    public void forward(Intent intent) {
-        KeyboardUtil.closeKeyboard(this);
-        startActivity(intent);
-        executeForwardAnim();
-    }
-
-    public void forward(Intent intent, int requestCode) {
-        KeyboardUtil.closeKeyboard(this);
-        startActivityForResult(intent, requestCode);
-        executeForwardAnim();
-    }
-
     /**
      * 执行跳转到下一个Activity的动画
      */
     public void executeForwardAnim() {
-        overridePendingTransition(R.anim.activity_forward_enter, R.anim.activity_forward_exit);
-    }
-
-    /**
-     * 回到上一个Activity，并销毁当前Activity
-     */
-    public void backward() {
-        KeyboardUtil.closeKeyboard(this);
-        finish();
-        executeBackwardAnim();
-    }
-
-    /**
-     * 滑动返回上一个Activity，并销毁当前Activity
-     */
-    public void swipeBackward() {
-        KeyboardUtil.closeKeyboard(this);
-        finish();
-        executeSwipeBackAnim();
-    }
-
-    /**
-     * 回到上一个Activity，并销毁当前Activity（应用场景：欢迎、登录、注册这三个界面）
-     *
-     * @param cls 上一个Activity的Class
-     */
-    public void backwardAndFinish(Class<?> cls) {
-        KeyboardUtil.closeKeyboard(this);
-        startActivity(new Intent(this, cls));
-        executeBackwardAnim();
-        finish();
+        mSwipeBackHelper.executeForwardAnim();
     }
 
     /**
      * 执行回到到上一个Activity的动画
      */
     public void executeBackwardAnim() {
-        overridePendingTransition(R.anim.activity_backward_enter, R.anim.activity_backward_exit);
+        mSwipeBackHelper.executeBackwardAnim();
     }
 
     /**
-     * 执行滑动返回到到上一个Activity的动画
+     * 跳转到下一个 Activity，并且销毁当前 Activity
+     *
+     * @param cls 下一个 Activity 的 Class
      */
-    public void executeSwipeBackAnim() {
-        overridePendingTransition(R.anim.activity_swipeback_enter, R.anim.activity_swipeback_exit);
+    public void forwardAndFinish(Class<?> cls) {
+        mSwipeBackHelper.forwardAndFinish(cls);
+    }
+
+    /**
+     * 跳转到下一个 Activity，不销毁当前 Activity
+     *
+     * @param cls 下一个 Activity 的 Class
+     */
+    public void forward(Class<?> cls) {
+        mSwipeBackHelper.forward(cls);
+    }
+
+    /**
+     * 跳转到下一个 Activity，不销毁当前 Activity
+     *
+     * @param cls         下一个 Activity 的 Class
+     * @param requestCode 请求码
+     */
+    public void forward(Class<?> cls, int requestCode) {
+        mSwipeBackHelper.forward(cls, requestCode);
+    }
+
+    /**
+     * 跳转到下一个 Activity，销毁当前 Activity
+     *
+     * @param intent 下一个 Activity 的意图对象
+     */
+    public void forwardAndFinish(Intent intent) {
+        mSwipeBackHelper.forwardAndFinish(intent);
+    }
+
+    /**
+     * 跳转到下一个 Activity,不销毁当前 Activity
+     *
+     * @param intent 下一个 Activity 的意图对象
+     */
+    public void forward(Intent intent) {
+        mSwipeBackHelper.forward(intent);
+    }
+
+    /**
+     * 跳转到下一个 Activity,不销毁当前 Activity
+     *
+     * @param intent      下一个 Activity 的意图对象
+     * @param requestCode 请求码
+     */
+    public void forward(Intent intent, int requestCode) {
+        mSwipeBackHelper.forward(intent, requestCode);
+    }
+
+    /**
+     * 回到上一个 Activity，并销毁当前 Activity
+     */
+    public void backward() {
+        mSwipeBackHelper.backward();
+    }
+
+    /**
+     * 回到上一个 Activity，并销毁当前 Activity（应用场景：欢迎、登录、注册这三个界面）
+     *
+     * @param cls 上一个 Activity 的 Class
+     */
+    public void backwardAndFinish(Class<?> cls) {
+        mSwipeBackHelper.backwardAndFinish(cls);
     }
 
     /**
@@ -386,7 +369,7 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        KeyboardUtil.handleAutoCloseKeyboard(isAutoCloseKeyboard(), getCurrentFocus(), ev, this);
+        BGAKeyboardUtil.handleAutoCloseKeyboard(isAutoCloseKeyboard(), getCurrentFocus(), ev, this);
         return super.dispatchTouchEvent(ev);
     }
 

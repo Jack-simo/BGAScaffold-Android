@@ -25,12 +25,12 @@ import cn.bingoogolapple.scaffolding.demo.hyphenatechat.model.MessageModel;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.RxEmEvent;
 import cn.bingoogolapple.scaffolding.util.AppManager;
-import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.LocalSubscriber;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxUtil;
 import cn.bingoogolapple.scaffolding.util.StringUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
+import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -170,7 +170,7 @@ public class ChatActivity extends MvcBindingActivity<ActivityChatBinding> implem
      * 关闭键盘
      */
     public boolean closeKeyboard() {
-        KeyboardUtil.closeKeyboard(this);
+        BGAKeyboardUtil.closeKeyboard(this);
         return false;
     }
 

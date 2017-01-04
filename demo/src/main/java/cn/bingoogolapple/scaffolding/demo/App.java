@@ -14,8 +14,8 @@ import com.squareup.leakcanary.RefWatcher;
 
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.EmUtil;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.util.LiteOrmUtil;
-import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.ApiException;
+import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxEvent;
 import cn.bingoogolapple.scaffolding.util.UmengUtil;
@@ -42,7 +42,7 @@ public class App extends Application implements AppManager.Delegate {
         mRefWatcher = LeakCanary.install(this);
 
         // 初始化应用程序管理器
-        AppManager.getInstance().init(BuildConfig.BUILD_TYPE.equalsIgnoreCase("debug"), this);
+        AppManager.getInstance().init(BuildConfig.BUILD_TYPE, false, this);
 
         // 初始化数据库
         LiteOrmUtil.init();

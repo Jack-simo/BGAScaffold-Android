@@ -37,8 +37,8 @@ import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.scaffolding.R;
 import cn.bingoogolapple.scaffolding.util.AppManager;
-import cn.bingoogolapple.scaffolding.util.KeyboardUtil;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
+import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil;
 import cn.bingoogolapple.titlebar.BGATitleBar;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
@@ -225,13 +225,13 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     int getRootLayoutResID();
 
     /**
-     * 初始化View控件
+     * 初始化 View 控件
      */
     protected void initView(Bundle savedInstanceState) {
     }
 
     /**
-     * 给View控件添加事件监听器
+     * 给 View 控件添加事件监听器
      */
     protected abstract void setListener();
 
@@ -243,9 +243,9 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     protected abstract void processLogic(Bundle savedInstanceState);
 
     /**
-     * 跳转到下一个Activity，并且销毁当前Activity
+     * 跳转到下一个 Activity，并且销毁当前 Activity
      *
-     * @param cls 下一个Activity的Class
+     * @param cls 下一个 Activity 的 Class
      */
     public void forwardAndFinish(Class<?> cls) {
         forward(cls);
@@ -253,12 +253,12 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     }
 
     /**
-     * 跳转到下一个Activity，不销毁当前Activity
+     * 跳转到下一个 Activity，不销毁当前 Activity
      *
-     * @param cls 下一个Activity的Class
+     * @param cls 下一个 Activity 的 Class
      */
     public void forward(Class<?> cls) {
-        KeyboardUtil.closeKeyboard(mActivity);
+        BGAKeyboardUtil.closeKeyboard(mActivity);
         startActivity(new Intent(mActivity, cls));
         mActivity.executeForwardAnim();
     }
@@ -273,33 +273,33 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     }
 
     public void forward(Intent intent) {
-        KeyboardUtil.closeKeyboard(mActivity);
+        BGAKeyboardUtil.closeKeyboard(mActivity);
         startActivity(intent);
         mActivity.executeForwardAnim();
     }
 
     public void forward(Intent intent, int requestCode) {
-        KeyboardUtil.closeKeyboard(mActivity);
+        BGAKeyboardUtil.closeKeyboard(mActivity);
         startActivityForResult(intent, requestCode);
         mActivity.executeForwardAnim();
     }
 
     /**
-     * 回到上一个Activity，并销毁当前Activity
+     * 回到上一个 Activity，并销毁当前 Activity
      */
     public void backward() {
-        KeyboardUtil.closeKeyboard(mActivity);
+        BGAKeyboardUtil.closeKeyboard(mActivity);
         mActivity.finish();
         mActivity.executeBackwardAnim();
     }
 
     /**
-     * 回到上一个Activity，并销毁当前Activity（应用场景：欢迎、登录、注册这三个界面）
+     * 回到上一个 Activity，并销毁当前 Activity（应用场景：欢迎、登录、注册这三个界面）
      *
-     * @param cls 上一个Activity的Class
+     * @param cls 上一个 Activity 的 Class
      */
     public void backwardAndFinish(Class<?> cls) {
-        KeyboardUtil.closeKeyboard(mActivity);
+        BGAKeyboardUtil.closeKeyboard(mActivity);
         startActivity(new Intent(mActivity, cls));
         mActivity.executeBackwardAnim();
         mActivity.finish();

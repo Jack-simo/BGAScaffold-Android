@@ -45,6 +45,4 @@ public class RxEvent {
      */
     public static class NetworkDisconnectedEvent {
     }
-
-
 }

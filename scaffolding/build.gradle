@@ -24,7 +24,7 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_APPCOMPAT_VERSION}"
     compile 'cn.bingoogolapple:bga-titlebar:1.0.8@aar'
-    compile 'cn.bingoogolapple:bga-swipebacklayout:1.0.0@aar'
+    compile 'cn.bingoogolapple:bga-swipebacklayout:1.0.3@aar'
 
     compile 'io.reactivex:rxjava:1.2.2'
     compile 'io.reactivex:rxandroid:1.2.1'

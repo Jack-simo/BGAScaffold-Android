@@ -3,15 +3,12 @@ package cn.bingoogolapple.scaffolding.demo;
 import android.Manifest;
 import android.os.Bundle;
 
-import java.util.List;
-
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityMainBinding;
 import cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.EmActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -22,7 +19,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
 
     @Override
-    protected boolean isSupportSwipeBack() {
+    public boolean isSupportSwipeBack() {
         return false;
     }
 

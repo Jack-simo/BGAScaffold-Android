@@ -21,7 +21,8 @@
     </data>
 
     <LinearLayout
-        style="@style/MatchMatch.Vertical">
+        style="@style/MatchMatch.Vertical"
+        android:background="@color/windowBackground">
 
         <cn.bingoogolapple.titlebar.BGATitleBar
             style="@style/TitleBar"

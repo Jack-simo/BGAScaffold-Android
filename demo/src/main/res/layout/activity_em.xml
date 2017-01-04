@@ -12,11 +12,11 @@
     </data>
 
     <ScrollView
-        style="@style/MatchMatch">
+        style="@style/MatchMatch"
+        android:background="@color/windowBackground">
 
         <LinearLayout
             style="@style/MatchMatch.Vertical"
-            android:background="#abc"
             android:gravity="center">
 
             <Button

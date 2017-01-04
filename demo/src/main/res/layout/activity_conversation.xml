@@ -16,7 +16,9 @@
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.ConversationActivity"/>
     </data>
 
-    <LinearLayout style="@style/MatchMatch.Vertical">
+    <LinearLayout
+        style="@style/MatchMatch.Vertical"
+        android:background="@color/windowBackground">
 
         <cn.bingoogolapple.titlebar.BGATitleBar
             style="@style/TitleBar"
