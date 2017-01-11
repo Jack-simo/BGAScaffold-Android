@@ -42,7 +42,7 @@ public class App extends Application implements AppManager.Delegate {
         mRefWatcher = LeakCanary.install(this);
 
         // 初始化应用程序管理器
-        AppManager.getInstance().init(BuildConfig.BUILD_TYPE, true, this);
+        AppManager.getInstance().init(BuildConfig.BUILD_TYPE, this);
 
         // 初始化数据库
         LiteOrmUtil.init();

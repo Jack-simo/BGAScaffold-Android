@@ -117,17 +117,14 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     /**
      * 必须在 Application 的 onCreate 方法中调用
      *
-     * @param buildType              构建类型，传入 BuildConfig.BUILD_TYPE
-     * @param isWeChatSwipeBackStyle 是否是微信滑动返回样式
+     * @param buildType 构建类型，传入 BuildConfig.BUILD_TYPE
+     * @param delegate  代理
      */
-    public void init(String buildType, boolean isWeChatSwipeBackStyle, Delegate delegate) {
+    public void init(String buildType, Delegate delegate) {
         mIsBuildDebug = StringUtil.isEqual(buildType, "debug");
         mDelegate = delegate;
 
-        // 启用微信滑动返回样式
-        if (isWeChatSwipeBackStyle) {
-            BGASwipeBackManager.getInstance().init(sApp);
-        }
+        BGASwipeBackManager.getInstance().init(sApp);
 
         // 初始化日志打印库
         Logger.init(getInstance().getAppName()).logLevel(mIsBuildDebug ? LogLevel.FULL : LogLevel.NONE);

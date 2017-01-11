@@ -2,10 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/gray_line"/>
+            <solid android:color="@color/bga_adapter_line"/>
         </shape>
     </item>
-    <item android:top="1dp">
+    <item android:top="1px">
         <shape>
             <solid android:color="@color/white"/>
         </shape>

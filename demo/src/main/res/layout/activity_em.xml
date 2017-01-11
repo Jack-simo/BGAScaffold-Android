@@ -11,45 +11,26 @@
             type="cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.EmActivity"/>
     </data>
 
-    <ScrollView
-        style="@style/MatchMatch"
-        android:background="@color/windowBackground">
+    <LinearLayout
+        style="@style/MatchMatch.Vertical"
+        android:background="@color/windowBackground"
+        android:gravity="center">
 
-        <LinearLayout
-            style="@style/MatchMatch.Vertical"
-            android:gravity="center">
+        <Button
+            style="@style/DemoBtn"
+            android:text="登录环信"
+            app:onNoDoubleClick="@{() -> eventHandler.showChooseEmAccountDialog()}"/>
 
-            <Button
-                style="@style/DemoBtn"
-                android:text="登录环信"
-                app:onNoDoubleClick="@{() -> eventHandler.showChooseEmAccountDialog()}"/>
+        <Button
+            android:id="@+id/tv_main_em_logout"
+            style="@style/DemoBtn"
+            android:text="退出环信"
+            app:onNoDoubleClick="@{() -> EmUtil.logout()}"/>
 
-            <Button
-                android:id="@+id/tv_main_em_logout"
-                style="@style/DemoBtn"
-                android:text="退出环信"
-                app:onNoDoubleClick="@{() -> EmUtil.logout()}"/>
-
-            <cn.bingoogolapple.badgeview.BGABadgeTextView
-                android:id="@+id/btv_em_unread"
-                style="@style/WrapWrap"
-                android:padding="@dimen/size_level6"
-                android:text="所有未读消息数量"/>
-
-            <View
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:background="#5bc"/>
-
-            <View
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:background="#bc5"/>
-
-            <View
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:background="#0ff"/>
-        </LinearLayout>
-    </ScrollView>
+        <cn.bingoogolapple.badgeview.BGABadgeTextView
+            android:id="@+id/btv_em_unread"
+            style="@style/WrapWrap"
+            android:padding="@dimen/size_level6"
+            android:text="所有未读消息数量"/>
+    </LinearLayout>
 </layout>

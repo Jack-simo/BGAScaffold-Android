@@ -18,8 +18,6 @@
     <color name="black_light_trans">#0dd4d4d4</color>
     <color name="black_dark">#4d4d4d</color>
 
-    <color name="gray_line">#dedede</color>
-    <color name="list_item_pressed">#efefef</color>
     <color name="white">@android:color/white</color>
 
 </resources>

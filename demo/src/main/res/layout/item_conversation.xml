@@ -44,7 +44,7 @@
         <cn.bingoogolapple.badgeview.BGABadgeRelativeLayout
             android:id="@+id/brl_item_conversation_badge"
             style="@style/MatchWrap"
-            android:background="@drawable/selector_white_gray"
+            android:background="@drawable/bga_adapter_white_gray"
             android:paddingBottom="@dimen/size_level3"
             android:paddingLeft="@dimen/size_level4"
             android:paddingRight="@dimen/size_level3"

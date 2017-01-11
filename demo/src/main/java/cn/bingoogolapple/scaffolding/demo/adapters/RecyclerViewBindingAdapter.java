@@ -3,7 +3,7 @@ package cn.bingoogolapple.scaffolding.demo.adapters;
 import android.databinding.BindingAdapter;
 import android.support.v7.widget.RecyclerView;
 
-import cn.bingoogolapple.scaffolding.widget.Divider;
+import cn.bingoogolapple.androidcommon.adapter.BGADivider;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -14,7 +14,7 @@ public class RecyclerViewBindingAdapter {
 
     @BindingAdapter("rv_isShapeDivider")
     public static void addItemDecoration(RecyclerView recyclerView, boolean isShapeDivider) {
-        recyclerView.addItemDecoration(isShapeDivider ? Divider.newShapeDivider() : Divider.newBitmapDivider());
+        recyclerView.addItemDecoration(isShapeDivider ? BGADivider.newShapeDivider() : BGADivider.newBitmapDivider());
     }
 
     @BindingAdapter(value = {"rv_onScrollStateChanged", "rv_onScrolled"}, requireAll = false)
