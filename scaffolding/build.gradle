@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:${SUPPORT_APPCOMPAT_VERSION}"
+    compile "com.android.support:design:${SUPPORT_APPCOMPAT_VERSION}"
     compile 'cn.bingoogolapple:bga-titlebar:1.0.8@aar'
     compile 'cn.bingoogolapple:bga-swipebacklayout:1.0.7@aar'
     compile 'cn.bingoogolapple:bga-adapter:1.1.8@aar'
