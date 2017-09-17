@@ -1,14 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 环信服务器连接状态文本样式 -->
-    <style name="EmConnectionStatusTv">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">34dp</item>
-        <item name="android:background">#fceebc</item>
-        <item name="android:drawableLeft">@drawable/exclamation_mark_red</item>
-        <item name="android:drawablePadding">@dimen/size_level3</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingLeft">@dimen/size_level3</item>
-        <item name="android:text">无法连接到服务器</item>
-    </style>
 </resources>

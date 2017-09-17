@@ -16,8 +16,7 @@
 
         <Button
             style="@style/DemoBtn"
-            android:text="跳转到环信案例主界面"
-            app:onNoDoubleClick="@{() -> eventHandler.goToEm()}"/>
-
+            android:text="跳转到 GreenDao 案例主界面"
+            app:onNoDoubleClick="@{() -> eventHandler.goToGreenDao()}"/>
     </LinearLayout>
 </layout>

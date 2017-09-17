@@ -4,7 +4,7 @@ import android.Manifest;
 import android.os.Bundle;
 
 import cn.bingoogolapple.scaffolding.demo.databinding.ActivityMainBinding;
-import cn.bingoogolapple.scaffolding.demo.hyphenatechat.activity.EmActivity;
+import cn.bingoogolapple.scaffolding.demo.greendao.activity.GreenDaoActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
 import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
@@ -47,9 +47,10 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
     }
 
     /**
-     * 跳转到环信案例主界面
+     * 跳转到 GreenDao 界面
      */
-    public void goToEm() {
-        forward(EmActivity.class);
+    public void goToGreenDao() {
+        forward(GreenDaoActivity.class);
     }
+
 }

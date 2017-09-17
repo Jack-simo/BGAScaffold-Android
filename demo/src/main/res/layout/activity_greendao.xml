@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="eventHandler"
+            type="cn.bingoogolapple.scaffolding.demo.greendao.activity.GreenDaoActivity" />
+    </data>
+
+    <LinearLayout
+        style="@style/MatchMatch.Vertical"
+        android:background="@color/windowBackground"
+        android:gravity="center">
+
+        <Button
+            style="@style/DemoBtn"
+            android:text="addCustomer"
+            app:onNoDoubleClick="@{() -> eventHandler.addCustomer()}" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:text="queryCustomer"
+            app:onNoDoubleClick="@{() -> eventHandler.queryCustomer()}" />
+
+        <Button
+            style="@style/DemoBtn"
+            android:text="testInsertRowId"
+            app:onNoDoubleClick="@{() -> eventHandler.testInsertRowId()}" />
+
+    </LinearLayout>
+</layout>
