@@ -31,7 +31,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.orhanobut.logger.LogLevel;
+import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
 import java.util.Iterator;
@@ -127,7 +127,12 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         BGASwipeBackManager.getInstance().init(sApp);
 
         // 初始化日志打印库
-        Logger.init(getInstance().getAppName()).logLevel(mIsBuildDebug ? LogLevel.FULL : LogLevel.NONE);
+        Logger.addLogAdapter(new AndroidLogAdapter() {
+            @Override
+            public boolean isLoggable(int priority, String tag) {
+                return mIsBuildDebug;
+            }
+        });
     }
 
     public static AppManager getInstance() {
