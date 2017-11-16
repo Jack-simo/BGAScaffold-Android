@@ -1,5 +1,1 @@
-<manifest package="cn.bingoogolapple.scaffolding">
-
-    <application>
-    </application>
-</manifest>
+<manifest package="cn.bingoogolapple.scaffolding" />

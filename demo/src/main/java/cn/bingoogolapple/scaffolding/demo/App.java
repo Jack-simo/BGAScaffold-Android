@@ -18,6 +18,7 @@ import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxEvent;
 import cn.bingoogolapple.scaffolding.util.UMAnalyticsUtil;
+import cn.bingoogolapple.swipebacklayout.BGASwipeBackHelper;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -42,6 +43,8 @@ public class App extends Application implements AppManager.Delegate {
 
         // 初始化应用程序管理器
         AppManager.getInstance().init(BuildConfig.BUILD_TYPE, this);
+        // 初始化滑动返回
+        BGASwipeBackHelper.init(this, null);
 
         // 初始化友盟 SDK
         UMAnalyticsUtil.initSdk("5824622df29d9859ce0034dd", BuildConfig.FLAVOR);

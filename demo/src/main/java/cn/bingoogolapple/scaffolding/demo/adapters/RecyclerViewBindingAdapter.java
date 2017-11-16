@@ -3,7 +3,8 @@ package cn.bingoogolapple.scaffolding.demo.adapters;
 import android.databinding.BindingAdapter;
 import android.support.v7.widget.RecyclerView;
 
-import cn.bingoogolapple.androidcommon.adapter.BGADivider;
+import cn.bingoogolapple.baseadapter.BGADivider;
+
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

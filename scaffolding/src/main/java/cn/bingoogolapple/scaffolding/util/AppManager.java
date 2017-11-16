@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import cn.bingoogolapple.scaffolding.R;
-import cn.bingoogolapple.swipebacklayout.BGASwipeBackManager;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -123,8 +122,6 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
     public void init(String buildType, Delegate delegate) {
         mIsBuildDebug = StringUtil.isEqual(buildType, "debug");
         mDelegate = delegate;
-
-        BGASwipeBackManager.getInstance().init(sApp);
 
         // 初始化日志打印库
         Logger.addLogAdapter(new AndroidLogAdapter() {
