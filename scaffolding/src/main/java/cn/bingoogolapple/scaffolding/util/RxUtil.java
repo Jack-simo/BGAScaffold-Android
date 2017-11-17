@@ -16,18 +16,17 @@
 
 package cn.bingoogolapple.scaffolding.util;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 
-import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -38,11 +37,11 @@ public class RxUtil {
     private RxUtil() {
     }
 
-    public static <T> Observable.Transformer<T, T> applySchedulers() {
+    public static <T> ObservableTransformer<T, T> applySchedulers() {
         return observable -> observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public static <T> Observable.Transformer<T, T> applySchedulersBindToLifecycle(LifecycleProvider lifecycleProvider) {
+    public static <T> ObservableTransformer<T, T> applySchedulersBindToLifecycle(LifecycleProvider lifecycleProvider) {
         if (lifecycleProvider == null) {
             return observable -> observable.compose(RxUtil.applySchedulers());
         } else {
@@ -50,19 +49,19 @@ public class RxUtil {
         }
     }
 
-    public static <T> Observable.Transformer<NetResult<T>, T> applySchedulersAndFlatMapResult() {
-        return observable -> observable.compose(RxUtil.applySchedulers()).flatMap(new Func1<NetResult<T>, Observable<T>>() {
+    public static <T> ObservableTransformer<NetResult<T>, T> applySchedulersAndFlatMapResult() {
+        return observable -> observable.compose(RxUtil.applySchedulers()).flatMap(new Function<NetResult<T>, Observable<T>>() {
             @Override
-            public Observable<T> call(NetResult<T> result) {
+            public Observable<T> apply(NetResult<T> result) {
                 return handleCode(result);
             }
         });
     }
 
-    public static <T> Observable.Transformer<NetResult<T>, T> applySchedulersBindToLifecycleAndFlatMapResult(LifecycleProvider lifecycleProvider) {
-        return observable -> observable.compose(RxUtil.applySchedulersBindToLifecycle(lifecycleProvider)).flatMap(new Func1<NetResult<T>, Observable<T>>() {
+    public static <T> ObservableTransformer<NetResult<T>, T> applySchedulersBindToLifecycleAndFlatMapResult(LifecycleProvider lifecycleProvider) {
+        return observable -> observable.compose(RxUtil.applySchedulersBindToLifecycle(lifecycleProvider)).flatMap(new Function<NetResult<T>, Observable<T>>() {
             @Override
-            public Observable<T> call(NetResult<T> result) {
+            public Observable<T> apply(NetResult<T> result) {
                 return handleCode(result);
             }
         });
@@ -76,70 +75,11 @@ public class RxUtil {
         }
     }
 
-    public static <T> Observable<T> runInUIThread(T t) {
-        return Observable.just(t).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public static <T> Observable<T> runInUIThreadDelay(T t, long delayMillis) {
-        return Observable.just(t).delaySubscription(delayMillis, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread());
-    }
-
-    public static <T> Observable<T> runInUIThreadDelay(T t, long delayMillis, LifecycleProvider lifecycleProvider) {
+    public static <T> Observable<T> runInUIThreadDelay(@NonNull T t, long delayMillis, LifecycleProvider lifecycleProvider) {
         return Observable.just(t).delaySubscription(delayMillis, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).compose(lifecycleProvider.bindToLifecycle());
     }
 
-    public static Observable<Void> runInUIThread() {
-        return runInUIThread(null);
-    }
-
-    public static Observable<Void> runInUIThreadDelay(long delayMillis) {
-        return runInUIThreadDelay(null, delayMillis);
-    }
-
-    public static Observable<Void> runInUIThreadDelay(long delayMillis, LifecycleProvider lifecycleProvider) {
-        return runInUIThreadDelay(null, delayMillis, lifecycleProvider);
-    }
-
-    public static <T> Observable<T> runInIoThread(T t) {
-        return Observable.just(t).observeOn(Schedulers.io());
-    }
-
-    public static Observable<Void> runInIoThread() {
-        return runInIoThread(null);
-    }
-
-    public static <T> Observable<T> runInIoThreadDelay(T t, long delayMillis) {
-        return Observable.just(t).delaySubscription(delayMillis, TimeUnit.MILLISECONDS, Schedulers.io());
-    }
-
-    public static Observable<Void> runInIoThreadDelay(long delayMillis) {
-        return runInIoThreadDelay(null, delayMillis);
-    }
-
-    public static <T> Observable<T> load(final Context context, final String cacheKey, final long expireTime, Observable<T> fromNetworkObservable, boolean forceRefresh) {
-        Observable<T> fromCacheObservable = Observable.create(new Observable.OnSubscribe<T>() {
-            @Override
-            public void call(Subscriber<? super T> subscriber) {
-                T cache = (T) CacheManager.readObject(context, cacheKey, expireTime);
-                if (cache != null) {
-                    subscriber.onNext(cache);
-                }
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-
-        fromNetworkObservable = fromNetworkObservable.map(new Func1<T, T>() {
-            @Override
-            public T call(T result) {
-                CacheManager.saveObject(context, (Serializable) result, cacheKey);
-                return result;
-            }
-        });
-        if (forceRefresh) {
-            return fromNetworkObservable;
-        } else {
-            return Observable.concat(fromCacheObservable, fromNetworkObservable).first();
-        }
-
+    public static Observable<Object> runInUIThreadDelay(long delayMillis, LifecycleProvider lifecycleProvider) {
+        return runInUIThreadDelay(new Object(), delayMillis, lifecycleProvider);
     }
 }

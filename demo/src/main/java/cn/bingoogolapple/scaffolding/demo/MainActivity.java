@@ -3,11 +3,12 @@ package cn.bingoogolapple.scaffolding.demo;
 import android.Manifest;
 import android.os.Bundle;
 
-import cn.bingoogolapple.scaffolding.demo.databinding.ActivityMainBinding;
 import cn.bingoogolapple.scaffolding.demo.greendao.activity.GreenDaoActivity;
+import cn.bingoogolapple.scaffolding.demo.rxjava.activity.RxJavaActivity;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
-import cn.bingoogolapple.scaffolding.view.MvcBindingActivity;
+import cn.bingoogolapple.scaffolding.util.RxUtil;
+import cn.bingoogolapple.scaffolding.view.MvcActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -16,7 +17,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * 创建时间:16/11/5 下午5:53
  * 描述:
  */
-public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
+public class MainActivity extends MvcActivity {
 
     @Override
     public boolean isSupportSwipeBack() {
@@ -29,8 +30,18 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
     }
 
     @Override
+    protected void initView(Bundle savedInstanceState) {
+    }
+
+    @Override
+    protected void setListener() {
+        setOnClick(R.id.btn_main_greendao, o -> forward(GreenDaoActivity.class));
+        setOnClick(R.id.btn_main_rxjava, o -> forward(RxJavaActivity.class));
+    }
+
+    @Override
     protected void processLogic(Bundle savedInstanceState) {
-        requestPermissions();
+        RxUtil.runInUIThreadDelay(1, 1000, this).subscribe(dummy -> requestPermissions());
     }
 
     @AfterPermissionGranted(PermissionUtil.RC_PERMISSION_STORAGE)
@@ -45,12 +56,4 @@ public class MainActivity extends MvcBindingActivity<ActivityMainBinding> {
     public void onBackPressed() {
         AppManager.getInstance().exitWithDoubleClick();
     }
-
-    /**
-     * 跳转到 GreenDao 界面
-     */
-    public void goToGreenDao() {
-        forward(GreenDaoActivity.class);
-    }
-
 }

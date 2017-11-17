@@ -23,14 +23,14 @@ import android.support.annotation.StringRes;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import cn.bingoogolapple.scaffolding.R;
-import rx.Subscriber;
+import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/8/14 上午1:15
  * 描述:
  */
-public abstract class LocalSubscriber<T> extends Subscriber<T> {
+public abstract class LocalSubscriber<T> extends ResourceSubscriber<T> {
     protected MaterialDialog mLoadingDialog;
     protected Activity mActivity;
     protected String mMsg;
@@ -75,8 +75,8 @@ public abstract class LocalSubscriber<T> extends Subscriber<T> {
             if (mCancelable) {
                 // 点击取消的时候取消订阅
                 builder.cancelListener(dialog -> {
-                    if (!isUnsubscribed()) {
-                        unsubscribe();
+                    if (!isDisposed()) {
+                        dispose();
                     }
                 });
             }
@@ -87,7 +87,7 @@ public abstract class LocalSubscriber<T> extends Subscriber<T> {
 
     @CallSuper
     @Override
-    public void onCompleted() {
+    public void onComplete() {
         dismissLoadingDialog();
     }
 

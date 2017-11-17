@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch.Vertical"
+    android:background="@color/windowBackground"
+    android:gravity="center">
+
+    <Button
+        android:id="@+id/btn_rxjava_test"
+        style="@style/DemoBtn"
+        android:text="test" />
+
+</LinearLayout>

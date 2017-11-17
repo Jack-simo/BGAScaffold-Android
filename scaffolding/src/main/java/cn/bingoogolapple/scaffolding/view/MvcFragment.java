@@ -27,9 +27,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.orhanobut.logger.Logger;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -40,9 +40,9 @@ import cn.bingoogolapple.scaffolding.util.PermissionUtil;
 import cn.bingoogolapple.scaffolding.util.UMAnalyticsUtil;
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil;
 import cn.bingoogolapple.titlebar.BGATitleBar;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import pub.devrel.easypermissions.EasyPermissions;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -309,20 +309,20 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
      * 设置点击事件，并防止重复点击
      *
      * @param id
-     * @param action
+     * @param consumer
      */
-    protected void setOnClick(@IdRes int id, Action1 action) {
-        setOnClick(getViewById(id), action);
+    protected void setOnClick(@IdRes int id, Consumer consumer) {
+        setOnClick(getViewById(id), consumer);
     }
 
     /**
      * 设置点击事件，并防止重复点击
      *
      * @param view
-     * @param action
+     * @param consumer
      */
-    protected void setOnClick(View view, Action1 action) {
-        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(action);
+    protected void setOnClick(View view, Consumer consumer) {
+        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(consumer);
     }
 
     /**

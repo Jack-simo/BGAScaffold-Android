@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchMatch.Vertical">
 
-    <data>
+    <Button
+        android:id="@+id/btn_main_greendao"
+        style="@style/DemoBtn"
+        android:text="GreenDaoDemo" />
 
-        <variable
-            name="eventHandler"
-            type="cn.bingoogolapple.scaffolding.demo.MainActivity"/>
-    </data>
-
-    <LinearLayout
-        style="@style/MatchMatch.Vertical"
-        android:background="@color/white"
-        android:gravity="center">
-
-        <Button
-            style="@style/DemoBtn"
-            android:text="跳转到 GreenDao 案例主界面"
-            app:onNoDoubleClick="@{() -> eventHandler.goToGreenDao()}"/>
-    </LinearLayout>
-</layout>
+    <Button
+        android:id="@+id/btn_main_rxjava"
+        style="@style/DemoBtn"
+        android:text="RxJavaDemo" />
+</LinearLayout>

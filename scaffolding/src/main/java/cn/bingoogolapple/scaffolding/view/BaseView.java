@@ -18,7 +18,7 @@ package cn.bingoogolapple.scaffolding.view;
 
 import android.support.annotation.StringRes;
 
-import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

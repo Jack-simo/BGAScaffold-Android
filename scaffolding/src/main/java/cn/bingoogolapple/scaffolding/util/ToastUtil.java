@@ -20,7 +20,7 @@ import android.support.annotation.StringRes;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import cn.bingoogolapple.scaffolding.R;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -40,7 +40,7 @@ public class ToastUtil {
             } else {
                 toast = Toast.makeText(AppManager.getApp(), text, Toast.LENGTH_LONG);
             }
-            DrawableUtil.tintBackground(toast.getView(), R.color.toast_background);
+//            DrawableUtil.tintBackground(toast.getView(), R.color.toast_background);
             toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, UIUtil.dp2px(2));
             toast.show();
         }
@@ -53,7 +53,7 @@ public class ToastUtil {
     public static void showSafe(final CharSequence text) {
         try {
             if (AppManager.getInstance().isFrontStage()) {
-                RxUtil.runInUIThread(text).subscribe(msg -> show(msg));
+                AndroidSchedulers.mainThread().scheduleDirect(() -> show(text));
             }
         } catch (Exception e) {
         }

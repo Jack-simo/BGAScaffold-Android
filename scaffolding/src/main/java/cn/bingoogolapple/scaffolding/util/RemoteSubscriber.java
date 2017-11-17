@@ -22,6 +22,7 @@ import android.support.annotation.StringRes;
 import com.orhanobut.logger.Logger;
 
 import cn.bingoogolapple.scaffolding.R;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -69,7 +70,7 @@ public abstract class RemoteSubscriber<T> extends LocalSubscriber<T> {
             onError(e.getMessage());
             try {
                 if (AppManager.getInstance().isFrontStage()) {
-                    RxUtil.runInIoThread().subscribe(aVoid -> AppManager.getInstance().handleServerException((ApiException) e));
+                    Schedulers.io().scheduleDirect(() -> AppManager.getInstance().handleServerException((ApiException) e));
                 }
             } catch (Exception e2) {
             }

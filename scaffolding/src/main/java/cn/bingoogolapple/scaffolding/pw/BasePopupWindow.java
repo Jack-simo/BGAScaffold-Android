@@ -25,12 +25,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.PopupWindow;
 
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -82,20 +82,20 @@ public abstract class BasePopupWindow extends PopupWindow {
      * 设置点击事件，并防止重复点击
      *
      * @param id
-     * @param action
+     * @param consumer
      */
-    protected void setOnClick(@IdRes int id, Action1 action) {
-        setOnClick(getViewById(id), action);
+    protected void setOnClick(@IdRes int id, Consumer consumer) {
+        setOnClick(getViewById(id), consumer);
     }
 
     /**
      * 设置点击事件，并防止重复点击
      *
      * @param view
-     * @param action
+     * @param consumer
      */
-    protected void setOnClick(View view, Action1 action) {
-        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(action);
+    protected void setOnClick(View view, Consumer consumer) {
+        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(consumer);
     }
 
     /**

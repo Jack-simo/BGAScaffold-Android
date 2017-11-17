@@ -7,7 +7,6 @@ import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.antfortune.freeline.FreelineCore;
 import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -31,7 +30,6 @@ public class App extends Application implements AppManager.Delegate {
     @Override
     public void onCreate() {
         super.onCreate();
-        FreelineCore.init(this);
 
         if (AppManager.isInOtherProcess(this)) {
             Log.e("App", "enter the other process!");

@@ -18,7 +18,7 @@ package cn.bingoogolapple.scaffolding.view;
 
 import android.support.annotation.StringRes;
 
-import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import cn.bingoogolapple.scaffolding.presenter.BasePresenter;
 import cn.bingoogolapple.scaffolding.util.ToastUtil;

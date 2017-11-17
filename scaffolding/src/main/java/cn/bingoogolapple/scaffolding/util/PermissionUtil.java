@@ -2,9 +2,9 @@ package cn.bingoogolapple.scaffolding.util;
 
 import android.support.annotation.StringRes;
 
-import com.trello.rxlifecycle.LifecycleProvider;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle2.LifecycleProvider;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import cn.bingoogolapple.scaffolding.R;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -168,7 +168,7 @@ public class PermissionUtil {
         String appName = AppManager.getAppName();
         if (requestCode == RC_PERMISSION_STORAGE) {
             ToastUtil.show(AppManager.getApp().getString(R.string.tip_permission_storage_denied, appName));
-            RxUtil.runInUIThreadDelay(1500, lifecycleProvider).subscribe(aVoid -> AppManager.getInstance().exit());
+            RxUtil.runInUIThreadDelay(1500, lifecycleProvider).subscribe(dummy -> AppManager.getInstance().exit());
         } else if (requestCode == RC_PERMISSION_TAKE_PHOTO) {
             ToastUtil.show(AppManager.getApp().getString(R.string.tip_permission_take_photo_denied, appName));
         } else if (requestCode == RC_PERMISSION_CALL_PHONE) {
