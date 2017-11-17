@@ -33,6 +33,7 @@ import android.util.Log;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.PrettyFormatStrategy;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -124,7 +125,10 @@ public class AppManager implements Application.ActivityLifecycleCallbacks {
         mDelegate = delegate;
 
         // 初始化日志打印库
-        Logger.addLogAdapter(new AndroidLogAdapter() {
+        Logger.addLogAdapter(new AndroidLogAdapter(
+                PrettyFormatStrategy.newBuilder()
+                        .methodCount(1)
+                        .build()) {
             @Override
             public boolean isLoggable(int priority, String tag) {
                 return mIsBuildDebug;
