@@ -46,7 +46,7 @@ public class RxJavaActivity extends MvcActivity {
                     if (!emitter.isDisposed()) { // Observable 并不是在创建的时候就立即开始发送事件，而是在它被订阅的时候
                         Thread.sleep(3000);
                         Logger.d("onNext");
-                        emitter.onNext(1);
+                        emitter.onNext(0);
                     }
                     if (!emitter.isDisposed()) {
                         Thread.sleep(3000);
@@ -59,32 +59,78 @@ public class RxJavaActivity extends MvcActivity {
                         emitter.onError(e);
                     }
                 }
-            }).doOnNext(data -> Logger.d("doOnNext1: " + data)) // RxCachedThreadScheduler-1【受 A 影响】
-                    .observeOn(Schedulers.newThread()) // 如果后续还有 observeOn，则影响两个 observeOn 之间操作符的执行线程【B newThread】
-                    .doOnNext(data -> Logger.d("doOnNext2: " + data)) // RxNewThreadScheduler-1 newThread【受 B 影响】
-                    .doOnComplete(() -> Logger.d("doOnComplete1")) // RxNewThreadScheduler-1 newThread【受 B 影响】
-                    .map(data -> { // RxNewThreadScheduler-1 newThread【受 B 影响】
-                        Logger.d("map: " + data);
+            }).doOnNext(data -> Logger.d("doOnNext1")) // RxCachedThreadScheduler-1【受 A 影响】
+                    .doOnComplete(() -> Logger.d("doOnComplete1")) // RxCachedThreadScheduler-1【受 A 影响】
+                    .doOnError(throwable -> Logger.d("doOnError1")) // RxCachedThreadScheduler-1【受 A 影响】
+                    .map(data -> { // RxCachedThreadScheduler-1【受 A 影响】
+                        Logger.d("map1");
                         return data + 1;
                     })
-                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe2")) // RxCachedThreadScheduler-1【在 subscribeOn 之前，受 A 影响】
-                    .subscribeOn(Schedulers.io()) // 影响「被观察者」以及「被观察者和第一个 observeOn」之间操作符的执行线程【A io】
-                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe1")) // RxComputationThreadPool-1【在 subscribeOn 之后，与 Observer 的 onSubscribe 方法一样】
-                    .doOnComplete(() -> Logger.d("doOnComplete2")) // RxNewThreadScheduler-1 newThread【受 B 影响】
-                    .doOnNext(data -> Logger.d("doOnNext3: " + data)) // RxNewThreadScheduler-1 newThread【受 B 影响】
-                    .observeOn(AndroidSchedulers.mainThread()) // 如果后续没有 observeOn，则影响后续所有操作符的执行线程（包括 Observer 中的所有方法的执行线程）【C main】
-                    .doOnComplete(() -> Logger.d("doOnComplete3")) // main【受 C 影响】
-                    .compose(bindToLifecycle()) // 如果 Activity 销毁时被观察者还没有发射 onComplete 或 onError，会回调「compose 之后的 doOnComplete」和「Observer 的 onComplete 方法」
-                    .doOnComplete(() -> Logger.d("doOnComplete4")) // main【受 C 影响】
-                    .doOnNext(data -> Logger.d("doOnNext4: " + data)) // main【受 C 影响】
-                    .flatMap(data -> { // main【受 C 影响】
-                        Logger.d("flatMap: " + data);
-                        return Observable.just("RxJava" + data);
+                    .flatMap(data -> {  // RxCachedThreadScheduler-1【受 A 影响】
+                        Logger.d("flatMap1");
+                        return Observable.just(data);
+                        // return Observable.just(data)
+                        //         .observeOn(Schedulers.newThread()); // 【B newThread】如果后续还有 observeOn，则影响两个 observeOn 之间操作符的执行线程「flatMap 内部执行 observeOn 来切换线程也会外部的操作符执行线程，但不会影响外部的 doOnComplete」
                     })
+
+                    .observeOn(Schedulers.newThread()) // 【B newThread】如果后续还有 observeOn，则影响两个 observeOn 之间操作符的执行线程
+
+                    .doOnNext(data -> Logger.d("doOnNext2")) // RxNewThreadScheduler-1【受 B 影响】
+                    .doOnComplete(() -> Logger.d("doOnComplete2")) // RxNewThreadScheduler-1【受 B 影响】
+                    .doOnError(throwable -> Logger.d("doOnError2")) // RxNewThreadScheduler-1【受 B 影响】
+                    .flatMap(integer -> {  // RxNewThreadScheduler-1【受 B 影响】
+                        Logger.d("flatMap2");
+                        return Observable.just(Long.valueOf(integer));
+                    })
+                    .map(data -> { // RxNewThreadScheduler-1【受 B 影响】
+                        Logger.d("map2");
+                        return data + 1;
+                    })
+
+                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe2")) // RxCachedThreadScheduler-1【在 subscribeOn 之前，受 A 影响】
+                    .subscribeOn(Schedulers.io()) // 【A io】影响「被观察者」以及「被观察者和第一个 observeOn」之间操作符的执行线程
+                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe1")) // RxComputationThreadPool-1【在 subscribeOn 之后，与 Observer 的 onSubscribe 方法一样】
+
+                    .doOnNext(data -> Logger.d("doOnNext3")) // RxNewThreadScheduler-1【受 B 影响】
+                    .doOnComplete(() -> Logger.d("doOnComplete3")) // RxNewThreadScheduler-1【受 B 影响】
+                    .doOnError(throwable -> Logger.d("doOnError3")) // RxNewThreadScheduler-1【受 B 影响】
+                    .flatMap(integer -> {  // RxNewThreadScheduler-1【受 B 影响】
+                        Logger.d("flatMap3");
+                        return Observable.just(Double.valueOf(integer));
+                    })
+                    .map(data -> { // RxNewThreadScheduler-1【受 B 影响】
+                        Logger.d("map3");
+                        return data + 1;
+                    })
+
+                    .observeOn(AndroidSchedulers.mainThread()) // 【C main】如果后续没有 observeOn，则影响后续所有操作符的执行线程（包括 Observer 中的所有方法的执行线程）
+
+                    .doOnNext(data -> Logger.d("doOnNext4")) // main【受 C 影响】
+                    .doOnComplete(() -> Logger.d("doOnComplete4")) // main【受 C 影响】
+                    .doOnError(throwable -> Logger.d("doOnError4")) // main【受 C 影响】
+                    .map(data -> { // main【受 C 影响】
+                        Logger.d("map4");
+                        return data + 1;
+                    })
+
+                    .compose(bindToLifecycle()) // 如果 Activity 销毁时被观察者还没有发射 onComplete 或 onError，会回调「compose 之后的 doOnComplete」和「Observer 的 onComplete 方法」
+
+                    .doOnNext(data -> Logger.d("doOnNext5")) // main【受 C 影响】
+                    .doOnComplete(() -> Logger.d("doOnComplete5")) // main【受 C 影响】
+                    .doOnError(throwable -> Logger.d("doOnError5")) // main【受 C 影响】
+                    .map(data -> { // main【受 C 影响】
+                        Logger.d("map5");
+                        return data + 1;
+                    })
+                    .flatMap(data -> { // main【受 C 影响】
+                        Logger.d("flatMap");
+                        return Observable.just("转换了 " + data + " 次 map 操作");
+                    })
+
                     .subscribe(new Observer<String>() {
                         @Override
                         public void onSubscribe(Disposable disposable) { // RxComputationThreadPool-1
-                            // 在 subscribe 刚开始，而事件还未发送之前被调用，可以用于做一些准备工作，如果对准备工作的线程有要求，可能该方法就不适用做准备工作
+                            // 在 subscribe 刚开始，但事件还未发送之前被调用，可以用于做一些准备工作，如果对准备工作的线程有要求，可能该方法就不适用做准备工作
                             // 因为该方法总是在 subscribe 所发生的线程被调用，而不能指定线程（例如本例就不适合在该方法中显示对话框，因为是在 computation 中 subscribe 的）
                             Logger.d("订阅成功 onSubscribe");
                         }
