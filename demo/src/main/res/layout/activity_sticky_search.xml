@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchMatch.Vertical">
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/sv_sticky_search_keyword"
+        style="@style/MatchWrap"
+        android:gravity="center_vertical"
+        app:iconifiedByDefault="false" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_sticky_search_blog"
+        style="@style/MatchMatch"
+        tools:item="@layout/item_blog" />
+</LinearLayout>

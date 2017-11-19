@@ -11,9 +11,12 @@
 
     <TextView
         android:id="@+id/tv_search_result"
-        style="@style/MatchMatch"
+        style="@style/MatchWrap"
         android:background="#00ff00"
+        android:gravity="center"
+        android:padding="@dimen/size_level4"
         android:textColor="#ff0000"
-        android:textSize="@dimen/textSize_14"
-        tools:text="测试1\n测试2" />
+        android:textSize="@dimen/textSize_18"
+        android:textStyle="bold"
+        tools:text="测试1" />
 </LinearLayout>

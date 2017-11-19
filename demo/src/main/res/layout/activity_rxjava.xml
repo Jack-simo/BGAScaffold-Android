@@ -11,6 +11,11 @@
     <Button
         android:id="@+id/btn_rxjava_search"
         style="@style/DemoBtn"
-        android:text="Search" />
+        android:text="搜索" />
+
+    <Button
+        android:id="@+id/btn_rxjava_sticky_search"
+        style="@style/DemoBtn"
+        android:text="吸顶搜索" />
 
 </LinearLayout>

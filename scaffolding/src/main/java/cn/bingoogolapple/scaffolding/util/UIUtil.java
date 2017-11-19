@@ -21,6 +21,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -47,6 +48,10 @@ public class UIUtil {
 
     public static int getColor(@ColorRes int id) {
         return AppManager.getApp().getResources().getColor(id);
+    }
+
+    public static int getDimen(@DimenRes int resId) {
+        return AppManager.getApp().getResources().getDimensionPixelOffset(resId);
     }
 
     public static int getStatusBarHeight() {
