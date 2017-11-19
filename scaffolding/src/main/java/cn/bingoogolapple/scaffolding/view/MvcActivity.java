@@ -148,15 +148,15 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
     protected void initToolbarContentView() {
         super.setContentView(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_merge);
 
-        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        ViewStubCompat toolbarVs = findViewById(R.id.toolbarVs);
         toolbarVs.setLayoutResource(R.layout.inc_toolbar);
         toolbarVs.inflate();
 
-        mToolbar = getViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        ViewStubCompat viewStub = findViewById(R.id.contentVs);
         viewStub.setLayoutResource(getRootLayoutResID());
         viewStub.inflate();
     }
@@ -164,13 +164,13 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
     protected void initTitleBarContentView() {
         super.setContentView(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_merge);
 
-        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        ViewStubCompat toolbarVs = findViewById(R.id.toolbarVs);
         toolbarVs.setLayoutResource(R.layout.inc_titlebar);
         toolbarVs.inflate();
 
-        mTitleBar = getViewById(R.id.titleBar);
+        mTitleBar = findViewById(R.id.titleBar);
 
-        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        ViewStubCompat viewStub = findViewById(R.id.contentVs);
         viewStub.setLayoutResource(getRootLayoutResID());
         viewStub.inflate();
     }
@@ -223,7 +223,7 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
      * @param consumer
      */
     protected void setOnClick(@IdRes int id, Consumer consumer) {
-        setOnClick(getViewById(id), consumer);
+        setOnClick(findViewById(id), consumer);
     }
 
     /**
@@ -244,18 +244,7 @@ public abstract class MvcActivity extends RxAppCompatActivity implements EasyPer
     protected abstract
     @LayoutRes
     int getRootLayoutResID();
-
-    /**
-     * 查找View
-     *
-     * @param id   控件的id
-     * @param <VT> View类型
-     * @return
-     */
-    protected <VT extends View> VT getViewById(@IdRes int id) {
-        return (VT) findViewById(id);
-    }
-
+    
     /**
      * 初始化View控件
      */

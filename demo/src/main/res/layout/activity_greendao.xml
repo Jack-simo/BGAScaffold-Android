@@ -12,7 +12,7 @@
     <LinearLayout
         style="@style/MatchMatch.Vertical"
         android:background="@color/windowBackground"
-        android:gravity="center">
+        android:padding="@dimen/size_level4">
 
         <Button
             style="@style/DemoBtn"

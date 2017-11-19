@@ -46,6 +46,11 @@
             android:name=".rxjava.activity.RxJavaActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".rxjava.activity.SearchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>
 
 </manifest>

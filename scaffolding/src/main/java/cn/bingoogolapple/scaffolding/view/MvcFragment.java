@@ -93,14 +93,14 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     protected void initTitleBarContentView() {
         mContentView = LayoutInflater.from(getActivity()).inflate(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_frame, null);
 
-        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        ViewStubCompat toolbarVs = findViewById(R.id.toolbarVs);
         toolbarVs.setLayoutResource(R.layout.inc_titlebar);
         toolbarVs.inflate();
 
-        mTitleBar = getViewById(R.id.titleBar);
+        mTitleBar = findViewById(R.id.titleBar);
         mTitleBar.setDelegate(this);
 
-        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        ViewStubCompat viewStub = findViewById(R.id.contentVs);
         viewStub.setLayoutResource(getRootLayoutResID());
         viewStub.inflate();
     }
@@ -124,12 +124,12 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
     protected void initToolbarContentView() {
         mContentView = LayoutInflater.from(getActivity()).inflate(isLinear() ? R.layout.rootlayout_linear : R.layout.rootlayout_frame, null);
 
-        ViewStubCompat toolbarVs = getViewById(R.id.toolbarVs);
+        ViewStubCompat toolbarVs = findViewById(R.id.toolbarVs);
         toolbarVs.setLayoutResource(R.layout.inc_toolbar);
         toolbarVs.inflate();
-        mToolbar = getViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
 
-        ViewStubCompat viewStub = getViewById(R.id.contentVs);
+        ViewStubCompat viewStub = findViewById(R.id.contentVs);
         viewStub.setLayoutResource(getRootLayoutResID());
         viewStub.inflate();
 
@@ -312,7 +312,7 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
      * @param consumer
      */
     protected void setOnClick(@IdRes int id, Consumer consumer) {
-        setOnClick(getViewById(id), consumer);
+        setOnClick(findViewById(id), consumer);
     }
 
     /**
@@ -332,7 +332,7 @@ public abstract class MvcFragment extends RxFragment implements EasyPermissions.
      * @param <VT> View类型
      * @return
      */
-    protected <VT extends View> VT getViewById(@IdRes int id) {
+    protected final <VT extends View> VT findViewById(@IdRes int id) {
         return (VT) mContentView.findViewById(id);
     }
 

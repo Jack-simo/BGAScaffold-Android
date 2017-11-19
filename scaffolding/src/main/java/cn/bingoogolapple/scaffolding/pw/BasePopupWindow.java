@@ -85,7 +85,7 @@ public abstract class BasePopupWindow extends PopupWindow {
      * @param consumer
      */
     protected void setOnClick(@IdRes int id, Consumer consumer) {
-        setOnClick(getViewById(id), consumer);
+        setOnClick(findViewById(id), consumer);
     }
 
     /**
@@ -105,7 +105,7 @@ public abstract class BasePopupWindow extends PopupWindow {
      * @param <VT> View类型
      * @return
      */
-    protected <VT extends View> VT getViewById(@IdRes int id) {
+    protected final <VT extends View> VT findViewById(@IdRes int id) {
         return (VT) getContentView().findViewById(id);
     }
 }

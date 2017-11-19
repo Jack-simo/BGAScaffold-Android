@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchMatch.Vertical"
+    android:padding="@dimen/size_level4">
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/sv_search_keyword"
+        style="@style/MatchWrap"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/tv_search_result"
+        style="@style/MatchMatch"
+        android:background="#00ff00"
+        android:textColor="#ff0000"
+        android:textSize="@dimen/textSize_14"
+        tools:text="测试1\n测试2" />
+</LinearLayout>

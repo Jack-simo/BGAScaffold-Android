@@ -31,7 +31,8 @@ public class RxJavaActivity extends MvcActivity {
 
     @Override
     protected void setListener() {
-        setOnClick(R.id.btn_rxjava_test, o -> helloWorld());
+        setOnClick(R.id.btn_rxjava_helloworld, o -> helloWorld());
+        setOnClick(R.id.btn_rxjava_search, o -> forward(SearchActivity.class));
     }
 
     @Override

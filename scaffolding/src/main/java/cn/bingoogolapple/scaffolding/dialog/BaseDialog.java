@@ -67,7 +67,7 @@ public abstract class BaseDialog extends AppCompatDialog {
      * @param consumer
      */
     protected void setOnClick(@IdRes int id, Consumer consumer) {
-        setOnClick(getViewById(id), consumer);
+        setOnClick(findViewById(id), consumer);
     }
 
     /**
@@ -78,17 +78,6 @@ public abstract class BaseDialog extends AppCompatDialog {
      */
     protected void setOnClick(View view, Consumer consumer) {
         RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(consumer);
-    }
-
-    /**
-     * 查找View
-     *
-     * @param id   控件的id
-     * @param <VT> View类型
-     * @return
-     */
-    protected <VT extends View> VT getViewById(@IdRes int id) {
-        return (VT) findViewById(id);
     }
 
     @Override
