@@ -13,5 +13,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_sticky_search_blog"
         style="@style/MatchMatch"
+        android:overScrollMode="never"
         tools:item="@layout/item_blog" />
 </LinearLayout>
