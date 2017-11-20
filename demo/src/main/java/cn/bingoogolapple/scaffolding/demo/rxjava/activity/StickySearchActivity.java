@@ -25,6 +25,7 @@ import cn.bingoogolapple.scaffolding.view.MvcActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 
@@ -41,7 +42,7 @@ public class StickySearchActivity extends MvcActivity {
     private LinearLayoutManager mLayoutManager;
     private BlogAdapter mBlogAdapter;
 
-    private Engine.BlogApi mBlogApi;
+    private Engine.RxJavaApi mRxJavaApi;
     private LongSparseArray<String> mCategoryArray = new LongSparseArray<>();
     private List<Category> mCategoryList;
 
@@ -66,8 +67,6 @@ public class StickySearchActivity extends MvcActivity {
 
             @Override
             public boolean onQueryTextChange(String keyword) {
-//                initSearch2();
-
                 mKeywordPs.onNext(keyword);
                 return true;
             }
@@ -76,7 +75,7 @@ public class StickySearchActivity extends MvcActivity {
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        mBlogApi = Engine.getRxJavaApi();
+        mRxJavaApi = Engine.getRxJavaApi();
         initStickyList();
         initSearch();
     }
@@ -108,6 +107,19 @@ public class StickySearchActivity extends MvcActivity {
     }
 
     private void initSearch() {
+        mKeywordSv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String keyword) {
+                mKeywordPs.onNext(keyword);
+                return true;
+            }
+        });
+
         mKeywordPs = PublishSubject.create();
         mKeywordPs.debounce(400, TimeUnit.MILLISECONDS) // debounce 默认是在 computation 线程的。发送一个延时消息给下游，如果在这段延时时间内没有收到新的请求，那么下游就会收到该消息；而如果在这段延时时间内收到来新的请求，那么就会取消之前的消息，并重新发送一个新的延时消息
                 .observeOn(AndroidSchedulers.mainThread()) // 这里手动将后续操作符切换到主线程，否则 filter 也是在 computation 线程的
@@ -121,18 +133,23 @@ public class StickySearchActivity extends MvcActivity {
                 })
                 .switchMap(keyword -> { // switchMap 将上游的事件转换成新的 Observable，如果在该节点收到一个新的事件之后，那么如果之前收到的事件所产生的 Observable A 还没有发送事件给下游，那么下游就再也不会收到 Observable A
                     /**
-                     * CombineLatest 和 zip 类似，都是组合两个 Observable 的数据为新的 Observable
+                     * combineLatest 和 zip 类似，都是组合两个 Observable 的数据为新的 Observable
                      * zip 当原始 Observable 中每一个都发射了一条数据时才发射数据
-                     * CombineLatest 当原始 Observable 中任何一个发射了一条数据时发射数据
+                     * combineLatest 当原始 Observable 中任何一个发射了一条数据时发射数据
                      */
                     return Observable.combineLatest(
                             getCategoryListObservable(),
-                            mBlogApi.findBlogList(keyword).flatMap(netResult -> Observable.just(netResult.data)),
+                            mRxJavaApi.findBlogList(keyword).flatMap(netResult -> Observable.just(netResult.data)),
                             (blogCategoryList, blogList) -> {
                                 convertToCategoryArray(blogCategoryList);
                                 return blogList;
                             }
-                    );
+                    ).doOnNext(new Consumer<List<Blog>>() {
+                        @Override
+                        public void accept(List<Blog> blogs) throws Exception {
+                            Logger.d("doOnNext");
+                        }
+                    });
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
@@ -140,7 +157,7 @@ public class StickySearchActivity extends MvcActivity {
                     throwable.printStackTrace();
                     Logger.d("错误：" + throwable.getMessage()); // 将 Observer 的 onError 中的错误处理放到 doOnError 中处理
                 })
-                .retryWhen(throwableObservable -> throwableObservable) // 处理 onError 时重订阅，避免发生一次错误后就再也搜索不到结果。Observer 的 onError 将不会再被回调
+                .retryWhen(throwableObservable -> throwableObservable.flatMap(throwable -> Observable.just(0))) // 处理 onError 时重订阅，避免发生一次错误后就再也搜索不到结果。Observer 的 onError 将不会再被回调
                 .filter(result -> StringUtil.isNotEmpty(mKeywordSv.getQuery())) // 避免返回结果时，如果当前搜索框关键字为空则忽略此次搜索结果
                 .subscribe(result -> {
                     Logger.d("查询成功");
@@ -171,7 +188,7 @@ public class StickySearchActivity extends MvcActivity {
                                 return false;
                             }
                         })
-                        .switchMap(keyword -> mBlogApi.findBlogList(keyword) // switchMap 将上游的事件转换成新的 Observable，如果在该节点收到一个新的事件之后，那么如果之前收到的事件所产生的 Observable A 还没有发送事件给下游，那么下游就再也不会收到 Observable A
+                        .switchMap(keyword -> mRxJavaApi.findBlogList(keyword) // switchMap 将上游的事件转换成新的 Observable，如果在该节点收到一个新的事件之后，那么如果之前收到的事件所产生的 Observable A 还没有发送事件给下游，那么下游就再也不会收到 Observable A
                                 .flatMap(netResult -> Observable.just(netResult.data))),
                 (blogCategoryList, blogList) -> {
                     convertToCategoryArray(blogCategoryList);
@@ -215,13 +232,13 @@ public class StickySearchActivity extends MvcActivity {
     private Observable<List<Category>> getCategoryListObservable() {
         // switchIfEmpty 如果原始 Observable 正常终止后仍然没有发射任何数据，就使用备用的 Observable
         return getCategoryListFromCache()
-                .switchIfEmpty(mBlogApi.getCategoryList().flatMap(netResult -> Observable.just(netResult.data)))
+                .switchIfEmpty(mRxJavaApi.getCategoryList().flatMap(netResult -> Observable.just(netResult.data)))
                 .doOnNext(categoryList -> convertToCategoryArray(categoryList));
 
-        // concat 操作符是接收若干个 Observables，发射数据是有序的，不会交叉。concat + takeUntil 实现二级缓存
+        // concat 操作符是接收若干个 Observables，发射数据是有序的，不会交叉，只有需要数据的时候才会订阅所有的 Observable 数据源
 //        return Observable.concat(
 //                getCategoryListFromCache(),
-//                mBlogApi.getCategoryList().flatMap(netResult -> Observable.just(netResult.data))
+//                mRxJavaApi.getCategoryList().flatMap(netResult -> Observable.just(netResult.data))
 //        ).takeUntil(categoryList -> categoryList != null)
 //                .doOnNext(categoryList -> convertToCategoryArray(categoryList));
     }

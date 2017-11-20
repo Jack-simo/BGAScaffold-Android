@@ -11,6 +11,9 @@ import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
+import java.io.IOException;
+import java.net.SocketException;
+
 import cn.bingoogolapple.scaffolding.demo.greendao.util.GreenDaoUtil;
 import cn.bingoogolapple.scaffolding.util.ApiException;
 import cn.bingoogolapple.scaffolding.util.AppManager;
@@ -18,6 +21,8 @@ import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxEvent;
 import cn.bingoogolapple.scaffolding.util.UMAnalyticsUtil;
 import cn.bingoogolapple.swipebacklayout.BGASwipeBackHelper;
+import io.reactivex.exceptions.UndeliverableException;
+import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -43,6 +48,8 @@ public class App extends Application implements AppManager.Delegate {
         AppManager.getInstance().init(BuildConfig.BUILD_TYPE, this);
         // 初始化滑动返回
         BGASwipeBackHelper.init(this, null);
+        // 初始化 RxJava 错误处理器
+        initRxJavaErrorHandler();
 
         // 初始化友盟 SDK
         UMAnalyticsUtil.initSdk("5824622df29d9859ce0034dd", BuildConfig.FLAVOR);
@@ -97,5 +104,31 @@ public class App extends Application implements AppManager.Delegate {
 
     private void appEnterBackground() {
         Logger.i("应用进入后台");
+    }
+
+    // 初始化 RxJava 错误处理器
+    private void initRxJavaErrorHandler() {
+        RxJavaPlugins.setErrorHandler(e -> {
+            if (e instanceof UndeliverableException) {
+                e = e.getCause();
+            }
+            if ((e instanceof IOException) || (e instanceof SocketException)) { // 没事，无关紧要的网络问题或 API 在取消时抛出的异常
+                return;
+            }
+            if (e instanceof InterruptedException) { // 没事，一些阻塞代码被 dispose 调用中断
+                return;
+            }
+            if ((e instanceof NullPointerException) || (e instanceof IllegalArgumentException)) { // 这可能是程序的一个bug
+                Thread.currentThread().getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                return;
+            }
+            if (e instanceof IllegalStateException) { // 这是 RxJava 或自定义操作符的一个 bug
+                Thread.currentThread().getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                return;
+            }
+            Logger.w("Undeliverable exception received, not sure what to do");
+            e.printStackTrace();
+        });
+        RxJavaPlugins.setErrorHandler(e -> {});
     }
 }

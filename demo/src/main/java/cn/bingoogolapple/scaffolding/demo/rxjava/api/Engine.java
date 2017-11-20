@@ -26,25 +26,25 @@ public class Engine {
     private Engine() {
     }
 
-    public static BlogApi getRxJavaApi() {
+    public static RxJavaApi getRxJavaApi() {
         boolean isBuildDebug = AppManager.getInstance().isBuildDebug();
         HttpLoggingInterceptor.Level logLevel = isBuildDebug ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE;
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(logLevel))
-                .connectTimeout(3000, TimeUnit.MILLISECONDS)
-                .readTimeout(3000, TimeUnit.MILLISECONDS)
-                .writeTimeout(3000, TimeUnit.MILLISECONDS)
+                .connectTimeout(10000, TimeUnit.MILLISECONDS)
+                .readTimeout(10000, TimeUnit.MILLISECONDS)
+                .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .build();
         return new Retrofit.Builder()
-                .baseUrl("http://192.168.31.152:8080/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .baseUrl("http://10.0.9.161:8080/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())) // 指定在 io 线程进行网络请求
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
-                .create(BlogApi.class);
+                .create(RxJavaApi.class);
     }
 
-    public interface BlogApi {
+    public interface RxJavaApi {
         /**
          * 查询博客列表
          *
