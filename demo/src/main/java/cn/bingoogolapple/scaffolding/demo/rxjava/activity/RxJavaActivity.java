@@ -5,6 +5,10 @@ import android.os.Bundle;
 import com.orhanobut.logger.Logger;
 
 import cn.bingoogolapple.scaffolding.demo.R;
+import cn.bingoogolapple.scaffolding.demo.rxjava.api.Engine;
+import cn.bingoogolapple.scaffolding.demo.rxjava.entity.Blog;
+import cn.bingoogolapple.scaffolding.demo.rxjava.util.RxUtil;
+import cn.bingoogolapple.scaffolding.demo.rxjava.util.UploadManager;
 import cn.bingoogolapple.scaffolding.view.MvcActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -34,6 +38,7 @@ public class RxJavaActivity extends MvcActivity {
         setOnClick(R.id.btn_rxjava_helloworld, o -> helloWorld());
         setOnClick(R.id.btn_rxjava_search, o -> forward(SearchActivity.class));
         setOnClick(R.id.btn_rxjava_sticky_search, o -> forward(StickySearchActivity.class));
+        setOnClick(R.id.btn_rxjava_add_blog, o -> addBlog());
     }
 
     @Override
@@ -153,5 +158,22 @@ public class RxJavaActivity extends MvcActivity {
                         }
                     });
         });
+    }
+
+    private String mCoverFilePath = "/sdcard/avatar.png";
+
+    private void addBlog() {
+        final Blog blog = new Blog();
+        blog.setCategoryId(1L);
+        blog.setTitle("Token + 图片上传 + 错误重试");
+        blog.setContent("我是内容");
+
+        Observable.defer(() -> UploadManager.getInstance().getUploadObservable(mCoverFilePath))
+                .switchMap(filePath -> {
+                    mCoverFilePath = filePath;
+                    blog.setCover(mCoverFilePath);
+                    return Engine.getRxJavaApi().addBlog(blog);
+                }).compose(RxUtil.handleResultThreadLifecycleRetry(this))
+                .subscribe(result -> Logger.d("添加博客成功"), throwable -> Logger.d("添加博客失败"));
     }
 }

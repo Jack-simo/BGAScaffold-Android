@@ -25,63 +25,61 @@ import android.preference.PreferenceManager;
  * 描述:
  */
 public class SPUtil {
-    private static SharedPreferences mSharedPreferences;
+    private SharedPreferences mSp;
 
     private SPUtil() {
+        mSp = PreferenceManager.getDefaultSharedPreferences(AppManager.getApp());
     }
 
-    private static SharedPreferences getPreferneces() {
-        if (mSharedPreferences == null) {
-            synchronized (SPUtil.class) {
-                if (mSharedPreferences == null) {
-                    mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(AppManager.getApp());
-                }
-            }
-        }
-        return mSharedPreferences;
+    private static class SingletonHolder {
+        private static final SPUtil INSTANCE = new SPUtil();
+    }
+
+    public static SPUtil getInstance() {
+        return SingletonHolder.INSTANCE;
     }
 
     public static void clear() {
-        getPreferneces().edit().clear().apply();
+        getInstance().mSp.edit().clear().apply();
     }
 
     public static void putString(String key, String value) {
-        getPreferneces().edit().putString(key, value).apply();
+        getInstance().mSp.edit().putString(key, value).apply();
     }
 
     public static String getString(String key) {
-        return getPreferneces().getString(key, null);
+        return getInstance().mSp.getString(key, "");
     }
 
     public static void putInt(String key, int value) {
-        getPreferneces().edit().putInt(key, value).apply();
+        getInstance().mSp.edit().putInt(key, value).apply();
     }
 
     public static int getInt(String key) {
-        return getPreferneces().getInt(key, 0);
+        return getInstance().mSp.getInt(key, 0);
     }
 
     public static void putBoolean(String key, Boolean value) {
-        getPreferneces().edit().putBoolean(key, value).apply();
+        getInstance().mSp.edit().putBoolean(key, value).apply();
     }
 
     public static void putLong(String key, long value) {
-        getPreferneces().edit().putLong(key, value).apply();
+        getInstance().mSp.edit().putLong(key, value).apply();
     }
 
     public static long getLong(String key) {
-        return getPreferneces().getLong(key, 0);
+        return getInstance().mSp.getLong(key, 0);
     }
 
     public static boolean getBoolean(String key, boolean defValue) {
-        return getPreferneces().getBoolean(key, defValue);
+        return getInstance().mSp.getBoolean(key, defValue);
     }
 
     public static void remove(String key) {
-        getPreferneces().edit().remove(key).apply();
+        getInstance().mSp.edit().remove(key).apply();
     }
 
     public static boolean hasKey(String key) {
-        return getPreferneces().contains(key);
+        return getInstance().mSp.contains(key);
     }
 }

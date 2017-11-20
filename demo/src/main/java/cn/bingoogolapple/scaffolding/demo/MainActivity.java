@@ -5,9 +5,9 @@ import android.os.Bundle;
 
 import cn.bingoogolapple.scaffolding.demo.greendao.activity.GreenDaoActivity;
 import cn.bingoogolapple.scaffolding.demo.rxjava.activity.RxJavaActivity;
+import cn.bingoogolapple.scaffolding.demo.rxjava.util.RxUtil;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.PermissionUtil;
-import cn.bingoogolapple.scaffolding.util.RxUtil;
 import cn.bingoogolapple.scaffolding.view.MvcActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;

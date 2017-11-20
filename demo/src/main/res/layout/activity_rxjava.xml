@@ -18,4 +18,9 @@
         style="@style/DemoBtn"
         android:text="吸顶搜索" />
 
+    <Button
+        android:id="@+id/btn_rxjava_add_blog"
+        style="@style/DemoBtn"
+        android:text="添加博客" />
+
 </LinearLayout>

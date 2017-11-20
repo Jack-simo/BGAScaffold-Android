@@ -168,7 +168,7 @@ public class PermissionUtil {
         String appName = AppManager.getAppName();
         if (requestCode == RC_PERMISSION_STORAGE) {
             ToastUtil.show(AppManager.getApp().getString(R.string.tip_permission_storage_denied, appName));
-            RxUtil.runInUIThreadDelay(1500, lifecycleProvider).subscribe(dummy -> AppManager.getInstance().exit());
+//            RxUtil.runInUIThreadDelay(1500, lifecycleProvider).subscribe(dummy -> AppManager.getInstance().exit());
         } else if (requestCode == RC_PERMISSION_TAKE_PHOTO) {
             ToastUtil.show(AppManager.getApp().getString(R.string.tip_permission_take_photo_denied, appName));
         } else if (requestCode == RC_PERMISSION_CALL_PHONE) {

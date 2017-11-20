@@ -9,6 +9,7 @@ public class Blog {
     private Long id;
     private String title;
     private String content;
+    private String cover;
     private Long categoryId;
 
     public Long getId() {
@@ -33,6 +34,14 @@ public class Blog {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     public Long getCategoryId() {
