@@ -129,6 +129,5 @@ public class App extends Application implements AppManager.Delegate {
             Logger.w("Undeliverable exception received, not sure what to do");
             e.printStackTrace();
         });
-        RxJavaPlugins.setErrorHandler(e -> {});
     }
 }
