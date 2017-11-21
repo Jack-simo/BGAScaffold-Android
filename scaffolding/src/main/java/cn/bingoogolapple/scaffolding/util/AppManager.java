@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import cn.bingoogolapple.scaffolding.R;
+import cn.bingoogolapple.scaffolding.net.ApiException;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 

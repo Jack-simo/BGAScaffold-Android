@@ -22,6 +22,7 @@ import android.support.annotation.StringRes;
 import com.orhanobut.logger.Logger;
 
 import cn.bingoogolapple.scaffolding.R;
+import cn.bingoogolapple.scaffolding.net.ApiException;
 import io.reactivex.schedulers.Schedulers;
 
 /**

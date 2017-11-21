@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import cn.bingoogolapple.scaffolding.demo.greendao.util.GreenDaoUtil;
-import cn.bingoogolapple.scaffolding.util.ApiException;
+import cn.bingoogolapple.scaffolding.net.ApiException;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.RxBus;
 import cn.bingoogolapple.scaffolding.util.RxEvent;

@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package cn.bingoogolapple.scaffolding.util;
+package cn.bingoogolapple.scaffolding.net;
+
+import java.util.HashMap;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:16/8/14 上午12:45
- * 描述:Http 请求异常
+ * 创建时间:16/1/16 上午12:56
+ * 描述:
  */
-public class ApiException extends Exception {
-    private int mCode;
+public class ApiParams extends HashMap<String, Object> {
 
-    public ApiException(String msg, int code) {
-        super(msg);
-        mCode = code;
+    public ApiParams() {
     }
 
-    public int getCode() {
-        return mCode;
+    public ApiParams(String key, Object value) {
+        put(key, value);
+    }
+
+    public ApiParams with(String key, Object value) {
+        put(key, value);
+        return this;
     }
 }

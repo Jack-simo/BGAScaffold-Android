@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cn.bingoogolapple.scaffolding.util;
+package cn.bingoogolapple.scaffolding.net;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

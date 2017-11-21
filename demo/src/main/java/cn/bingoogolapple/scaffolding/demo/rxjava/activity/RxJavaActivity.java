@@ -173,7 +173,11 @@ public class RxJavaActivity extends MvcActivity {
                     mCoverFilePath = filePath;
                     blog.setCover(mCoverFilePath);
                     return Engine.getRxJavaApi().addBlog(blog);
-                }).compose(RxUtil.handleResultThreadLifecycleRetry(this))
-                .subscribe(result -> Logger.d("添加博客成功"), throwable -> Logger.d("添加博客失败"));
+                })
+                .compose(RxUtil.handleResultThreadLifecycleRetry(this))
+                .subscribe(result -> Logger.d("添加博客成功"), throwable -> {
+                    Logger.d("添加博客失败");
+                    throwable.printStackTrace();
+                });
     }
 }

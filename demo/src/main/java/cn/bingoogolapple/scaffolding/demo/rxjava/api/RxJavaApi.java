@@ -5,7 +5,7 @@ import java.util.List;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.Blog;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.Category;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.UploadToken;
-import cn.bingoogolapple.scaffolding.util.NetResult;
+import cn.bingoogolapple.scaffolding.net.NetResult;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;

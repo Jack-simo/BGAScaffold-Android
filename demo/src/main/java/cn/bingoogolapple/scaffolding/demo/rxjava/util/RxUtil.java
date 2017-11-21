@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.util.concurrent.TimeUnit;
 
-import cn.bingoogolapple.scaffolding.util.ApiException;
-import cn.bingoogolapple.scaffolding.util.NetResult;
+import cn.bingoogolapple.scaffolding.net.ApiException;
+import cn.bingoogolapple.scaffolding.net.NetResult;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
