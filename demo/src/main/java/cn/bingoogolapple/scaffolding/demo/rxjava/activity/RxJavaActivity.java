@@ -4,14 +4,20 @@ import android.os.Bundle;
 
 import com.orhanobut.logger.Logger;
 
+import java.util.concurrent.TimeUnit;
+
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.rxjava.api.Engine;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.Blog;
+import cn.bingoogolapple.scaffolding.demo.rxjava.entity.UploadToken;
 import cn.bingoogolapple.scaffolding.demo.rxjava.util.RxUtil;
 import cn.bingoogolapple.scaffolding.demo.rxjava.util.UploadManager;
+import cn.bingoogolapple.scaffolding.net.NetResult;
+import cn.bingoogolapple.scaffolding.util.GsonUtil;
 import cn.bingoogolapple.scaffolding.view.MvcActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableOperator;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -39,6 +45,7 @@ public class RxJavaActivity extends MvcActivity {
         setOnClick(R.id.btn_rxjava_search, o -> forward(SearchActivity.class));
         setOnClick(R.id.btn_rxjava_sticky_search, o -> forward(StickySearchActivity.class));
         setOnClick(R.id.btn_rxjava_add_blog, o -> addBlog());
+        setOnClick(R.id.btn_rxjava_custom_perator, o -> customOperator());
     }
 
     @Override
@@ -82,30 +89,30 @@ public class RxJavaActivity extends MvcActivity {
 
                     .observeOn(Schedulers.newThread()) // 【B newThread】如果后续还有 observeOn，则影响两个 observeOn 之间操作符的执行线程
 
-                    .doOnNext(data -> Logger.d("doOnNext2")) // RxNewThreadScheduler-1【受 B 影响】
-                    .doOnComplete(() -> Logger.d("doOnComplete2")) // RxNewThreadScheduler-1【受 B 影响】
-                    .doOnError(throwable -> Logger.d("doOnError2")) // RxNewThreadScheduler-1【受 B 影响】
-                    .flatMap(integer -> {  // RxNewThreadScheduler-1【受 B 影响】
+                    .doOnNext(data -> Logger.d("doOnNext2")) // RxNewThreadScheduler-2【受 B 影响】
+                    .doOnComplete(() -> Logger.d("doOnComplete2")) // RxNewThreadScheduler-2【受 B 影响】
+                    .doOnError(throwable -> Logger.d("doOnError2")) // RxNewThreadScheduler-2【受 B 影响】
+                    .flatMap(integer -> {  // RxNewThreadScheduler-2【受 B 影响】
                         Logger.d("flatMap2");
                         return Observable.just(Long.valueOf(integer));
                     })
-                    .map(data -> { // RxNewThreadScheduler-1【受 B 影响】
+                    .map(data -> { // RxNewThreadScheduler-2【受 B 影响】
                         Logger.d("map2");
                         return data + 1;
                     })
 
-                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe2")) // RxCachedThreadScheduler-1【在 subscribeOn 之前，受 A 影响】
-                    .subscribeOn(Schedulers.io()) // 【A io】影响「被观察者」以及「被观察者和第一个 observeOn」之间操作符的执行线程
-                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe1")) // RxComputationThreadPool-1【在 subscribeOn 之后，与 Observer 的 onSubscribe 方法一样】
+                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe4")) // RxCachedThreadScheduler-1【在 A 处的 subscribeOn 之前，受 A 影响】
+                    .subscribeOn(Schedulers.io()) // 【A io】第一次执行，影响「被观察者」以及「被观察者和第一个 observeOn」之间操作符的执行线程
+                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe3")) // RxNewThreadScheduler-1【在 D 处的 subscribeOn 之前，受 D 影响】
 
-                    .doOnNext(data -> Logger.d("doOnNext3")) // RxNewThreadScheduler-1【受 B 影响】
-                    .doOnComplete(() -> Logger.d("doOnComplete3")) // RxNewThreadScheduler-1【受 B 影响】
-                    .doOnError(throwable -> Logger.d("doOnError3")) // RxNewThreadScheduler-1【受 B 影响】
-                    .flatMap(integer -> {  // RxNewThreadScheduler-1【受 B 影响】
+                    .doOnNext(data -> Logger.d("doOnNext3")) // RxNewThreadScheduler-2【受 B 影响】
+                    .doOnComplete(() -> Logger.d("doOnComplete3")) // RxNewThreadScheduler-2【受 B 影响】
+                    .doOnError(throwable -> Logger.d("doOnError3")) // RxNewThreadScheduler-2【受 B 影响】
+                    .flatMap(integer -> {  // RxNewThreadScheduler-2【受 B 影响】
                         Logger.d("flatMap3");
                         return Observable.just(Double.valueOf(integer));
                     })
-                    .map(data -> { // RxNewThreadScheduler-1【受 B 影响】
+                    .map(data -> { // RxNewThreadScheduler-2【受 B 影响】
                         Logger.d("map3");
                         return data + 1;
                     })
@@ -130,9 +137,13 @@ public class RxJavaActivity extends MvcActivity {
                         return data + 1;
                     })
                     .flatMap(data -> { // main【受 C 影响】
-                        Logger.d("flatMap");
+                        Logger.d("flatMap4");
                         return Observable.just("转换了 " + data + " 次 map 操作");
                     })
+
+                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe2")) // RxNewThreadScheduler-1【在 subscribeOn 之前，受 D 影响】
+                    .subscribeOn(Schedulers.newThread()) // 【D newThread】第二次执行，只影响两个 subscribeOn 之间的 doOnSubscribe
+                    .doOnSubscribe(disposable -> Logger.d("订阅成功 doOnSubscribe1")) // RxComputationThreadPool-1【在 subscribeOn 之后，与 Observer 的 onSubscribe 方法一样】
 
                     .subscribe(new Observer<String>() {
                         @Override
@@ -179,5 +190,57 @@ public class RxJavaActivity extends MvcActivity {
                     Logger.d("添加博客失败");
                     throwable.printStackTrace();
                 });
+    }
+
+    private void customOperator() {
+        Engine.getRxJavaApi().getUploadToken()
+                .delay(2000, TimeUnit.MILLISECONDS)
+                .lift(new NetResultOperator())
+                .doOnSubscribe(disposable -> showLoadingDialog("正在获取Token..."))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(uploadToken -> {
+                    dismissLoadingDialog();
+                    Logger.d("获取成功：" + GsonUtil.toJson(uploadToken));
+                }, throwable -> {
+                    dismissLoadingDialog();
+                    Logger.d("获取文件上传 Token 失败" + throwable.getMessage());
+                });
+    }
+
+    private class NetResultOperator implements ObservableOperator<UploadToken, NetResult<UploadToken>> {
+        @Override
+        public Observer<? super NetResult<UploadToken>> apply(Observer<? super UploadToken> observer) throws Exception {
+            return new Observer<NetResult<UploadToken>>() {
+                private Disposable mDisposable;
+
+                @Override
+                public void onSubscribe(Disposable disposable) {
+                    mDisposable = disposable;
+                    observer.onSubscribe(mDisposable);
+                }
+
+                @Override
+                public void onNext(NetResult<UploadToken> netResult) {
+                    if (!mDisposable.isDisposed()) {
+                        observer.onNext(netResult.data);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (!mDisposable.isDisposed()) {
+                        observer.onError(e);
+                    }
+                }
+
+                @Override
+                public void onComplete() {
+                    if (!mDisposable.isDisposed()) {
+                        observer.onComplete();
+                    }
+                }
+            };
+        }
     }
 }

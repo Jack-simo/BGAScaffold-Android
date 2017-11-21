@@ -129,7 +129,7 @@ public class StickySearchActivity extends MvcActivity {
                         return false;
                     }
                 })
-                .switchMap(keyword -> { // switchMap 将上游的事件转换成新的 Observable，如果在该节点收到一个新的事件之后，那么如果之前收到的事件所产生的 Observable A 还没有发送事件给下游，那么下游就再也不会收到 Observable A
+                .switchMap(keyword -> { // 将上游 Observable 发送的数据集合变换为 Observable 集合，然后只发射这些 Observable 最近发射的数据「在该节点收到一个新的事件之后，如果之前收到的事件所产生的 Observable A 还没有发送事件给下游，那么下游就再也不会收到 Observable A」
                     /**
                      * combineLatest 和 zip 类似，都是组合两个 Observable 的数据为新的 Observable
                      * zip 当原始 Observable 中每一个都发射了一条数据时才发射数据
