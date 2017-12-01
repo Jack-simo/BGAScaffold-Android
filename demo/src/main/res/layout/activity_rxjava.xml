@@ -24,7 +24,12 @@
         android:text="添加博客" />
 
     <Button
-        android:id="@+id/btn_rxjava_custom_perator"
+        android:id="@+id/btn_rxjava_string_data"
         style="@style/DemoBtn"
-        android:text="自定义操作符" />
+        android:text="测试返回的 data 字段为字符串" />
+
+    <Button
+        android:id="@+id/btn_rxjava_string"
+        style="@style/DemoBtn"
+        android:text="测试返回的数据为字符串" />
 </LinearLayout>

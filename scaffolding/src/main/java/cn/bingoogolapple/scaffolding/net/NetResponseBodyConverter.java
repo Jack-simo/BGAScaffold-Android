@@ -1,10 +1,13 @@
 package cn.bingoogolapple.scaffolding.net;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
+import com.orhanobut.logger.Logger;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
@@ -25,11 +28,41 @@ final class NetResponseBodyConverter<T> implements Converter<ResponseBody, T> {
 
     @Override
     public T convert(ResponseBody value) throws IOException {
-        JsonReader jsonReader = gson.newJsonReader(value.charStream());
         try {
-            return adapter.read(jsonReader);
+            return handleNetResult(value.string());
         } finally {
             value.close();
         }
+    }
+
+    private T handleNetResult(String result) throws IOException {
+        Logger.d(result);
+        NetResult netResult;
+        try {
+            netResult = gson.fromJson(result, NetResult.class);
+        } catch (JsonSyntaxException e) {
+            if (e.getMessage().contains("Expected BEGIN_OBJECT but was STRING")) {
+                // 返回的数据本来就是字符串，直接返回
+                return (T) result;
+            } else {
+                throw e;
+            }
+        }
+
+        try {
+            if (netResult.code == 0) {
+                return adapter.read(gson.newJsonReader(new InputStreamReader(new ByteArrayInputStream(gson.toJson(netResult.data).getBytes()))));
+            } else {
+                throw new ApiException(netResult.msg, netResult.code);
+            }
+        } catch (IOException e) {
+            throw e;
+        }
+    }
+
+    public static class NetResult {
+        public int code;
+        public String msg;
+        public Object data;
     }
 }

@@ -16,7 +16,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
  * 描述:
  */
 public class Engine {
-    public static final String BASE_URL = "http://10.0.9.161:8080/";
+    public static final String BASE_URL = "http://192.168.31.152:8080/";
     private RxJavaApi mRxJavaApi;
 
     private Engine() {

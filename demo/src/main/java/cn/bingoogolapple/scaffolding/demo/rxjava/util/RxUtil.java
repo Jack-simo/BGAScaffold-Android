@@ -26,7 +26,6 @@ import java.net.SocketException;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.scaffolding.net.ApiException;
-import cn.bingoogolapple.scaffolding.net.NetResult;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
@@ -43,44 +42,14 @@ public class RxUtil {
     }
 
     /**
-     * 处理结果
-     *
-     * @param <T>
-     * @return
-     */
-    public static <T> ObservableTransformer<NetResult<T>, T> handleResult() {
-        return observable -> observable.flatMap(result -> {
-            if (result.code == 0) {
-                return Observable.just(result.data);
-            } else {
-                return Observable.error(new ApiException(result.msg, result.code));
-            }
-        });
-    }
-
-    /**
-     * 处理结果、主线程、生命周期绑定
+     * 主线程、生命周期绑定、错误重试
      *
      * @param lifecycleProvider
      * @param <T>
      * @return
      */
-    public static <T> ObservableTransformer<NetResult<T>, T> handleResultMainThreadLifecycle(LifecycleProvider lifecycleProvider) {
-        return observable -> observable.compose(handleResult())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(lifecycleProvider.bindToLifecycle());
-    }
-
-    /**
-     * 处理结果、主线程、生命周期绑定、错误重试
-     *
-     * @param lifecycleProvider
-     * @param <T>
-     * @return
-     */
-    public static <T> ObservableTransformer<NetResult<T>, T> handleResultThreadLifecycleRetry(LifecycleProvider lifecycleProvider) {
-        return observable -> observable.compose(handleResult())
-                .observeOn(AndroidSchedulers.mainThread())
+    public static <T> ObservableTransformer<T, T> mainThreadLifecycleRetry(LifecycleProvider lifecycleProvider) {
+        return observable -> observable.observeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
                     private int mRetryCount;
 

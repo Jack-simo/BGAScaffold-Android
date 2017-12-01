@@ -75,26 +75,17 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-//            applicationVariants.all { variant ->
-//                variant.outputs.each { output ->
-//                    if (output.zipAlign != null) {
-//                        output.zipAlign.doLast {
-//                            output.zipAlign.inputFile.delete()
-//                        }
-//                    }
-//
-//                    def outputFile = output.outputFile
-//                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//                        def fileName = "app_${variant.productFlavors[0].name.replace("production", "release")}_v${variant.versionName}"
-//                        if (variant.buildType.name.equals("release")) {
-//                            fileName += ".apk"
-//                        } else {
-//                            fileName += "_${variant.buildType.name}.apk"
-//                        }
-//                        output.outputFile = new File(outputFile.parent, fileName)
-//                    }
-//                }
-//            }
+            applicationVariants.all { variant ->
+                if (variant.buildType.name == 'release') {
+                    variant.outputs.all {
+                        def apkName = "app_v${variant.versionName}"
+                        if (!variant.flavorName.isEmpty()) {
+                            apkName += "_${variant.flavorName}"
+                        }
+                        outputFileName = apkName + ".apk"
+                    }
+                }
+            }
         }
         debug {
             zipAlignEnabled false

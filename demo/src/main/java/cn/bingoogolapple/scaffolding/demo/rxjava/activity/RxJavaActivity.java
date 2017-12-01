@@ -4,20 +4,14 @@ import android.os.Bundle;
 
 import com.orhanobut.logger.Logger;
 
-import java.util.concurrent.TimeUnit;
-
 import cn.bingoogolapple.scaffolding.demo.R;
 import cn.bingoogolapple.scaffolding.demo.rxjava.api.Engine;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.Blog;
-import cn.bingoogolapple.scaffolding.demo.rxjava.entity.UploadToken;
 import cn.bingoogolapple.scaffolding.demo.rxjava.util.RxUtil;
 import cn.bingoogolapple.scaffolding.demo.rxjava.util.UploadManager;
-import cn.bingoogolapple.scaffolding.net.NetResult;
-import cn.bingoogolapple.scaffolding.util.GsonUtil;
 import cn.bingoogolapple.scaffolding.view.MvcActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableOperator;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -45,7 +39,8 @@ public class RxJavaActivity extends MvcActivity {
         setOnClick(R.id.btn_rxjava_search, o -> forward(SearchActivity.class));
         setOnClick(R.id.btn_rxjava_sticky_search, o -> forward(StickySearchActivity.class));
         setOnClick(R.id.btn_rxjava_add_blog, o -> addBlog());
-        setOnClick(R.id.btn_rxjava_custom_perator, o -> customOperator());
+        setOnClick(R.id.btn_rxjava_string_data, o -> stringData());
+        setOnClick(R.id.btn_rxjava_string, o -> string());
     }
 
     @Override
@@ -185,62 +180,32 @@ public class RxJavaActivity extends MvcActivity {
                     blog.setCover(mCoverFilePath);
                     return Engine.getRxJavaApi().addBlog(blog);
                 })
-                .compose(RxUtil.handleResultThreadLifecycleRetry(this))
+                .compose(RxUtil.mainThreadLifecycleRetry(this))
                 .subscribe(result -> Logger.d("添加博客成功"), throwable -> {
                     Logger.d("添加博客失败");
                     throwable.printStackTrace();
                 });
     }
 
-    private void customOperator() {
-        Engine.getRxJavaApi().getUploadToken()
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .lift(new NetResultOperator())
-                .doOnSubscribe(disposable -> showLoadingDialog("正在获取Token..."))
-                .subscribeOn(AndroidSchedulers.mainThread())
+    private void stringData() {
+        Engine.getRxJavaApi().stringData()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(uploadToken -> {
-                    dismissLoadingDialog();
-                    Logger.d("获取成功：" + GsonUtil.toJson(uploadToken));
+                .subscribe(result -> {
+                    Logger.d("stringData 获取成功：" + result);
                 }, throwable -> {
                     dismissLoadingDialog();
-                    Logger.d("获取文件上传 Token 失败" + throwable.getMessage());
+                    Logger.d("stringData 获取失败" + throwable.getMessage());
                 });
     }
 
-    private class NetResultOperator implements ObservableOperator<UploadToken, NetResult<UploadToken>> {
-        @Override
-        public Observer<? super NetResult<UploadToken>> apply(Observer<? super UploadToken> observer) throws Exception {
-            return new Observer<NetResult<UploadToken>>() {
-                private Disposable mDisposable;
-
-                @Override
-                public void onSubscribe(Disposable disposable) {
-                    mDisposable = disposable;
-                    observer.onSubscribe(mDisposable);
-                }
-
-                @Override
-                public void onNext(NetResult<UploadToken> netResult) {
-                    if (!mDisposable.isDisposed()) {
-                        observer.onNext(netResult.data);
-                    }
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    if (!mDisposable.isDisposed()) {
-                        observer.onError(e);
-                    }
-                }
-
-                @Override
-                public void onComplete() {
-                    if (!mDisposable.isDisposed()) {
-                        observer.onComplete();
-                    }
-                }
-            };
-        }
+    private void string() {
+        Engine.getRxJavaApi().string()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    Logger.d("string 获取成功：" + result);
+                }, throwable -> {
+                    dismissLoadingDialog();
+                    Logger.d("string 获取失败" + throwable.getMessage());
+                });
     }
 }

@@ -48,7 +48,6 @@ public class UploadManager {
             Logger.d("没有请求，发起一次新的 Token 请求");
             return Engine.getRxJavaApi()
                     .getUploadToken()
-                    .compose(RxUtil.handleResult())
                     .doOnNext(uploadToken -> {
                         SPUtil.putString(SP_KEY_TOKEN, uploadToken.getToken());
                         SPUtil.putLong(SP_KEY_EXPIRE_TIME, uploadToken.getExpireTime());
@@ -70,7 +69,6 @@ public class UploadManager {
                     .build();
 
             return Engine.getRxJavaApi().upload(body)
-                    .compose(RxUtil.handleResult())
                     .map(fileName -> Engine.BASE_URL + "api/file/browse/" + fileName);
         } else {
             return Observable.just(filePath == null ? "" : filePath);

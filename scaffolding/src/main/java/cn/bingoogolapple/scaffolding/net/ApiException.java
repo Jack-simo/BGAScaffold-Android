@@ -21,7 +21,7 @@ package cn.bingoogolapple.scaffolding.net;
  * 创建时间:16/8/14 上午12:45
  * 描述:Http 请求异常
  */
-public class ApiException extends Exception {
+public class ApiException extends RuntimeException {
     private int mCode;
 
     public ApiException(String msg, int code) {

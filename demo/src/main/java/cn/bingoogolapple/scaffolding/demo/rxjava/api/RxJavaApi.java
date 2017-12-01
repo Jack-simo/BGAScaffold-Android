@@ -5,7 +5,6 @@ import java.util.List;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.Blog;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.Category;
 import cn.bingoogolapple.scaffolding.demo.rxjava.entity.UploadToken;
-import cn.bingoogolapple.scaffolding.net.NetResult;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -26,7 +25,7 @@ public interface RxJavaApi {
      * @return
      */
     @POST("api/blogs")
-    Observable<NetResult<Blog>> addBlog(@Body Blog blog);
+    Observable<Blog> addBlog(@Body Blog blog);
 
     /**
      * 查询博客列表
@@ -35,7 +34,7 @@ public interface RxJavaApi {
      * @return
      */
     @GET("api/blogs")
-    Observable<NetResult<List<Blog>>> findBlogList(@Query("keyword") String keyword);
+    Observable<List<Blog>> findBlogList(@Query("keyword") String keyword);
 
     /**
      * 查询分类列表
@@ -43,7 +42,7 @@ public interface RxJavaApi {
      * @return
      */
     @GET("api/categorys")
-    Observable<NetResult<List<Category>>> getCategoryList();
+    Observable<List<Category>> getCategoryList();
 
     /**
      * 获取文件上传 token
@@ -51,7 +50,7 @@ public interface RxJavaApi {
      * @return
      */
     @GET("api/file/token")
-    Observable<NetResult<UploadToken>> getUploadToken();
+    Observable<UploadToken> getUploadToken();
 
     /**
      * 上传文件
@@ -60,5 +59,21 @@ public interface RxJavaApi {
      * @return
      */
     @POST("api/file/upload")
-    Observable<NetResult<String>> upload(@Body RequestBody requestBody);
+    Observable<String> upload(@Body RequestBody requestBody);
+
+    /**
+     * 测试返回的 data 字段为字符串
+     *
+     * @return
+     */
+    @GET("api/test/stringData")
+    Observable<String> stringData();
+
+    /**
+     * 测试返回的数据为字符串
+     *
+     * @return
+     */
+    @GET("api/test/string")
+    Observable<String> string();
 }

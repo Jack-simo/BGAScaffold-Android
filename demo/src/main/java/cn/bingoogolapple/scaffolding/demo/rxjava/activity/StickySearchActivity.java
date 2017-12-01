@@ -137,7 +137,7 @@ public class StickySearchActivity extends MvcActivity {
                      */
                     return Observable.combineLatest(
                             getCategoryListObservable(),
-                            mRxJavaApi.findBlogList(keyword).flatMap(netResult -> Observable.just(netResult.data)),
+                            mRxJavaApi.findBlogList(keyword),
                             (blogCategoryList, blogList) -> {
                                 convertToCategoryArray(blogCategoryList);
                                 return blogList;
@@ -167,7 +167,7 @@ public class StickySearchActivity extends MvcActivity {
     private Observable<List<Category>> getCategoryListObservable() {
         // switchIfEmpty 如果原始 Observable 正常终止后仍然没有发射任何数据，就使用备用的 Observable
         return getCategoryListFromCache()
-                .switchIfEmpty(mRxJavaApi.getCategoryList().flatMap(netResult -> Observable.just(netResult.data)))
+                .switchIfEmpty(mRxJavaApi.getCategoryList())
                 .doOnNext(categoryList -> convertToCategoryArray(categoryList));
 
         // concat 操作符是接收若干个 Observables，发射数据是有序的，不会交叉，只有需要数据的时候才会订阅所有的 Observable 数据源
