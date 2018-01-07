@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
-    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
         minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION as int
@@ -21,25 +20,25 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:design:${SUPPORT_APPCOMPAT_VERSION}"
-    compile 'cn.bingoogolapple:bga-titlebar:1.0.8@aar'
-    compile 'cn.bingoogolapple:bga-swipebacklayout:1.1.6@aar'
-    compile 'cn.bingoogolapple:bga-baseadapter:1.2.7@aar'
+    api "com.android.support:design:${SUPPORT_APPCOMPAT_VERSION}"
+    api 'cn.bingoogolapple:bga-titlebar:1.0.8@aar'
+    api 'cn.bingoogolapple:bga-swipebacklayout:1.1.8@aar'
+    api 'cn.bingoogolapple:bga-baseadapter:1.2.7@aar'
 
-    compile "io.reactivex.rxjava2:rxjava:2.1.6"
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
-    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
-    compile "com.trello.rxlifecycle2:rxlifecycle:${RXLIFECYCLE_VERSION}"
-    compile "com.trello.rxlifecycle2:rxlifecycle-android:${RXLIFECYCLE_VERSION}"
-    compile "com.trello.rxlifecycle2:rxlifecycle-components:${RXLIFECYCLE_VERSION}"
-    compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
-    compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
-    compile "com.squareup.retrofit2:adapter-rxjava2:${RETROFIT_VERSION}"
-    compile 'com.squareup.okhttp3:logging-interceptor:3.9.0'
-    compile 'pub.devrel:easypermissions:0.2.1'
-    compile 'com.afollestad.material-dialogs:core:0.9.5.0'
-    compile 'com.umeng.analytics:analytics:latest.integration'
-    compile 'com.orhanobut:logger:2.1.1'
-    compile 'com.jaeger.statusbarutil:library:1.4.0'
+    api "io.reactivex.rxjava2:rxjava:2.1.7"
+    api 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    api 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+    api 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    api "com.trello.rxlifecycle2:rxlifecycle:${RXLIFECYCLE_VERSION}"
+    api "com.trello.rxlifecycle2:rxlifecycle-android:${RXLIFECYCLE_VERSION}"
+    api "com.trello.rxlifecycle2:rxlifecycle-components:${RXLIFECYCLE_VERSION}"
+    api "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    api "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    api "com.squareup.retrofit2:adapter-rxjava2:${RETROFIT_VERSION}"
+    api 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+    api 'pub.devrel:easypermissions:0.2.1'
+    api 'com.afollestad.material-dialogs:core:0.9.6.0'
+    api 'com.umeng.analytics:analytics:latest.integration'
+    api 'com.orhanobut:logger:2.1.1'
+    api 'com.jaeger.statusbarutil:library:1.4.0'
 }

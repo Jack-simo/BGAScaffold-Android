@@ -12,7 +12,6 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import java.io.IOException;
-import java.net.SocketException;
 
 import cn.bingoogolapple.scaffolding.demo.greendao.util.GreenDaoUtil;
 import cn.bingoogolapple.scaffolding.net.ApiException;
@@ -112,7 +111,7 @@ public class App extends Application implements AppManager.Delegate {
             if (e instanceof UndeliverableException) {
                 e = e.getCause();
             }
-            if ((e instanceof IOException) || (e instanceof SocketException)) { // 没事，无关紧要的网络问题或 API 在取消时抛出的异常
+            if (e instanceof IOException) { // 没事，无关紧要的网络问题或 API 在取消时抛出的异常
                 return;
             }
             if (e instanceof InterruptedException) { // 没事，一些阻塞代码被 dispose 调用中断
