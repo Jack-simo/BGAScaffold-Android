@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "barcode": 6933334032019,
+    "name": "水电费临时建的联发科",
+    "unit": "个",
+    "skuId": "",
+    "costPrice": 9,
+    "sellingPrice": 15,
+    "address": "",
+    "manufacturer": "",
+    "brand": "",
+    "expirationDate": "",
+    "code": "3211BLTLT",
+    "industry": "",
+    "categoryName": ""
+  },
+  {
+    "id": 2,
+    "barcode": 6957573332303,
+    "name": "世纪东方临时建的",
+    "unit": "包",
+    "skuId": "",
+    "costPrice": 18.9,
+    "sellingPrice": 21,
+    "address": "",
+    "manufacturer": "",
+    "brand": "",
+    "expirationDate": "",
+    "code": "11RGXZJ",
+    "industry": "",
+    "categoryName": ""
+  }
+]

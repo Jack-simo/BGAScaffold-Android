@@ -1,16 +1,13 @@
-package cn.bingoogolapple.scaffolding.demo.greendao.util;
+package cn.bingoogolapple.scaffolding.demo.database.db.util;
 
 import android.content.Context;
 
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import cn.bingoogolapple.scaffolding.demo.db.CustomerDao;
 import cn.bingoogolapple.scaffolding.demo.db.DaoMaster;
 import cn.bingoogolapple.scaffolding.demo.db.DaoSession;
-import cn.bingoogolapple.scaffolding.demo.db.OrderDao;
-import cn.bingoogolapple.scaffolding.demo.db.ProductDao;
-import cn.bingoogolapple.scaffolding.demo.db.ProductOrderDao;
+import cn.bingoogolapple.scaffolding.demo.db.GoodsDao;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 
 /**
@@ -34,20 +31,8 @@ public class GreenDaoUtil {
         QueryBuilder.LOG_VALUES = AppManager.getInstance().isBuildDebug();
     }
 
-    public static OrderDao getOrderDao() {
-        return sDaoSession.getOrderDao();
-    }
-
-    public static CustomerDao getCustomerDao() {
-        return sDaoSession.getCustomerDao();
-    }
-
-    public static ProductDao getProductDao() {
-        return sDaoSession.getProductDao();
-    }
-
-    public static ProductOrderDao getProductOrderDao() {
-        return sDaoSession.getProductOrderDao();
+    public static GoodsDao getGoodsDao() {
+        return sDaoSession.getGoodsDao();
     }
 
     private static class DBOpenHelper extends DaoMaster.OpenHelper {

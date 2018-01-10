@@ -13,7 +13,7 @@ import com.squareup.leakcanary.RefWatcher;
 
 import java.io.IOException;
 
-import cn.bingoogolapple.scaffolding.demo.greendao.util.GreenDaoUtil;
+import cn.bingoogolapple.scaffolding.demo.database.db.util.GreenDaoUtil;
 import cn.bingoogolapple.scaffolding.net.ApiException;
 import cn.bingoogolapple.scaffolding.util.AppManager;
 import cn.bingoogolapple.scaffolding.util.RxBus;

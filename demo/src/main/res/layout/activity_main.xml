@@ -4,12 +4,12 @@
     android:padding="@dimen/size_level4">
 
     <Button
-        android:id="@+id/btn_main_greendao"
-        style="@style/DemoBtn"
-        android:text="GreenDaoDemo" />
-
-    <Button
         android:id="@+id/btn_main_rxjava"
         style="@style/DemoBtn"
         android:text="RxJavaDemo" />
+
+    <Button
+        android:id="@+id/btn_main_database"
+        style="@style/DemoBtn"
+        android:text="DatabaseDemo" />
 </LinearLayout>

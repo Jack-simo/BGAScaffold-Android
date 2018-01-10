@@ -3,7 +3,7 @@ package cn.bingoogolapple.scaffolding.demo;
 import android.Manifest;
 import android.os.Bundle;
 
-import cn.bingoogolapple.scaffolding.demo.greendao.activity.GreenDaoActivity;
+import cn.bingoogolapple.scaffolding.demo.database.activity.DatabaseActivity;
 import cn.bingoogolapple.scaffolding.demo.rxjava.activity.RxJavaActivity;
 import cn.bingoogolapple.scaffolding.demo.rxjava.util.RxUtil;
 import cn.bingoogolapple.scaffolding.util.AppManager;
@@ -35,8 +35,8 @@ public class MainActivity extends MvcActivity {
 
     @Override
     protected void setListener() {
-        setOnClick(R.id.btn_main_greendao, o -> forward(GreenDaoActivity.class));
         setOnClick(R.id.btn_main_rxjava, o -> forward(RxJavaActivity.class));
+        setOnClick(R.id.btn_main_database, o -> forward(DatabaseActivity.class));
     }
 
     @Override
