@@ -100,12 +100,12 @@ android {
 
 greendao {
     schemaVersion 1
-    daoPackage 'cn.bingoogolapple.scaffolding.demo.db'
+    daoPackage 'cn.bingoogolapple.scaffold.demo.db'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':scaffolding')
+    implementation project(':scaffold')
 
     implementation 'com.android.support:multidex:1.0.1'
 

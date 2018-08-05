@@ -1,2 +1,2 @@
-include ':scaffolding'
+include ':scaffold'
 include ':demo'
