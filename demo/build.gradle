@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
@@ -98,22 +100,9 @@ android {
     }
 }
 
-greendao {
-    schemaVersion 1
-    daoPackage 'cn.bingoogolapple.scaffold.demo.db'
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':scaffold')
-
-    implementation 'com.android.support:multidex:1.0.1'
-
-    implementation 'cn.bingoogolapple:bga-refreshlayout:1.1.8@aar'
-    implementation 'com.github.bumptech.glide:glide:4.5.0'
-
-    implementation 'org.greenrobot:greendao:3.2.2'
-    implementation 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAKCANARY_VERSION}"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAKCANARY_VERSION}"

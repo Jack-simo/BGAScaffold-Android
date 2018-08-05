@@ -1,4 +1,19 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-noarg'
+apply plugin: 'kotlin-allopen'
+
+// kotlin-noarg 编译期生成无参构造方法，kotlin 中不能直接使用，需要通过反射来使用，但在 Java 中可以直接使用该无参构造方法
+noArg {
+    annotation('cn.bingoogolapple.scaffold.annotation.NoArg')
+}
+
+// kotlin-allopen 编译期去掉 final，可以继承
+allOpen {
+    annotation('cn.bingoogolapple.scaffold.annotation.AllOpen')
+}
 
 android {
     compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
@@ -25,8 +40,13 @@ dependencies {
     api 'cn.bingoogolapple:bga-swipebacklayout:1.1.8@aar'
     api 'cn.bingoogolapple:bga-baseadapter:1.2.7@aar'
 
-    api "io.reactivex.rxjava2:rxjava:2.1.7"
-    api 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    api "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}"
+    api "org.jetbrains.kotlin:kotlin-reflect:${KOTLIN_VERSION}"
+    api "org.jetbrains.anko:anko-commons:${ANKO_VERSION}"
+
+    api 'com.android.support:multidex:1.0.3'
+    api "io.reactivex.rxjava2:rxjava:2.2.0"
+    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
     api 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
     api 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
     api "com.trello.rxlifecycle2:rxlifecycle:${RXLIFECYCLE_VERSION}"

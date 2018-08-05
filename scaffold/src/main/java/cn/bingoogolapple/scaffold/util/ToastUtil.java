@@ -40,7 +40,7 @@ public class ToastUtil {
             } else {
                 toast = Toast.makeText(AppManager.getApp(), text, Toast.LENGTH_LONG);
             }
-//            DrawableUtil.tintBackground(toast.getView(), R.color.toast_background);
+//            DrawableUtil.tintBackground(toast.getMView(), R.color.toast_background);
             toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, UIUtil.dp2px(2));
             toast.show();
         }

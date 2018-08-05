@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 bingoogolapple
+ * Copyright 2018 bingoogolapple
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package cn.bingoogolapple.scaffold.presenter;
+package cn.bingoogolapple.scaffold.mvp
 
-import cn.bingoogolapple.scaffold.view.BaseView;
+import android.support.annotation.StringRes
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:16/8/18 下午8:41
+ * 创建时间:05/08/2018 7:16 PM
  * 描述:
  */
-public class BasePresenterImpl<V extends BaseView> implements BasePresenter {
-    protected V mView;
+interface IMvpView<out Presenter : IPresenter<IMvpView<Presenter>>> : ILifecycle {
+    val mPresenter: Presenter
 
-    public BasePresenterImpl(V view) {
-        mView = view;
-    }
+    abstract fun shortToast(@StringRes resId: Int, vararg formatArgs: Any)
+
+    abstract fun shortToast(content: CharSequence)
+
+    abstract fun showProgressDialog(@StringRes resId: Int, cancelAble: Boolean)
+
+    abstract fun dismissProgressDialog()
 }

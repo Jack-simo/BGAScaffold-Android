@@ -1,31 +1,20 @@
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_VERSION}"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:${KOTLIN_VERSION}"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:${KOTLIN_VERSION}"
     }
 }
 
 allprojects {
     repositories {
-        flatDir {
-            dirs 'libs'
-        }
-        jcenter()
         google()
-    }
-
-    tasks.withType(JavaCompile){
-        options.encoding = "UTF-8"
-    }
-
-    tasks.whenTaskAdded { task ->
-        if (task.name.contains('Test')) {
-            task.enabled = false
-        }
+        jcenter()
     }
 }
 

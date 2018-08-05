@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 bingoogolapple
+ * Copyright 2018 bingoogolapple
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package cn.bingoogolapple.scaffold.presenter;
+package cn.bingoogolapple.scaffold.mvp
+
+import java.lang.ref.WeakReference
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:16/11/4 上午9:38
+ * 创建时间:05/08/2018 7:16 PM
  * 描述:
  */
-public interface BasePresenter {
+interface IPresenter<out View : IMvpView<IPresenter<View>>> : ILifecycle {
+    val mView: WeakReference<@UnsafeVariance View>
 }
