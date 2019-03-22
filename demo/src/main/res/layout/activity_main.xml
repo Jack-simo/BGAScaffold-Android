@@ -3,7 +3,8 @@
     style="@style/MatchMatch.Vertical"
     android:padding="@dimen/size_level4">
 
-    <TextView
-        style="@style/WrapWrap"
-        android:text="Scaffold" />
+    <Button
+        android:id="@+id/btn_constraint_layout"
+        style="@style/DemoBtn"
+        android:text="ConstraintLayout" />
 </LinearLayout>

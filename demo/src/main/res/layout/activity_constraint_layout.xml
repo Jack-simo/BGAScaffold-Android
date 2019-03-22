@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#ff4081">
+
+            <TextView
+                android:id="@+id/cl_demo15_one_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:text="姓名"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo15_two_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:padding="8dp"
+                android:background="#ba68c8"
+                android:text="联系方式"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo15_one_label"
+                app:layout_goneMarginTop="10dp" />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/cl_demo15_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="cl_demo15_one_label,cl_demo15_two_label" />
+
+            <TextView
+                android:id="@+id/cl_demo15_one_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="8dp"
+                android:background="#ba68c8"
+                android:text="android.support.constraint.Barrier 来对其到一组控件中最大宽度或高度后面"
+                android:textColor="@android:color/white"
+                app:layout_constraintBaseline_toBaselineOf="@id/cl_demo15_one_label"
+                app:layout_constraintStart_toEndOf="@id/cl_demo15_barrier" />
+
+            <TextView
+                android:id="@+id/cl_demo15_two_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:text="android.support.constraint.Group 来管理某一组控件的 visibility，layout_goneMarginXxx 设置某个方向参照物为 gone 时的 margin 值"
+                android:textColor="@android:color/white"
+                app:layout_constraintBaseline_toBaselineOf="@id/cl_demo15_two_label"
+                app:layout_constraintStart_toEndOf="@id/cl_demo15_barrier" />
+
+            <android.support.constraint.Group
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="cl_demo15_one_label,cl_demo15_one_value" />
+
+            <TextView
+                android:id="@+id/cl_demo15_three"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:text="android.support.constraint.Placeholder 用于在屏幕上动态设置内容，只需传递对应控件的 id 即可将对应控件挪到 Placeholder 中。Placeholder 宽高必须设置为 wrap_content，其 visibility 会被忽略。如果视图与占位符在同一屏幕上存在，则其可见性将自动设置为消失"
+                android:textColor="@android:color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.constraint.Placeholder
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="8dp"
+                app:content="@id/cl_demo15_three"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo15_two_value" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:background="#ffa000">
+
+            <TextView
+                android:id="@+id/banner1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#b388ff"
+                android:gravity="center"
+                android:text="通过 layout_constraintDimensionRatio 设置宽高比例，浮点数值表示宽度和高度之间的比率"
+                android:textColor="@android:color/white"
+                app:layout_constraintDimensionRatio="3.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/banner2"
+                android:layout_width="160dp"
+                android:layout_height="0dp"
+                android:background="#f8bbd0"
+                android:gravity="center"
+                android:text="4:1 等价于 H,4:1，表示「宽:高」"
+                android:textColor="@android:color/white"
+                app:layout_constraintDimensionRatio="H,4:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/banner1" />
+
+            <TextView
+                android:id="@+id/banner3"
+                android:layout_width="40dp"
+                android:layout_height="0dp"
+                android:background="#9fa8da"
+                android:gravity="center"
+                android:text="W,4:1，表示「高:宽」"
+                android:textColor="@android:color/white"
+                app:layout_constraintDimensionRatio="W,4:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/banner2" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:background="#ea80fc"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/demo1_icon"
+                android:layout_width="140dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="12dp"
+                android:background="#b388ff"
+                android:gravity="center"
+                android:text="图片"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/demo1_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:text="demo1_icon 设置 layout_marginEnd 不会生效，需要在 demo1_title 中设置 layout_marginStart，即 A 相对于 B 时需要在 A 中设置属性"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/demo1_icon"
+                app:layout_constraintTop_toTopOf="@id/demo1_icon" />
+
+            <TextView
+                android:id="@+id/demo1_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:40"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="@id/demo1_icon"
+                app:layout_constraintStart_toStartOf="@id/demo1_title" />
+        </android.support.constraint.ConstraintLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#18ffff"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/rl_demo2_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#d4e157"
+                android:text="Left"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/rl_demo2_right1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/rl_demo2_left"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:text="RL 中左右都约束时宽度会拉伸"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/rl_demo2_right2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/rl_demo2_right1"
+                android:layout_toEndOf="@id/rl_demo2_left"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:text="不会超过约束 不会超过约束 不会超过约束 不会超过约束 不会超过约束 不会超过约束 不会超过约束 不会超过约束"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#9575cd">
+
+            <TextView
+                android:id="@+id/cl_demo2_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#d4e157"
+                android:text="Left"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo2_right1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:text="CL 两边拉力一样"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo2_left"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo2_right2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:text="bias 控制拉伸比例 0.8"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.8"
+                app:layout_constraintStart_toEndOf="@id/cl_demo2_left"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo2_right1" />
+
+            <TextView
+                android:id="@+id/cl_demo2_right3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:text="在当控件有自己设置的宽度，例如 warp_content、固定值时，我们为控件添加的都是约束，这个约束有点像橡皮筋一样会拉这个控件，但是并不会改变控件的尺寸"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo2_left"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo2_right2" />
+
+            <TextView
+                android:id="@+id/cl_demo2_right4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:maxWidth="250dp"
+                android:text="在当控件有自己设置的宽度，例如 warp_content、固定值时，我们为控件添加的都是约束，这个约束有点像橡皮筋一样会拉这个控件，但是并不会改变控件的尺寸。当设置为 wrap_content 时 maxWidth 才会生效"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo2_left"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo2_right3" />
+
+            <TextView
+                android:id="@+id/cl_demo2_right5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:text="在当控件有自己设置的宽度，例如 warp_content、固定值时，我们为控件添加的都是约束，这个约束有点像橡皮筋一样会拉这个控件，但是并不会改变控件的尺寸。当设置 layout_constrainedWidth 为 true 时就不会超过约束，layout_constraintWidth_max 也能生效"
+                android:textColor="@android:color/white"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo2_left"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo2_right4" />
+
+            <TextView
+                android:id="@+id/cl_demo2_right6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#1de9b6"
+                android:text="0dp 时，不管 layout_constrainedWidth 为 true 还是 false 都不会超过约束，layout_constraintWidth_max 也也生效"
+                android:textColor="@android:color/white"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo2_left"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo2_right5"
+                app:layout_constraintWidth_max="300dp" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#f48fb1">
+
+            <TextView
+                android:id="@+id/cl_demo3_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="One"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo3_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="Two"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toEndOf="@id/cl_demo3_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo3_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="没有互相约束占用剩余空间"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo3_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#4caf50">
+
+            <TextView
+                android:id="@+id/cl_demo4_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="左右互相约束后"
+                android:textColor="@android:color/white"
+                app:layout_constraintBaseline_toBaselineOf="@+id/cl_demo4_two"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo4_two"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo4_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="就能平分"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo4_three"
+                app:layout_constraintStart_toEndOf="@id/cl_demo4_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo4_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="平分"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo4_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#2196f3">
+
+            <TextView
+                android:id="@+id/cl_demo5_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="chainStyle 默认值为 spread，必须设置在链头"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo5_two"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo5_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="宽度为 0"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo5_three"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/cl_demo5_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo5_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="weight 权重设置宽度"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/cl_demo5_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#e040fb">
+
+            <TextView
+                android:id="@+id/cl_demo6_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="spread_inside"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo6_two"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo6_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="宽度为 0"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo6_three"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/cl_demo6_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo6_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="和 spread 效果一样"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/cl_demo6_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#9575cd">
+
+            <TextView
+                android:id="@+id/cl_demo7_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="packed"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo7_two"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo7_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="宽度为 0"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo7_three"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintStart_toEndOf="@id/cl_demo7_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo7_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="和 spread 效果一样"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintStart_toEndOf="@id/cl_demo7_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#2196f3">
+
+            <TextView
+                android:id="@+id/cl_demo8_one"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="spread"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo8_two"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo8_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="宽度非 0"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo8_three"
+                app:layout_constraintStart_toEndOf="@id/cl_demo8_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo8_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="两头中间一起平分剩余部分"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo8_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#e040fb">
+
+            <TextView
+                android:id="@+id/cl_demo9_one"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="spread_inside"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo9_two"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo9_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="宽度非 0"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo9_three"
+                app:layout_constraintStart_toEndOf="@id/cl_demo9_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo9_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="中间平分剩余部分"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo9_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#9575cd">
+
+            <TextView
+                android:id="@+id/cl_demo10_one"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="packed"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo10_two"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo10_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="宽度非 0"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo10_three"
+                app:layout_constraintStart_toEndOf="@id/cl_demo10_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo10_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="两头平分剩余部分"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo10_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#dce775">
+
+            <TextView
+                android:id="@+id/cl_demo11_one"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#69f0ae"
+                android:gravity="center"
+                android:text="packed"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo11_two"
+                app:layout_constraintHorizontal_bias="0.2"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo11_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#ffd54f"
+                android:gravity="center"
+                android:text="宽度非 0"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/cl_demo11_three"
+                app:layout_constraintStart_toEndOf="@id/cl_demo11_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo11_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="链头 bias 控制比例"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cl_demo11_two"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:padding="8dp"
+            android:background="#ff9800">
+
+            <TextView
+                android:id="@+id/cl_demo12_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:text="参照物"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo12_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:text="被参照物1"
+                android:textColor="@android:color/white"
+                app:layout_constraintCircle="@id/cl_demo12_one"
+                app:layout_constraintCircleAngle="145"
+                app:layout_constraintCircleRadius="110dp" />
+
+            <TextView
+                android:id="@+id/cl_demo12_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:text="被参照物2"
+                android:textColor="@android:color/white"
+                app:layout_constraintCircle="@id/cl_demo12_one"
+                app:layout_constraintCircleAngle="235"
+                app:layout_constraintCircleRadius="110dp" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:padding="8dp"
+            android:background="#ffab91">
+
+            <TextView
+                android:id="@+id/cl_demo13_one"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="参照物1"
+                android:textColor="@android:color/white"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo13_two"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:background="#d81b60"
+                android:gravity="center"
+                android:text="被参照物1，参照物被设置为 gone 后其 margin 会失效，可以被视为宽高都为0的一个点"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toEndOf="@id/cl_demo13_one"
+                app:layout_constraintTop_toTopOf="@id/cl_demo13_one" />
+
+            <TextView
+                android:id="@+id/cl_demo13_three"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="参照物2"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/cl_demo13_four"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:background="#d81b60"
+                android:gravity="center"
+                android:text="被参照物2"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toEndOf="@id/cl_demo13_three"
+                app:layout_constraintTop_toTopOf="@id/cl_demo13_three" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:padding="8dp"
+            android:background="#ff4081">
+
+            <android.support.constraint.Guideline
+                android:id="@+id/cl_demo14_line1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="20dp" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/cl_demo14_line2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <TextView
+                android:id="@+id/cl_demo14_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="#b2ff59"
+                android:gravity="center"
+                android:text="通过 Guideline 的 begin、end、percent 来定位"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toEndOf="@id/cl_demo14_line2"
+                app:layout_constraintTop_toBottomOf="@id/cl_demo14_line1" />
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>

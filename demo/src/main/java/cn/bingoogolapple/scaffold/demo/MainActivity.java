@@ -32,6 +32,7 @@ public class MainActivity extends MvcActivity {
 
     @Override
     protected void setListener() {
+        setOnClick(R.id.btn_constraint_layout, view -> forward(ConstraintLayoutActivity.class));
     }
 
     @Override
